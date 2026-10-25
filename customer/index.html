@@ -1,0 +1,1041 @@
+<title>Harikrishna Vaghela | Customer Experience</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;0,9..144,700;1,9..144,500&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+<style>
+  :root{
+    --bg:#F5F7FA;
+    --surface:#FFFFFF;
+    --surface-2:#EEF2F6;
+    --text:#15202B;
+    --text-muted:#52606F;
+    --navy:#122236;
+    --navy-deep:#0B1522;
+    --accent:#B9792F;
+    --accent-soft:#F1E3CC;
+    --border:#DCE3EA;
+    --chip-bg:#EEF2F6;
+    color-scheme:light;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --bg:#0B1420;
+      --surface:#111E2E;
+      --surface-2:#16233374;
+      --text:#E7EDF3;
+      --text-muted:#93A3B3;
+      --navy:#16293D;
+      --navy-deep:#0B1522;
+      --accent:#DDA35B;
+      --accent-soft:#2A2013;
+      --border:#223243;
+      --chip-bg:#16233A;
+      color-scheme:dark;
+    }
+  }
+  :root[data-theme="dark"]{
+    --bg:#0B1420;
+    --surface:#111E2E;
+    --surface-2:#16233374;
+    --text:#E7EDF3;
+    --text-muted:#93A3B3;
+    --navy:#16293D;
+    --navy-deep:#0B1522;
+    --accent:#DDA35B;
+    --accent-soft:#2A2013;
+    --border:#223243;
+    --chip-bg:#16233A;
+    color-scheme:dark;
+  }
+
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    background:var(--bg);
+    color:var(--text);
+    font-family:'IBM Plex Sans', system-ui, -apple-system, sans-serif;
+    -webkit-font-smoothing:antialiased;
+    scroll-behavior:smooth;
+  }
+  img{max-width:100%;}
+  h1,h2,h3{
+    font-family:'Fraunces', Georgia, serif;
+    text-wrap:balance;
+    margin:0;
+  }
+  .mono{font-family:'IBM Plex Mono', ui-monospace, monospace;}
+  a{color:inherit;}
+  .wrap{
+    max-width:1040px;
+    margin:0 auto;
+    padding-inline:24px;
+  }
+  @media (max-width:600px){ .wrap{padding-inline:18px;} }
+
+  /* ---------- NAV ---------- */
+  nav{
+    position:sticky;
+    top:env(safe-area-inset-top, 0px);
+    z-index:50;
+    background:color-mix(in srgb, var(--bg) 88%, transparent);
+    backdrop-filter:blur(10px);
+    border-bottom:1px solid var(--border);
+  }
+  nav .wrap{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding-block:14px;
+    gap:12px;
+  }
+  .brand{
+    font-family:'Fraunces', serif;
+    font-weight:600;
+    font-size:17px;
+    letter-spacing:.2px;
+  }
+  .navlinks{
+    display:flex;
+    gap:22px;
+    font-size:13.5px;
+    font-weight:500;
+    color:var(--text-muted);
+    flex-wrap:wrap;
+  }
+  .navlinks a{text-decoration:none;}
+  .navlinks a:hover{color:var(--accent);}
+
+  /* ---------- HERO ---------- */
+  header.hero{
+    position:relative;
+    overflow:hidden;
+    background:
+      radial-gradient(900px 420px at 85% -10%, color-mix(in srgb, var(--accent) 16%, transparent), transparent 60%),
+      linear-gradient(180deg, var(--navy) 0%, var(--navy-deep) 100%);
+    color:#EAF0F6;
+  }
+  header.hero .wrap{
+    padding-block:72px 56px;
+  }
+  .eyebrow{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:12.5px;
+    letter-spacing:.14em;
+    text-transform:uppercase;
+    color:var(--accent);
+    display:flex;
+    align-items:center;
+    gap:10px;
+    margin-bottom:18px;
+  }
+  .eyebrow::before{
+    content:"";
+    width:26px;height:1px;
+    background:var(--accent);
+    display:inline-block;
+  }
+  header.hero h1{
+    font-size:clamp(34px, 6vw, 58px);
+    line-height:1.04;
+    font-weight:600;
+    color:#FAFBFC;
+    max-width:14ch;
+  }
+  header.hero h1 em{
+    font-style:italic;
+    color:var(--accent);
+    font-weight:500;
+  }
+  .hero-sub{
+    margin-top:18px;
+    font-size:16.5px;
+    line-height:1.55;
+    color:#C4D0DC;
+    max-width:52ch;
+  }
+  .hero-meta{
+    margin-top:26px;
+    display:flex;
+    flex-wrap:wrap;
+    gap:10px 10px;
+  }
+  .pill{
+    font-size:12.5px;
+    font-weight:500;
+    padding:7px 13px;
+    border-radius:4px;
+    border:1px solid rgba(255,255,255,.16);
+    color:#D7E1EA;
+    background:rgba(255,255,255,.04);
+    white-space:nowrap;
+  }
+  .hero-cta{
+    margin-top:34px;
+    display:flex;
+    align-items:center;
+    gap:18px;
+    flex-wrap:wrap;
+  }
+  .btn{
+    display:inline-flex;
+    align-items:center;
+    gap:8px;
+    font-size:14px;
+    font-weight:600;
+    padding:11px 20px;
+    border-radius:4px;
+    text-decoration:none;
+    cursor:pointer;
+    border:1px solid transparent;
+    font-family:'IBM Plex Sans', sans-serif;
+  }
+  .btn-accent{
+    background:var(--accent);
+    color:#1A1105;
+  }
+  .btn-accent:hover{filter:brightness(1.08);}
+  .btn-ghost{
+    border-color:rgba(255,255,255,.25);
+    color:#EAF0F6;
+    background:transparent;
+  }
+  .btn-ghost:hover{border-color:var(--accent); color:var(--accent);}
+
+  /* mini data strip under hero */
+  .stat-row{
+    margin-top:46px;
+    display:grid;
+    grid-template-columns:repeat(4, 1fr);
+    gap:1px;
+    background:rgba(255,255,255,.10);
+    border-radius:6px;
+    overflow:hidden;
+  }
+  .stat{
+    background:rgba(255,255,255,.035);
+    padding:16px 14px;
+  }
+  .stat .num{
+    font-family:'IBM Plex Mono', monospace;
+    font-variant-numeric:tabular-nums;
+    font-size:21px;
+    font-weight:600;
+    color:#FAFBFC;
+  }
+  .stat .lbl{
+    margin-top:4px;
+    font-size:11.5px;
+    color:#9FB0C0;
+    letter-spacing:.02em;
+  }
+  @media (max-width:640px){
+    .stat-row{grid-template-columns:repeat(2, 1fr);}
+  }
+
+  /* ---------- SECTIONS ---------- */
+  section{padding-block:64px;}
+  section + section{border-top:1px solid var(--border);}
+  .section-head{
+    display:flex;
+    align-items:baseline;
+    justify-content:space-between;
+    gap:16px;
+    margin-bottom:34px;
+    flex-wrap:wrap;
+  }
+  .section-head h2{
+    font-size:clamp(24px, 3.4vw, 32px);
+    font-weight:600;
+  }
+  .section-num{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:12.5px;
+    color:var(--text-muted);
+    letter-spacing:.08em;
+  }
+
+  /* ---------- ABOUT ---------- */
+  .about-grid{
+    display:grid;
+    grid-template-columns:1.3fr 1fr;
+    gap:48px;
+  }
+  @media (max-width:760px){ .about-grid{grid-template-columns:1fr;} }
+  .about-grid p{
+    font-size:16px;
+    line-height:1.7;
+    color:var(--text);
+    max-width:56ch;
+  }
+  .about-grid p + p{margin-top:14px;}
+  .edu-list{display:flex; flex-direction:column; gap:16px;}
+  .edu-item{
+    border-left:2px solid var(--accent);
+    padding-left:16px;
+  }
+  .edu-item .deg{font-weight:600; font-size:15px;}
+  .edu-item .inst{font-size:13.5px; color:var(--text-muted); margin-top:2px;}
+  .edu-item .yr{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:12px;
+    color:var(--accent);
+    margin-top:4px;
+  }
+
+  /* ---------- EXPERIENCE TIMELINE ---------- */
+  .timeline{
+    display:flex;
+    flex-direction:column;
+    gap:0;
+  }
+  .t-item{
+    display:grid;
+    grid-template-columns:140px 1fr;
+    gap:24px;
+    padding-block:26px;
+    border-top:1px solid var(--border);
+  }
+  .t-item:first-child{border-top:none;}
+  @media (max-width:620px){
+    .t-item{grid-template-columns:1fr; gap:6px;}
+  }
+  .t-when{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:12px;
+    color:var(--text-muted);
+    padding-top:3px;
+  }
+  .t-when .status{
+    display:block;
+    margin-top:8px;
+    font-size:10.5px;
+    font-weight:600;
+    letter-spacing:.06em;
+    text-transform:uppercase;
+    color:var(--accent);
+  }
+  .t-role{font-size:17px; font-weight:600;}
+  .t-org{font-size:13.5px; color:var(--text-muted); margin-top:1px;}
+  .t-desc{
+    margin-top:10px;
+    font-size:14.5px;
+    line-height:1.6;
+    color:var(--text);
+    max-width:62ch;
+  }
+  .t-desc li{margin-bottom:5px;}
+  .t-desc ul{margin:10px 0 0; padding-left:18px;}
+
+  .other-exp{
+    margin-top:24px;
+    padding:14px 18px;
+    border:1px solid var(--border);
+    border-radius:6px;
+    background:var(--surface);
+  }
+  .other-exp h3{
+    font-size:11px;
+    font-weight:600;
+    font-family:'IBM Plex Sans', sans-serif;
+    color:var(--text-muted);
+    text-transform:uppercase;
+    letter-spacing:.06em;
+    margin-bottom:9px;
+  }
+  .other-grid{
+    display:flex;
+    flex-direction:column;
+    gap:7px;
+  }
+  @media (min-width:560px){
+    .other-grid{ flex-direction:row; flex-wrap:wrap; gap:5px 20px; }
+  }
+  .other-row{
+    display:flex;
+    align-items:baseline;
+    flex-wrap:wrap;
+    gap:0 6px;
+    font-size:12px;
+    padding-bottom:4px;
+  }
+  .other-row .role{font-weight:600; white-space:nowrap;}
+  .other-row .co{color:var(--text-muted); white-space:nowrap;}
+  .other-row .co::before{ content:"\2014 "; }
+  .other-row .yr{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:10.5px;
+    color:var(--text-muted);
+    white-space:nowrap;
+  }
+  .other-row .yr::before{ content:"("; }
+  .other-row .yr::after{ content:")"; }
+  .other-row:not(:last-child)::after{
+    content:"";
+    width:3px;height:3px;
+    border-radius:50%;
+    background:var(--border);
+    align-self:center;
+    margin-left:14px;
+  }
+
+  /* ---------- CORE STRENGTHS ---------- */
+  .strength-grid{
+    display:grid;
+    grid-template-columns:repeat(3, 1fr);
+    gap:20px;
+  }
+  @media (max-width:860px){ .strength-grid{grid-template-columns:1fr;} }
+  .strength-card{
+    border:1px solid var(--border);
+    border-top:3px solid var(--accent);
+    background:var(--surface);
+    padding:24px 22px;
+    display:flex;
+    flex-direction:column;
+    gap:12px;
+  }
+  .strength-card .num{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:11px;
+    color:var(--accent);
+    letter-spacing:.08em;
+  }
+  .strength-card h3{
+    font-size:19px;
+    font-weight:600;
+    line-height:1.2;
+  }
+  .strength-card ul{
+    margin:4px 0 0;
+    padding-left:18px;
+    font-size:13.5px;
+    line-height:1.6;
+    color:var(--text);
+  }
+  .strength-card li{ margin-bottom:7px; }
+  .strength-card li strong{ color:var(--text); }
+
+  /* ---------- PROJECTS ---------- */
+  .proj-grid{
+    display:grid;
+    grid-template-columns:repeat(3, 1fr);
+    gap:20px;
+  }
+  @media (max-width:860px){ .proj-grid{grid-template-columns:1fr 1fr;} }
+  @media (max-width:600px){ .proj-grid{grid-template-columns:1fr;} }
+  .proj-card{
+    border:1px solid var(--border);
+    border-top:3px solid var(--accent);
+    background:var(--surface);
+    padding:22px 20px;
+    display:flex;
+    flex-direction:column;
+    gap:12px;
+  }
+  .proj-tag{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:11px;
+    color:var(--accent);
+    letter-spacing:.04em;
+  }
+  .proj-card h3{
+    font-size:18px;
+    font-weight:600;
+    line-height:1.25;
+  }
+  .proj-tools{
+    display:flex;
+    flex-wrap:wrap;
+    gap:6px;
+  }
+  .tool-chip{
+    font-size:11px;
+    font-family:'IBM Plex Mono', monospace;
+    background:var(--chip-bg);
+    color:var(--text-muted);
+    padding:3px 8px;
+    border-radius:3px;
+  }
+  .proj-card p{
+    font-size:13.5px;
+    line-height:1.6;
+    color:var(--text-muted);
+    flex:1;
+  }
+  .proj-result{
+    font-size:12.5px;
+    font-weight:600;
+    color:var(--text);
+    padding-top:10px;
+    border-top:1px dashed var(--border);
+  }
+  .proj-result .num{color:var(--accent); font-family:'IBM Plex Mono', monospace;}
+
+  /* ---------- SKILLS ---------- */
+  .skill-groups{
+    display:grid;
+    grid-template-columns:repeat(2, 1fr);
+    gap:28px 40px;
+  }
+  @media (max-width:700px){ .skill-groups{grid-template-columns:1fr;} }
+  .skill-group h3{
+    font-size:13px;
+    font-weight:600;
+    text-transform:uppercase;
+    letter-spacing:.06em;
+    color:var(--accent);
+    font-family:'IBM Plex Sans', sans-serif;
+    margin-bottom:12px;
+  }
+  .chip-row{
+    display:flex;
+    flex-wrap:wrap;
+    gap:8px;
+  }
+  .skill-chip{
+    font-size:12.5px;
+    padding:6px 11px;
+    border-radius:4px;
+    background:var(--chip-bg);
+    border:1px solid var(--border);
+    color:var(--text);
+  }
+
+  /* ---------- CONTACT ---------- */
+  .contact-box{
+    background:var(--navy);
+    color:#EAF0F6;
+    border-radius:8px;
+    padding:46px 40px;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    gap:28px;
+    flex-wrap:wrap;
+  }
+  .contact-box h2{
+    color:#FAFBFC;
+    font-size:clamp(22px, 3.2vw, 30px);
+    max-width:16ch;
+  }
+  .contact-box .sub{
+    margin-top:10px;
+    font-size:14px;
+    color:#B9C7D4;
+    max-width:42ch;
+  }
+  .copy-wrap{
+    display:flex;
+    flex-direction:column;
+    gap:10px;
+    align-items:flex-start;
+  }
+  .email-field{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    background:rgba(255,255,255,.06);
+    border:1px solid rgba(255,255,255,.18);
+    border-radius:5px;
+    padding:10px 14px;
+  }
+  .email-field span{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:13.5px;
+    color:#EAF0F6;
+    user-select:all;
+  }
+  .copy-btn{
+    font-size:12px;
+    font-weight:600;
+    background:var(--accent);
+    color:#1A1105;
+    border:none;
+    border-radius:4px;
+    padding:6px 11px;
+    cursor:pointer;
+  }
+  .copy-btn:focus-visible, .btn:focus-visible, a:focus-visible{
+    outline:2px solid var(--accent);
+    outline-offset:2px;
+  }
+  .copied-msg{
+    font-size:11.5px;
+    color:var(--accent);
+    height:14px;
+  }
+
+  footer{
+    padding-block:26px;
+    text-align:center;
+    font-size:12px;
+    color:var(--text-muted);
+  }
+
+  /* ---------- CLICKABLE AFFORDANCE ---------- */
+  .clickable{
+    cursor:pointer;
+    transition:background-color .15s ease, border-color .15s ease, transform .15s ease;
+    border-radius:4px;
+  }
+  .t-item.clickable{ padding-inline:10px; margin-inline:-10px; }
+  .t-item.clickable:hover, .t-item.clickable:focus-visible{ background:var(--chip-bg); }
+  .other-row.clickable:hover, .other-row.clickable:focus-visible{ background:var(--chip-bg); padding-inline:8px; margin-inline:-8px; }
+  .proj-card.clickable:hover, .proj-card.clickable:focus-visible{
+    border-color:var(--accent);
+    transform:translateY(-2px);
+  }
+  .clickable:focus-visible{ outline:2px solid var(--accent); outline-offset:2px; }
+  .view-more{
+    margin-top:10px;
+    font-size:11.5px;
+    font-weight:600;
+    font-family:'IBM Plex Mono', monospace;
+    color:var(--accent);
+    letter-spacing:.02em;
+  }
+  .proj-card .view-more{ margin-top:auto; padding-top:8px; }
+
+  /* ---------- DETAIL MODAL ---------- */
+  .modal-backdrop{
+    position:fixed;
+    inset:0;
+    background:rgba(8,14,22,.55);
+    backdrop-filter:blur(2px);
+    display:flex;
+    align-items:flex-start;
+    justify-content:center;
+    padding:5vh 18px;
+    overflow-y:auto;
+    z-index:200;
+  }
+  .modal-backdrop[hidden]{display:none;}
+  .modal-panel{
+    background:var(--surface);
+    color:var(--text);
+    max-width:620px;
+    width:100%;
+    border-radius:8px;
+    border:1px solid var(--border);
+    padding:32px 30px 28px;
+    position:relative;
+    box-shadow:0 20px 60px rgba(0,0,0,.35);
+  }
+  .modal-close{
+    position:absolute;
+    top:16px; right:16px;
+    width:30px; height:30px;
+    border-radius:50%;
+    border:1px solid var(--border);
+    background:var(--chip-bg);
+    color:var(--text-muted);
+    font-size:16px;
+    line-height:1;
+    cursor:pointer;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+  }
+  .modal-close:hover{ color:var(--accent); border-color:var(--accent); }
+  .modal-tag{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:11px;
+    letter-spacing:.06em;
+    color:var(--accent);
+    text-transform:uppercase;
+  }
+  .modal-panel h3{
+    margin-top:8px;
+    font-size:23px;
+    font-weight:600;
+    padding-right:30px;
+  }
+  .modal-meta{
+    margin-top:4px;
+    font-size:13px;
+    color:var(--text-muted);
+  }
+  .modal-body{
+    margin-top:18px;
+    font-size:14.5px;
+    line-height:1.65;
+    color:var(--text);
+  }
+  .modal-body p{ margin:0 0 12px; }
+  .modal-body ul{ margin:0 0 12px; padding-left:20px; }
+  .modal-body li{ margin-bottom:6px; }
+  .modal-relevant{
+    margin-top:20px;
+    padding-top:16px;
+    border-top:1px dashed var(--border);
+  }
+  .modal-relevant .lbl{
+    font-size:11px;
+    font-weight:600;
+    text-transform:uppercase;
+    letter-spacing:.06em;
+    color:var(--text-muted);
+    margin-bottom:8px;
+  }
+  .modal-relevant .chip-row{ gap:7px; }
+
+  @media (prefers-reduced-motion: reduce){
+    *{scroll-behavior:auto !important; transition:none !important;}
+  }
+</style>
+
+<nav>
+  <div class="wrap">
+    <div class="brand">Harikrishna Vaghela</div>
+    <div class="navlinks">
+      <a href="#about">About</a>
+      <a href="#strengths">How I Work</a>
+      <a href="#experience">Experience</a>
+      <a href="#skills">Skills</a>
+      <a href="#contact">Contact</a>
+      <a href="../" style="color:var(--accent);">Analytics profile &rarr;</a>
+    </div>
+  </div>
+</nav>
+
+<header class="hero">
+  <div class="wrap">
+    <div class="eyebrow">Customer experience &middot; Hospitality &amp; retail leadership</div>
+    <h1>Great service is a <em>relationship</em>, built every shift.</h1>
+    <p class="hero-sub">
+      Six years of Australian hospitality and retail: McDonald&rsquo;s manager, barista promoted to cafe manager,
+      night-shift leader at Guzman y Gomez. I turn complaints into repeat business, and I train and
+      back the teams who serve people. A Deakin Commerce and Business Analytics graduate, returning to Australia.
+    </p>
+    <div class="hero-meta">
+      <span class="pill">McDonald&rsquo;s Manager &middot; 3 years</span>
+      <span class="pill">Cafe Manager &middot; Calvino Coffee</span>
+      <span class="pill">Australian-certified barista</span>
+      <span class="pill">Master&rsquo;s &amp; Bachelor&rsquo;s &mdash; Deakin</span>
+      <span class="pill">Full AU work rights &middot; 485 visa to Oct 2028</span>
+      <span class="pill">Available in 2&ndash;4 weeks</span>
+    </div>
+    <p class="hero-sub" style="margin-top:14px; font-size:13.5px; color:#8FA1B2;">Click any role below for the full story.</p>
+    <div class="hero-cta">
+      <a class="btn btn-accent" href="#experience">See my experience</a>
+      <a class="btn btn-ghost" href="#contact">Get in touch</a>
+    </div>
+
+    <div class="stat-row">
+      <div class="stat"><div class="num">6 yrs</div><div class="lbl">Australian customer-facing work</div></div>
+      <div class="stat"><div class="num">15&ndash;20</div><div class="lbl">team led on busy GYG night shifts</div></div>
+      <div class="stat"><div class="num">~850</div><div class="lbl">coffees in the first 3 hours at Calvino</div></div>
+      <div class="stat"><div class="num">3 yrs</div><div class="lbl">managing a high-volume McDonald&rsquo;s</div></div>
+    </div>
+  </div>
+</header>
+
+<main>
+
+  <section id="about">
+    <div class="wrap">
+      <div class="section-head"><h2>About</h2><span class="section-num">01 / Profile</span></div>
+      <div class="about-grid">
+        <div>
+          <p>I'm a warm, reliable, customer-first team leader. In six years across Melbourne I managed a high-volume McDonald&rsquo;s, was promoted from barista to cafe manager at Calvino Coffee, led night shifts at one of Melbourne&rsquo;s busiest Guzman y Gomez stores, and ran checkout at ALDI.</p>
+          <p>What I'm best at is the human side: remembering regulars, staying calm in the rush, fixing a complaint on the spot so the customer comes back, and training people so they feel confident on the floor.</p>
+          <p>I also hold a Bachelor of Commerce and a Master of Business Analytics from Deakin, and I now work as a Marketing Analyst, so I can understand customers through both people skills and data. I played State League soccer for Riversdale and St Kilda Celtics, which is where I learned that good teams are built on communication and discipline.</p>
+        </div>
+        <div class="edu-list">
+          <div class="edu-item"><div class="deg">Master of Business Analytics</div><div class="inst">Deakin University, Melbourne</div><div class="yr">2023 &ndash; 2025</div></div>
+          <div class="edu-item"><div class="deg">Bachelor of Commerce &mdash; Management Information Systems <span style="font-weight:400;">(Minor in Finance)</span></div><div class="inst">Deakin University, Melbourne</div><div class="yr">2020 &ndash; 2023</div></div>
+          <div class="edu-item"><div class="deg">Australian-certified barista</div><div class="inst">McCafe Workshop 1, Quality Coffee, McDonald&rsquo;s Australia</div><div class="yr">March 2022</div></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="strengths">
+    <div class="wrap">
+      <div class="section-head"><h2>How I Work</h2><span class="section-num">02 / What customers and teams get</span></div>
+      <div class="strength-grid">
+        <div class="strength-card">
+          <div class="num">01 &mdash; RELATIONSHIPS</div>
+          <h3>Customers who come back</h3>
+          <ul>
+            <li>Friendly, calm and attentive in high-volume, peak-hour service.</li>
+            <li>I remember <strong>regulars</strong> and what they like, and build repeat visits through personal service.</li>
+            <li>I handle <strong>complaints</strong> quickly and fairly, so customers leave satisfied and return.</li>
+          </ul>
+        </div>
+        <div class="strength-card">
+          <div class="num">02 &mdash; LEADERSHIP</div>
+          <h3>Teams that stay confident</h3>
+          <ul>
+            <li>Led teams of <strong>15&ndash;20</strong> on busy night shifts; managed around 15 crew at McDonald&rsquo;s.</li>
+            <li>Trained new staff, ran daily briefings and mentored people to keep morale and standards high.</li>
+            <li>Coached baristas on drink preparation and service standards at Calvino.</li>
+          </ul>
+        </div>
+        <div class="strength-card">
+          <div class="num">03 &mdash; PACE &amp; ACCURACY</div>
+          <h3>Fast, and still right</h3>
+          <ul>
+            <li>Served around <strong>850 coffees in the first 3 hours</strong> at Calvino without dropping taste or presentation.</li>
+            <li>Tills, till counting and stock uploads handled accurately.</li>
+            <li>Food safety, hygiene and workplace health compliance on every shift.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="experience">
+    <div class="wrap">
+      <div class="section-head"><h2>Experience</h2><span class="section-num">03 / Track record</span></div>
+      <div class="timeline">
+        <div class="t-item clickable" tabindex="0" role="button" aria-haspopup="dialog" onclick="openDetail('calvino')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();openDetail('calvino');}">
+          <div class="t-when">Oct 2025<br>&ndash; Jun 2026</div>
+          <div>
+            <div class="t-role">Cafe Manager (promoted from Barista)</div>
+            <div class="t-org">Calvino Coffee, Melbourne</div>
+            <div class="t-desc"><ul><li>Promoted from barista to cafe manager, leading the team and owning the daily customer experience.</li><li>Served around 850 coffees in the first 3 hours of trade with consistent taste, presentation and a friendly manner.</li><li>Built a loyal base of regulars through specialty coffee and personal service.</li></ul><div class="view-more">Read the full story &rarr;</div></div>
+          </div>
+        </div>
+        <div class="t-item clickable" tabindex="0" role="button" aria-haspopup="dialog" onclick="openDetail('gyg')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();openDetail('gyg');}">
+          <div class="t-when">2025</div>
+          <div>
+            <div class="t-role">Shift Leader, Night Shifts</div>
+            <div class="t-org">Guzman y Gomez, Flinders Street / Swanston Street, Melbourne</div>
+            <div class="t-desc"><ul><li>Led night shifts at one of Melbourne&rsquo;s busiest GYG stores, directing a team of 15&ndash;20.</li><li>Ran the whole shift: stock uploads, tills, till counting and customer service.</li><li>Cut service delays and kitchen-to-table time; resolved issues quickly and contributed to repeat business.</li></ul><div class="view-more">Read the full story &rarr;</div></div>
+          </div>
+        </div>
+        <div class="t-item clickable" tabindex="0" role="button" aria-haspopup="dialog" onclick="openDetail('mcdonalds')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();openDetail('mcdonalds');}">
+          <div class="t-when">2020<br>&ndash; 2023</div>
+          <div>
+            <div class="t-role">Manager</div>
+            <div class="t-org">McDonald&rsquo;s, Melbourne</div>
+            <div class="t-desc"><ul><li>Managed around 15 crew members over three years in a high-volume restaurant, with customer satisfaction first.</li><li>Trained new employees and kept the team confident across register, kitchen and the McCafe coffee station.</li><li>Accurate cash handling; workplace hazard, safety and McCafe barista training.</li></ul><div class="view-more">Read the full story &rarr;</div></div>
+          </div>
+        </div>
+        <div class="t-item clickable" tabindex="0" role="button" aria-haspopup="dialog" onclick="openDetail('aldi')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();openDetail('aldi');}">
+          <div class="t-when">2023<br>&ndash; 2024</div>
+          <div>
+            <div class="t-role">Retail Team Member (Front End)</div>
+            <div class="t-org">ALDI, Melbourne</div>
+            <div class="t-desc"><ul><li>Fast, accurate checkout with friendly, professional customer interactions.</li><li>Cash and end-of-shift reports, restocking, merchandising and back-of-store work; flexible across shifts and departments.</li></ul><div class="view-more">Read the full story &rarr;</div></div>
+          </div>
+        </div>
+      </div>
+      <div class="other-exp">
+        <h3>Also: Marketing &amp; analytics (click for detail)</h3>
+        <div class="other-grid">
+          <span class="other-row clickable" tabindex="0" role="button" aria-haspopup="dialog" onclick="openDetail('univest')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();openDetail('univest');}"><span class="role">Marketing Analyst</span><span class="co">Univest</span><span class="yr">'26&ndash;now</span></span>
+          <span class="other-row clickable" tabindex="0" role="button" aria-haspopup="dialog" onclick="openDetail('potenz')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();openDetail('potenz');}"><span class="role">Digital Marketing Intern</span><span class="co">Potenz Technology</span><span class="yr">'24&ndash;'25</span></span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+  <section id="skills">
+    <div class="wrap">
+      <div class="section-head"><h2>Skills</h2><span class="section-num">05 / Toolkit</span></div>
+      <div class="skill-groups">
+      <div class="skill-group"><h3>Customer &amp; people</h3><div class="chip-row"><span class="skill-chip">Customer service</span><span class="skill-chip">Relationship building</span><span class="skill-chip">Complaint handling</span><span class="skill-chip">Team leadership</span><span class="skill-chip">Training &amp; coaching</span><span class="skill-chip">High-volume service</span><span class="skill-chip">Barista skills</span></div></div>
+      <div class="skill-group"><h3>Operations</h3><div class="chip-row"><span class="skill-chip">Store / cafe operations</span><span class="skill-chip">Cash handling &amp; tills</span><span class="skill-chip">Food safety &amp; hygiene</span><span class="skill-chip">Stock &amp; inventory</span><span class="skill-chip">Vendor coordination</span></div></div>
+      <div class="skill-group"><h3>CRM &amp; marketing</h3><div class="chip-row"><span class="skill-chip">HubSpot</span><span class="skill-chip">Sprout Social</span><span class="skill-chip">Hootsuite</span><span class="skill-chip">Meta Ads &amp; Google Ads</span><span class="skill-chip">Google Analytics</span><span class="skill-chip">Canva / Adobe CC</span></div></div>
+      <div class="skill-group"><h3>Data &amp; automation</h3><div class="chip-row"><span class="skill-chip">Advanced Excel</span><span class="skill-chip">SQL</span><span class="skill-chip">Python</span><span class="skill-chip">Power BI / Tableau</span><span class="skill-chip">BigQuery</span><span class="skill-chip">Claude &amp; ChatGPT workflows</span></div></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="contact">
+    <div class="wrap">
+      <div class="contact-box">
+        <div>
+          <h2>Let's talk about a role in Australia.</h2>
+          <div class="sub">Open to customer service, customer success, CRM, hospitality and retail leadership roles anywhere in Australia. Full work rights (485 visa to Oct 2028), available to start within 2&ndash;4 weeks. If I miss your call, please email me.</div>
+        </div>
+        <div class="copy-wrap">
+          <div class="email-field">
+            <span id="email-text">harikrishnavaghela08@gmail.com</span>
+            <button class="copy-btn" id="copy-btn" onclick="copyEmail()">Copy</button>
+          </div>
+          <div class="copied-msg" id="copied-msg"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  <div class="wrap">Harikrishna Vaghela &mdash; Melbourne &#8644; India</div>
+</footer>
+
+<div class="modal-backdrop" id="modal-backdrop" hidden onclick="if(event.target===this)closeModal()">
+  <div class="modal-panel" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+    <button class="modal-close" aria-label="Close" onclick="closeModal()">&times;</button>
+    <div class="modal-tag" id="modal-tag"></div>
+    <h3 id="modal-title"></h3>
+    <div class="modal-meta" id="modal-meta"></div>
+    <div class="modal-body" id="modal-body"></div>
+    <div class="modal-relevant">
+      <div class="lbl">Relevant for</div>
+      <div class="chip-row" id="modal-tags"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+  var DETAILS = {
+    univest: {
+      tag: 'Current role',
+      title: 'Marketing Analyst &mdash; Univest',
+      meta: 'August 2026 &mdash; Present',
+      body: [
+        'I own three things at Univest: the automation I build with Claude, the creative I produce with ChatGPT, and the performance marketing that runs on top of both.',
+        '<strong>Built with Claude</strong> &mdash; I work hands-on with Claude (Anthropic&rsquo;s AI coding assistant) as a build partner, not a one-off prompt: an automated comment-moderation system across Meta and YouTube that flags and removes policy-violating content on paid campaigns, and a real-time ad-spend pipeline (Postgres &rarr; BigQuery &rarr; Google Sheets) refreshing every 15&ndash;30 minutes into a live CMO dashboard I rebuilt from scratch.',
+        '<strong>Bidding, ROAS &amp; CAC</strong> &mdash; day-to-day bid strategy and campaign structuring across Meta Ads Manager and Google Ads, plus retargeting audience management, working to push ROAS up and CAC down on active campaigns, with manager sign-off on the higher-spend calls.',
+        '<strong>Creative, built with ChatGPT</strong> &mdash; I produce both static and video ad creative with ChatGPT, resize and reformat it across every placement a campaign needs, and launch new creative variations to test against real performance data.',
+        'All of this was learned and shipped within my first couple of months in the role &mdash; the throughline is picking up a system fast and taking ownership of the outcome, not just the task.'
+      ],
+      tags: ['Performance Marketing', 'Marketing Operations', 'Marketing Analytics', 'AI-Assisted Automation']
+    },
+    landproject: {
+      tag: 'Personal project',
+      title: 'Construction Project Manager',
+      meta: 'Personal Land Development, Family-Owned Property &mdash; June 2026 &ndash; August 2026',
+      body: [
+        'Outside of paid work, I independently planned and managed a construction project on family-owned land from a standing start &mdash; no formal construction background going in.',
+        'I owned the budget against multiple contractor quotes, negotiated directly with contractors and material suppliers, and made daily on-site calls as issues came up &mdash; delays, cost surprises, scheduling conflicts between trades.',
+        'It&rsquo;s the same muscle as the analytics work: learn an unfamiliar system quickly, take real ownership of the outcome (not just a task list), and keep a project on budget and on schedule without anyone managing me.'
+      ],
+      tags: ['Project Coordination', 'Operations', 'Vendor Management', 'Site Management']
+    },
+    potenz: {
+      tag: 'Internship',
+      title: 'Digital Marketing Intern &mdash; Potenz Technology',
+      meta: 'October 2024 &mdash; May 2025',
+      body: [
+        'My first hands-on marketing role, focused on SEO: keyword research and competitive analysis in Google Keyword Planner, Ahrefs, and SEMrush, then optimizing website content, meta tags, URLs, and internal linking against that research.',
+        'I ran on-page and technical SEO audits &mdash; broken links, crawl errors, slow-loading pages &mdash; and worked directly with the content and development teams to get fixes shipped.',
+        'Weekly, I pulled traffic and campaign performance from HubSpot, Google Analytics, and Search Console into reports I presented to senior marketers, which is where I first learned to turn raw data into a decision someone else could act on.'
+      ],
+      tags: ['SEO', 'Digital Marketing Coordinator', 'Marketing Analyst']
+    },
+    worldvision: {
+      tag: 'Capstone &mdash; Business Analytics',
+      title: 'World Vision Australia &mdash; Bounceback Campaign',
+      meta: 'Donor &amp; Sponsor Analytics &mdash; February 2025 &ndash; June 2025',
+      body: [
+        'A university capstone delivered for a real nonprofit client, World Vision Australia, analyzing donor and sponsor engagement to improve retention after a lapse in giving.',
+        'I built regression models on engagement and donation-history data to identify which supporters were most likely to re-engage and when the best time to reach them was, then designed behavior-based segments so outreach could be personalized rather than blanket emails.',
+        'The output was a set of segmentation templates and timing recommendations the team could act on directly &mdash; the same donor-retention logic that underpins CRM and lifecycle marketing work in any industry.'
+      ],
+      tags: ['CRM Analyst', 'Data Analyst', 'Nonprofit / Fundraising Analytics', 'Lifecycle Marketing']
+    },
+    coles: {
+      tag: 'Applied Project &mdash; Business Analytics',
+      title: 'Coles Group &mdash; Consumer Behavior & Supply Chain Strategy',
+      meta: 'February 2023 &ndash; June 2023',
+      body: [
+        'An applied project-management subject analyzing the operational strain the shift to online grocery put on Coles&rsquo; delivery and supply chain.',
+        'Recommended off-peak delivery models and driver wellness programs, folding in circular-economy principles &mdash; cutting estimated CO&#8322; emissions by 10.6% while improving product availability.'
+      ],
+      tags: ['Supply Chain Analyst', 'Retail Strategy', 'Sustainability']
+    },
+    numeracy: {
+      tag: 'Capstone &mdash; Machine Learning',
+      title: 'Early Prediction of Year 3 Numeracy Risk',
+      meta: 'February 2024 &ndash; June 2024',
+      body: [
+        'A machine-learning capstone building an early-warning system to flag Year 3 students at risk of falling behind in numeracy, using a 2,000-student dataset.',
+        'I ran EDA and feature engineering across socio-economic status, disability flags, literacy scores, and text-level data, then trained and compared Logistic Regression and Random Forest classifiers, reaching an AUC of 0.84. KMeans clustering added an unsupervised layer for profiling students outside the labeled risk categories.',
+        'The whole pipeline was built in Python/Jupyter with interpretability as a first-class requirement &mdash; the model had to be explainable to non-technical assurance stakeholders, not just accurate, which is a muscle that matters anywhere a data team has to justify a decision to the business.'
+      ],
+      tags: ['Data Scientist', 'ML Analyst', 'Education Data', 'Data Analyst']
+    },
+    calvino: {
+      tag: 'Promoted from barista',
+      title: 'Cafe Manager (promoted from Barista) &mdash; Calvino Coffee, Melbourne',
+      meta: 'October 2025 &ndash; June 2026',
+      body: [
+        'I&rsquo;m an <strong>Australian-certified barista</strong> (McCafe Workshop 1, Quality Coffee, McDonald&rsquo;s Australia, March 2022). At Calvino I started on the machine and was promoted to cafe manager, leading the team and taking responsibility for the daily customer experience.',
+        'In the first three hours of trade we served around <strong>850 coffees</strong>, and I kept taste, presentation and a friendly manner consistent under that rush. I coached team members on drink preparation and service standards, and kept the cafe clean and hygienic through peak periods.',
+        'A cafe lives on its regulars. Remembering what people order, reading who wants a chat and who&rsquo;s in a hurry, and delivering the same quality every day is how I built a loyal base of repeat customers.'
+      ],
+      tags: ['Customer Service', 'Cafe Management', 'Barista', 'Team Leadership', 'Customer Success']
+    },
+    gyg: {
+      tag: 'Night-shift leadership',
+      title: 'Shift Leader, Night Shifts &mdash; Guzman y Gomez, Melbourne',
+      meta: '2025',
+      body: [
+        'I led night shifts at one of Melbourne&rsquo;s busiest GYG stores (Flinders Street / Swanston Street), directing a team of <strong>15&ndash;20</strong> and taking charge of the whole shift: stock uploads, tills, till counting and customer service.',
+        'I kept service aligned with company brand standards and supported the team through training, daily briefings and mentoring. I looked for ways to improve workflow so customers waited less and food got from kitchen to table faster.',
+        'When something went wrong I resolved it quickly and warmly, which is how a bad moment becomes repeat business. Food safety, hygiene and workplace health policies were followed on every shift.'
+      ],
+      tags: ['Team Leadership', 'Shift Supervisor', 'Operations', 'Customer Service']
+    },
+    aldi: {
+      tag: 'High-efficiency retail',
+      title: 'Retail Team Member (Front End) &mdash; ALDI, Melbourne',
+      meta: '2023 &mdash; 2024',
+      body: [
+        'ALDI runs one of the leanest, fastest retail operating models in the industry by design &mdash; and working front-end checkout there means holding that pace and accuracy for an entire shift, every shift.',
+        'Beyond checkout, I rotated through restocking, merchandising, and back-of-store work &mdash; inventory sorting, stock rotation, and safety checks &mdash; so I saw the full store operation, not just one station.',
+        'What ALDI actually teaches is discipline and process consistency under a system with almost no slack built in &mdash; a strong, concrete signal for any retail operations, store ops, or process-coordination role.'
+      ],
+      tags: ['Retail Operations', 'Store Operations', 'Process Coordinator']
+    },
+    mcdonalds: {
+      tag: 'Three years managing',
+      title: 'Manager &mdash; McDonald&rsquo;s, Melbourne',
+      meta: '2020 &ndash; 2023',
+      body: [
+        'For three years I managed a team of around <strong>15 crew members</strong> in a high-volume restaurant, with customer satisfaction as the first priority.',
+        'I trained new employees and kept the team confident across the register, the kitchen and the McCafe coffee station. I handled the cash register and money accurately and completed workplace hazard and safety training, plus McCafe barista training.',
+        'It is one of the most varied customer environments there is: a different person, mood and need every few seconds. That is where I learned to read people quickly, stay calm, and fix problems on the spot.'
+      ],
+      tags: ['Customer Experience', 'Team Leadership', 'Retail / Hospitality Management', 'Training']
+    }
+  };
+
+  function openDetail(key){
+    var d = DETAILS[key];
+    if(!d) return;
+    document.getElementById('modal-tag').textContent = d.tag;
+    document.getElementById('modal-title').innerHTML = d.title;
+    document.getElementById('modal-meta').innerHTML = d.meta;
+    document.getElementById('modal-body').innerHTML = d.body.map(function(p){ return '<p>' + p + '</p>'; }).join('');
+    document.getElementById('modal-tags').innerHTML = d.tags.map(function(t){ return '<span class="skill-chip">' + t + '</span>'; }).join('');
+    var backdrop = document.getElementById('modal-backdrop');
+    backdrop.hidden = false;
+    backdrop.querySelector('.modal-close').focus();
+    document.body.style.overflow = 'hidden';
+  }
+  function closeModal(){
+    document.getElementById('modal-backdrop').hidden = true;
+    document.body.style.overflow = '';
+  }
+  document.addEventListener('keydown', function(e){
+    if(e.key === 'Escape') closeModal();
+  });
+
+  function copyEmail(){
+    var email = document.getElementById('email-text').textContent;
+    var msg = document.getElementById('copied-msg');
+    function show(){ msg.textContent = 'Copied'; setTimeout(function(){ msg.textContent=''; }, 1800); }
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(email).then(show).catch(function(){
+        selectText();
+        msg.textContent = 'Select & copy';
+      });
+    } else {
+      selectText();
+      msg.textContent = 'Select & copy';
+    }
+    function selectText(){
+      var range = document.createRange();
+      range.selectNodeContents(document.getElementById('email-text'));
+      var sel = window.getSelection();
+      sel.removeAllRanges();
+      sel.addRange(range);
+    }
+  }
+</script>
