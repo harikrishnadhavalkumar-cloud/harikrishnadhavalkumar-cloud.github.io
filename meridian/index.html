@@ -341,7 +341,7 @@ h1,h2,h3,p{margin:0}
     window.fetch=async function(u,o){
       o=o||{};var s=String(u),m=(o.method||"GET").toUpperCase(),p=s.split("?")[0],mm;
       if(s.charAt(0)!=="/")return __real(u,o);
-      if(p==="/api/health")return __js({free_gb:99,used_mb:0});
+      if(p==="/api/health"){var t0=await __tunnel();if(t0){try{return await __real(t0+"/api/health",{cache:"no-store"})}catch(e){}}return __js({free_gb:99,used_mb:0})}
       if(m==="POST"&&p==="/api/start"){var b={};try{b=JSON.parse(o.body||"{}")}catch(e){}
         var id=Array.prototype.map.call(crypto.getRandomValues(new Uint8Array(6)),function(x){return("0"+x.toString(16)).slice(-2)}).join("");
         try{await __box({a:"start",id:id,title:b.title,you:b.you,mode:b.mode},4)}catch(e){return __js({error:"mailbox"},500)}return __js({id:id})}
