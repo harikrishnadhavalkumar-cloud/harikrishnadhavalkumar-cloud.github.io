@@ -355,7 +355,7 @@ h1,h2,h3,p{margin:0}
         /* if the host computer is on it may already know this meeting; otherwise the pieces wait safely in Drive */
         return __js({ok:true})}
       var t=await __tunnel();
-      if(t){try{var h2=Object.assign({},o.headers||{});return await __real(t+s,Object.assign({},o,{headers:h2,mode:"cors"}))}catch(e){}}
+      if(t){try{var h2=Object.assign({},o.headers||{});var rr=await __real(t+s,Object.assign({},o,{headers:h2,mode:"cors"}));if(rr.ok||!/^\/api\/status\//.test(p))return rr}catch(e){}}
       if(mm=p.match(/^\/api\/status\/([a-f0-9]{12})$/))return __js({id:mm[1],status:"queued",step:"Saved safely in the cloud. Notes are made when the host computer is on"});
       if(p==="/api/meetings")return __js([]);
       return __js({error:"The host computer is off right now"},404)};
