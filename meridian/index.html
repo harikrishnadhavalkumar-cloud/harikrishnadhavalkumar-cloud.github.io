@@ -1,9 +1,687 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Meridian</title><meta name="robots" content="noindex">
-<style>body{margin:0;min-height:100vh;display:grid;place-items:center;font:16px system-ui,sans-serif;background:#f6f3fb;color:#1d1633;padding:20px}
-.b{max-width:420px;width:100%;display:grid;gap:14px}h1{margin:0;font-size:30px;letter-spacing:-.02em}p{margin:0;color:#5b5370}
-a.x{display:block;text-align:center;text-decoration:none;font-weight:700;padding:18px;border-radius:16px;color:#fff;background:linear-gradient(110deg,#6b4fd8,#e5457f)}
-a.y{display:block;text-align:center;text-decoration:none;font-weight:700;padding:16px;border-radius:16px;color:#1d1633;background:#fff;border:2px solid #d6cfea}
-small{color:#5b5370}</style></head><body><div class="b"><h1>Meridian</h1><p>Meeting recorder with clear English notes.</p>
-<a class="x" href="record.html">Record a meeting</a><small>Always works. Your recording is saved safely, even if the host's computer is off.</small>
-<a class="y" href="go.html">Meetings, notes and reports</a><small>Opens when the host's computer is on.</small></div></body></html>
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Meridian Meeting Recorder</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Unbounded:wght@500;600;700&family=Manrope:wght@500;600;700;800&family=DM+Mono:wght@400;500&display=swap">
+<style>
+/* PICASSO PEARL: cubist planes on pearl paper, thick ink lines, hard colour shadows, a face that listens. */
+:root{
+  --paper:#F4F0FF; --ink:#16122B; --dim:#4F4872; --mute:#8A83AB;
+  --blue:#2B45FF; --rose:#FF5C93; --saffron:#FFB52E; --teal:#12B8A6; --violet:#8A5CFF; --skin1:#FFE9D6; --skin2:#F9C9A8;
+  --panel:rgba(255,255,255,.86); --line:rgba(22,18,43,.16); --sunk:rgba(110,90,210,.09);
+  --good:#12B886; --warn:#F5A524; --bad:#EF4468;
+  --a:#8A5CFF; --b:#FF5C93; --a-soft:rgba(138,92,255,.16);
+  --grad:linear-gradient(110deg,#2B45FF,#8A5CFF 30%,#FF5C93 64%,#FFB52E 100%);
+  --display:"Unbounded","Arial Black",system-ui,sans-serif; --body:"Manrope",system-ui,-apple-system,"Segoe UI",sans-serif; --mono:"DM Mono",ui-monospace,"SF Mono",Menlo,monospace;
+  --fg:var(--ink); --bg:var(--paper); --edge:var(--ink);
+  color-scheme:light;
+}
+:root[data-src="zoom"]{--a:#2B45FF;--b:#8A5CFF;--a-soft:rgba(43,69,255,.14);--grad:linear-gradient(110deg,#2B45FF,#6C5CFF 50%,#FF5C93)}
+:root[data-src="meet"]{--a:#12B8A6;--b:#2B45FF;--a-soft:rgba(18,184,166,.16);--grad:linear-gradient(110deg,#12B8A6,#2BC4D8 45%,#FFB52E)}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+html{background:var(--paper)}
+body{margin:0;color:var(--ink);font:15px/1.55 var(--body);font-weight:600;min-height:100vh;overflow-x:hidden;background:var(--paper);
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+/* floating cubist planes */
+.cubes{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden}
+.cubes i{position:absolute;display:block;opacity:.9;animation:plane 26s ease-in-out infinite alternate}
+.cubes i:nth-child(1){width:46vw;height:46vw;left:-12vw;top:-10vw;background:#DCD6FF;clip-path:polygon(0 18%,78% 0,100% 62%,22% 100%)}
+.cubes i:nth-child(2){width:38vw;height:38vw;right:-8vw;top:6vh;background:#FFD3E2;clip-path:polygon(14% 0,100% 20%,84% 100%,0 70%);animation-delay:-6s}
+.cubes i:nth-child(3){width:34vw;height:34vw;left:18vw;bottom:-14vw;background:#FFE7B8;clip-path:polygon(0 30%,70% 0,100% 80%,30% 100%);animation-delay:-12s}
+.cubes i:nth-child(4){width:30vw;height:30vw;right:6vw;bottom:-10vw;background:#C9F2EA;clip-path:polygon(20% 0,100% 34%,70% 100%,0 64%);animation-delay:-3s}
+.cubes i:nth-child(5){width:18vw;height:18vw;left:46vw;top:30vh;background:#D3DBFF;clip-path:polygon(50% 0,100% 100%,0 100%);animation-delay:-9s;opacity:.7}
+@keyframes plane{to{transform:translate3d(2.5vw,-3vh,0) rotate(7deg)}}
+.wrap{position:relative;z-index:1;max-width:1320px;margin:0 auto;padding-block:22px 56px;display:grid;gap:22px}
+button{font:inherit;color:inherit;cursor:pointer;border:0;background:none}
+button:disabled{opacity:.45;cursor:not-allowed}
+button:focus-visible,input:focus-visible,a:focus-visible{outline:3px solid var(--blue);outline-offset:3px}
+h1,h2,h3,p{margin:0}
+/* cards: ink outline, lopsided corners, hard colour shadow */
+.glass{background:var(--panel);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);border:3px solid var(--ink);border-radius:8px 30px 8px 30px;box-shadow:9px 9px 0 var(--sh,var(--a));min-width:0}
+.dock{--sh:var(--a);display:flex;align-items:center;gap:14px 24px;flex-wrap:wrap;padding:18px 22px;position:relative}
+.brand{display:flex;align-items:center;gap:18px;min-width:0}
+.heroface{width:116px;height:116px;flex:none;margin:-6px 0 -6px -4px}
+.face{width:100%;height:100%;display:block;overflow:visible}
+.face .ink{stroke:var(--ink);stroke-width:4;stroke-linejoin:round;stroke-linecap:round}
+.face .pupil,.face .mouth,.face .ears{transition:transform .08s linear}
+.face .mouth{transform-box:fill-box;transform-origin:center}
+.face .ears path{transform-box:fill-box;transform-origin:left center;opacity:.25}
+.brand h1{font:800 clamp(30px,4.4vw,50px)/.95 var(--display);letter-spacing:-.03em;background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent;-webkit-text-stroke:2px var(--ink);paint-order:stroke fill;filter:drop-shadow(4px 4px 0 var(--ink))}
+.brand p{font-size:13px;color:var(--dim);margin-top:10px;font-weight:700}
+.brand p b{background:var(--saffron);color:var(--ink);padding:2px 8px;border:2px solid var(--ink);transform:rotate(-2deg);display:inline-block;margin-left:4px}
+.tabs{display:flex;gap:6px;margin-left:auto}
+.tab{padding:10px 18px;font-weight:800;font-size:13px;color:var(--ink);background:#fff;border:3px solid var(--ink);border-radius:4px 16px 4px 16px;transition:transform .15s,box-shadow .15s}
+.tab:hover{transform:translate(-2px,-2px);box-shadow:4px 4px 0 var(--ink)}
+.tab[aria-selected="true"]{background:var(--a);color:#fff;box-shadow:4px 4px 0 var(--ink)}
+.setup{--sh:var(--rose);display:flex;gap:12px;flex-wrap:wrap;align-items:flex-end;padding:16px 18px;flex:1 1 100%;order:3;box-shadow:6px 6px 0 var(--rose)}
+.field{display:grid;gap:5px;flex:1 1 180px;min-width:0}
+.field label{font:700 11px var(--mono);letter-spacing:.14em;text-transform:uppercase;color:var(--ink)}
+.field input{padding:12px 14px;border-radius:4px 14px 4px 14px;border:3px solid var(--ink);background:#fff;font:700 14px var(--body);color:var(--ink);width:100%}
+.field input::placeholder{color:var(--mute)}
+.modes{display:flex;gap:6px}
+.mode{padding:11px 14px;font-weight:800;font-size:13px;color:var(--ink);background:#fff;border:3px solid var(--ink);border-radius:4px 14px 4px 14px}
+.mode[aria-pressed="true"]{background:var(--saffron);box-shadow:3px 3px 0 var(--ink)}
+.keep{display:flex;align-items:center;gap:7px;font-size:13px;font-weight:800;color:var(--ink);white-space:nowrap;padding-bottom:12px}
+.keep input{width:18px;height:18px;accent-color:var(--blue)}
+.btn{padding:13px 22px;font-weight:800;font-size:14px;color:#fff;background:var(--grad);white-space:nowrap;border:3px solid var(--ink);border-radius:4px 18px 4px 18px;box-shadow:5px 5px 0 var(--ink);text-shadow:0 1px 0 rgba(0,0,0,.25);transition:transform .15s,box-shadow .15s;text-decoration:none;display:inline-block}
+.btn:hover:not(:disabled){transform:translate(-2px,-2px);box-shadow:8px 8px 0 var(--ink)}
+.btn:active:not(:disabled){transform:translate(3px,3px);box-shadow:1px 1px 0 var(--ink)}
+.btn.ghost{background:#fff;color:var(--ink);text-shadow:none}
+.btn.stop{background:linear-gradient(110deg,#FF5C93,#EF4468)}
+.tip{--sh:var(--teal);padding:16px 22px;display:grid;gap:6px;font-size:14px;color:var(--dim);box-shadow:7px 7px 0 var(--teal)}
+.tip b{color:var(--ink);font:800 13px var(--display)}
+.tip ol{margin:0;padding-left:20px;display:grid;gap:3px}
+.tip ol b{background:#FFF1C9;padding:0 4px;font:800 14px var(--body)}
+.main{display:grid;grid-template-columns:minmax(0,1.35fr) minmax(0,1fr);gap:26px;align-items:start}
+.stage{--sh:var(--blue);padding:16px;display:grid;gap:14px}
+.screen{position:relative;border:3px solid var(--ink);border-radius:6px 24px 6px 24px;overflow:hidden;aspect-ratio:16/9;display:grid;place-items:center;
+  background:linear-gradient(135deg,#E5DEFF 0 38%,#FFD3E2 38% 70%,#FFE7B8 70%)}
+.screen video{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;background:#14102a;display:none}
+.screen.live video{display:block}
+.idle{display:grid;gap:6px;justify-items:center;text-align:center;padding:14px;color:var(--ink);font-size:15px;font-weight:800}
+.bigface{width:min(46%,240px);aspect-ratio:1}
+.screen.live .idle{display:none}
+.recpill{position:absolute;left:12px;top:12px;z-index:2;display:none;align-items:center;gap:8px;padding:6px 14px;border:3px solid var(--ink);background:#fff;font:700 12px var(--mono);border-radius:4px 12px 4px 12px}
+.screen.live .recpill{display:flex}
+.recpill i{width:10px;height:10px;border-radius:50%;background:var(--bad);animation:blink 1.4s ease-in-out infinite}
+.paused .recpill i{animation:none;background:var(--warn)}
+@keyframes blink{50%{opacity:.3;transform:scale(.8)}}
+.controls{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.timer{font:700 24px var(--mono);font-variant-numeric:tabular-nums;padding:2px 10px;border:3px solid var(--ink);background:var(--saffron);border-radius:4px 12px 4px 12px;transform:rotate(-1.5deg)}
+.waveWrap{flex:1 1 140px;min-width:0}
+.wave{height:56px;background:#fff;display:block;width:100%;border:3px solid var(--ink);border-radius:4px 14px 4px 14px}
+.status{font:700 12px var(--mono);color:var(--ink);display:flex;gap:8px;align-items:center;min-height:18px}
+.status.err{color:#C41E4A}
+.dot{width:10px;height:10px;background:var(--mute);flex:none;transform:rotate(45deg);border:2px solid var(--ink)}
+.live-dot{background:var(--good)}
+.side{--sh:var(--saffron);display:grid;grid-template-rows:auto 1fr;overflow:hidden;height:min(700px,calc(100vh - 40px));min-height:480px}
+.sidehead{display:flex;gap:0;border-bottom:3px solid var(--ink);background:#fff}
+.stab{flex:1;padding:14px 8px;font-weight:800;font-size:13px;color:var(--ink);border-right:3px solid var(--ink);background:#fff}
+.stab:last-child{border-right:0}
+.stab[aria-selected="true"]{background:var(--a);color:#fff}
+.pane{overflow:auto;padding:16px 18px 20px;min-height:0}
+.empty{display:grid;gap:10px;justify-items:center;text-align:center;padding:36px 16px;color:var(--dim)}
+.empty b{color:var(--ink);font:800 15px var(--display)}
+.orb{width:64px;height:64px;background:conic-gradient(from 200deg,#2B45FF,#8A5CFF,#FF5C93,#FFB52E,#2B45FF);border:3px solid var(--ink);clip-path:polygon(50% 0,100% 38%,82% 100%,18% 100%,0 38%);animation:spin 14s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.ln{display:grid;grid-template-columns:auto 1fr;gap:2px 12px;padding:11px 12px;margin-bottom:6px;cursor:pointer;border:2px solid transparent;border-radius:4px 16px 4px 16px}
+.ln:hover{background:#fff;border-color:var(--ink)}
+.av{grid-row:span 2;width:36px;height:36px;display:grid;place-items:center;color:#fff;font:800 13px var(--display);background:var(--blue);border:3px solid var(--ink);clip-path:polygon(50% 0,100% 30%,100% 80%,50% 100%,0 80%,0 30%)}
+.h1{background:var(--rose)}.h2{background:var(--teal)}.h3{background:var(--violet)}.h4{background:var(--saffron);color:var(--ink)}
+.ln b{font-size:13px}.ln b em{font:600 11px var(--mono);color:var(--mute);font-style:normal;margin-left:8px}
+.ln p{grid-column:2;font-size:14px;line-height:1.5;font-weight:600}
+.sec{display:grid;gap:10px;margin-bottom:22px}
+.sec h3{font:800 12px var(--mono);letter-spacing:.14em;text-transform:uppercase;color:var(--ink);display:inline-block;justify-self:start;background:var(--saffron);padding:3px 10px;border:2px solid var(--ink);transform:rotate(-1.5deg)}
+.sec:nth-of-type(3n+2) h3{background:#FFC2D6}.sec:nth-of-type(3n) h3{background:#BFEFE8}
+.sum{font-size:15px;line-height:1.6;padding:16px;background:#fff;border:3px solid var(--ink);border-radius:4px 20px 4px 20px;box-shadow:5px 5px 0 var(--a-soft)}
+.decision{padding:12px 14px;background:var(--a-soft);font-weight:700;font-size:14px;border-left:6px solid var(--a);border-radius:2px 14px 2px 14px}
+.act{display:grid;grid-template-columns:auto 1fr auto;gap:10px;align-items:center;padding:11px 12px;background:#fff;border:2px solid var(--ink);border-radius:4px 14px 4px 14px;font-size:14px}
+.act input{width:18px;height:18px;accent-color:var(--blue)}
+.act input:checked+span{text-decoration:line-through;color:var(--mute)}
+.chip{font:700 11px var(--mono);padding:3px 10px;background:var(--saffron);color:var(--ink);border:2px solid var(--ink);white-space:nowrap}
+.moments{display:flex;flex-wrap:wrap;gap:8px}
+.mom{padding:8px 12px;background:#fff;border:2px solid var(--ink);font-size:13px;font-weight:700;text-align:left;border-radius:4px 14px 4px 14px;transition:transform .15s}
+.mom:hover{transform:translate(-2px,-2px);box-shadow:3px 3px 0 var(--a)}
+.mom em{font:700 11px var(--mono);color:var(--a);font-style:normal;display:block}
+.row{display:flex;gap:10px;flex-wrap:wrap}
+.note{font-size:12px;color:var(--ink);padding:10px 12px;background:#FFF1C9;border:2px dashed var(--ink)}
+.skel{height:14px;background:linear-gradient(90deg,var(--sunk),#fff,var(--sunk));background-size:200% 100%;animation:sh 1.2s linear infinite;margin-bottom:10px;border:2px solid var(--ink)}
+@keyframes sh{to{background-position:-200% 0}}
+.past{display:grid;grid-template-columns:1fr auto;gap:2px 10px;padding:12px 14px;background:#fff;border:3px solid var(--ink);margin-bottom:10px;text-align:left;width:100%;border-radius:4px 16px 4px 16px;transition:transform .15s,box-shadow .15s}
+.past:hover{transform:translate(-2px,-2px);box-shadow:5px 5px 0 var(--a)}
+.past b{font-size:14px}.past span{font:600 11px var(--mono);color:var(--dim)}
+.del{font:700 11px var(--mono);color:#C41E4A;padding:4px 6px}
+
+/* brief card inside Notes */
+.nhero{border:3px solid var(--ink);border-radius:4px 24px 4px 24px;padding:16px 18px 18px;background:linear-gradient(135deg,#E5DEFF 0 30%,#FFD3E2 30% 62%,#FFE7B8 62%);box-shadow:6px 6px 0 var(--a);display:grid;gap:10px;margin-bottom:6px}
+.neye{font:800 10px var(--mono);letter-spacing:.16em;text-transform:uppercase}
+.neye b{background:var(--saffron);border:2px solid var(--ink);padding:1px 8px;margin-right:6px;display:inline-block;transform:rotate(-2deg)}
+.ntitle{font:800 24px/1.02 var(--display);letter-spacing:-.035em;background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent;-webkit-text-stroke:1.6px var(--ink);paint-order:stroke fill;filter:drop-shadow(3px 3px 0 var(--ink));overflow-wrap:anywhere;margin:2px 0 0}
+.nchips{display:flex;flex-wrap:wrap;gap:6px}
+.nchips span{font:700 11px var(--mono);padding:3px 9px;border:2px solid var(--ink);background:#fff;border-radius:3px 10px 3px 10px}
+.ntldr{background:#fff;border:3px solid var(--ink);padding:12px 14px;border-radius:4px 16px 4px 16px;margin:0;font-size:15px;line-height:1.6}
+.nstats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:10px}
+.nstat{background:#fff;border:3px solid var(--ink);padding:10px 12px;border-radius:4px 14px 4px 14px;box-shadow:4px 4px 0 var(--teal)}
+.nstat:nth-child(2){box-shadow:4px 4px 0 var(--rose)}.nstat:nth-child(3){box-shadow:4px 4px 0 var(--saffron)}
+.nstat b{display:block;font:800 24px/1 var(--display);letter-spacing:-.03em}
+.nstat span{font:700 10px var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--dim)}
+.nbar{display:flex;height:22px;border:3px solid var(--ink);border-radius:3px 10px 3px 10px;overflow:hidden}
+.nbar i{display:block;height:100%;border-right:2px solid var(--ink)}.nbar i:last-child{border-right:0}
+.nleg{display:flex;flex-wrap:wrap;gap:10px;font:600 11px var(--mono);color:var(--dim);margin-top:7px}
+.nleg i{display:inline-block;width:11px;height:11px;border:2px solid var(--ink);margin-right:5px;vertical-align:-1px;clip-path:polygon(50% 0,100% 100%,0 100%)}
+.decision{display:grid;grid-template-columns:auto 1fr;gap:12px;align-items:center;border-left:0;background:#fff;border:3px solid var(--ink);border-radius:4px 16px 4px 16px;padding:10px 12px}
+.dn{width:30px;height:30px;display:grid;place-items:center;font:800 13px var(--display);color:#fff;background:var(--blue);border:3px solid var(--ink);clip-path:polygon(50% 0,100% 30%,100% 80%,50% 100%,0 80%,0 30%)}
+.decision:nth-of-type(2n) .dn{background:var(--rose)}.decision:nth-of-type(3n) .dn{background:var(--teal)}
+
+/* ===== Notes: premium glass look + smooth motion (overrides the chunky outlines for this section only) ===== */
+@keyframes nrise{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+@keyframes ngrow{from{transform:scaleX(0)}to{transform:scaleX(1)}}
+@keyframes nfade{from{opacity:0}to{opacity:1}}
+@keyframes nglow{0%,100%{box-shadow:0 0 0 0 rgba(168,85,247,.35)}50%{box-shadow:0 0 0 14px rgba(168,85,247,0)}}
+#pane{background:linear-gradient(180deg,rgba(246,243,255,.9),rgba(255,255,255,.7))}
+#pane>*{animation:nrise .7s cubic-bezier(.2,.7,.2,1) both}
+#pane>*:nth-child(2){animation-delay:.05s}#pane>*:nth-child(3){animation-delay:.1s}#pane>*:nth-child(4){animation-delay:.15s}#pane>*:nth-child(5){animation-delay:.2s}#pane>*:nth-child(6){animation-delay:.25s}#pane>*:nth-child(7){animation-delay:.3s}#pane>*:nth-child(8){animation-delay:.35s}#pane>*:nth-child(9){animation-delay:.4s}#pane>*:nth-child(10){animation-delay:.45s}
+#pane .sec h3{background:none;border:0;transform:none;padding:0;font:600 10px var(--mono);letter-spacing:.22em;color:var(--dim);display:flex;align-items:center;gap:10px;justify-self:stretch}
+#pane .sec h3::after{content:"";flex:1;height:1px;background:linear-gradient(90deg,rgba(96,76,190,.32),transparent)}
+.nhero{border:1px solid rgba(255,255,255,.95);border-radius:22px;padding:20px 20px 20px;background:radial-gradient(80% 120% at 0 0,rgba(165,139,255,.3),transparent 62%),radial-gradient(70% 100% at 100% 0,rgba(255,79,163,.22),transparent 62%),radial-gradient(60% 90% at 100% 100%,rgba(255,138,61,.14),transparent 60%),rgba(255,255,255,.86);box-shadow:0 22px 54px rgba(70,50,150,.16);gap:14px;margin-bottom:14px}
+.neye{font:500 10px var(--mono);letter-spacing:.2em;color:var(--dim)}
+.neye b{background:none;border:0;padding:0;margin:0 8px 0 0;transform:none;display:inline-flex;align-items:center;gap:8px;font-weight:500;color:var(--dim)}
+.neye b::before{content:"";width:12px;height:12px;border-radius:50%;background:conic-gradient(from 200deg,#5B54FF,#A855F7,#FF4FA3,#FF8A3D,#5B54FF);box-shadow:0 0 0 3px rgba(255,255,255,.8),0 0 12px rgba(168,85,247,.5)}
+.ntitle{font:500 22px/1.12 var(--display);letter-spacing:-.025em;color:var(--ink);background:none;-webkit-background-clip:border-box;background-clip:border-box;-webkit-text-stroke:0;paint-order:normal;filter:none;position:relative;padding-bottom:12px;margin:4px 0 0}
+.ntitle::after{content:"";position:absolute;left:0;bottom:0;width:52px;height:3px;border-radius:3px;background:linear-gradient(110deg,#5B54FF,#A855F7,#FF4FA3,#FF8A3D);transform-origin:left;animation:ngrow .9s cubic-bezier(.2,.7,.2,1) .35s both}
+.nchips span{border:1px solid rgba(96,76,190,.22);border-radius:999px;background:rgba(255,255,255,.75);padding:3px 12px;font:500 11px var(--mono);color:var(--dim)}
+.ntldr{border:0;background:none;padding:2px 0 2px 16px;position:relative;font-size:15.5px;line-height:1.7;font-weight:600;color:var(--ink);border-radius:0}
+.ntldr::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px;border-radius:3px;background:linear-gradient(180deg,#5B54FF,#FF4FA3,#FF8A3D)}
+.nstats{gap:12px;margin-bottom:14px}
+.nstat{border:1px solid rgba(255,255,255,.95);border-radius:18px;background:rgba(255,255,255,.8);box-shadow:0 12px 30px rgba(70,50,150,.1);padding:14px 14px 12px;transition:transform .35s cubic-bezier(.2,.7,.2,1),box-shadow .35s}
+.nstat:nth-child(n){box-shadow:0 12px 30px rgba(70,50,150,.1)}
+.nstat:hover{transform:translateY(-3px);box-shadow:0 20px 44px rgba(70,50,150,.18)}
+.nstat b{font:500 26px/1 var(--display);letter-spacing:-.03em;background:linear-gradient(110deg,#5B54FF,#A855F7 40%,#FF4FA3 75%,#FF8A3D);-webkit-background-clip:text;background-clip:text;color:transparent}
+.nstat span{display:block;margin-top:7px;font:500 9.5px var(--mono);letter-spacing:.16em;color:var(--mute)}
+.nbar{height:9px;border:0;border-radius:999px;gap:3px;background:none;overflow:visible}
+.nbar i{border:0;border-radius:999px;transform-origin:left;animation:ngrow 1s cubic-bezier(.2,.7,.2,1) .4s both}
+.nleg{margin-top:9px}.nleg i{border:0;border-radius:50%;clip-path:none;width:8px;height:8px;margin-right:6px}
+#pane .sec{margin-bottom:22px}
+#pane .sum{border:1px solid rgba(255,255,255,.95);border-radius:18px;box-shadow:0 10px 26px rgba(70,50,150,.08);background:rgba(255,255,255,.85)}
+#pane .decision{display:grid;grid-template-columns:auto 1fr;gap:14px;align-items:center;border:1px solid rgba(255,255,255,.95);border-radius:18px;background:rgba(255,255,255,.85);box-shadow:0 10px 26px rgba(70,50,150,.08);padding:13px 15px;font-weight:700;transition:transform .35s cubic-bezier(.2,.7,.2,1),box-shadow .35s}
+#pane .decision:hover,#pane .act:hover{transform:translateY(-2px);box-shadow:0 18px 40px rgba(70,50,150,.16)}
+.dn{width:30px;height:30px;border:0;border-radius:50%;clip-path:none;background:linear-gradient(135deg,#5B54FF,#A855F7 50%,#FF4FA3)!important;color:#fff;font:500 12px var(--display);box-shadow:0 8px 18px rgba(91,84,255,.32)}
+#pane .act{border:1px solid rgba(255,255,255,.95);border-radius:18px;background:rgba(255,255,255,.85);box-shadow:0 10px 26px rgba(70,50,150,.08);padding:12px 15px;transition:transform .35s cubic-bezier(.2,.7,.2,1),box-shadow .35s}
+#pane .chip{border:1px solid rgba(96,76,190,.22);border-radius:999px;background:rgba(255,255,255,.85);padding:3px 12px;font:500 11px var(--mono);color:var(--dim)}
+#pane .mom{border:1px solid rgba(96,76,190,.18);border-radius:14px;background:rgba(255,255,255,.88);box-shadow:none;transition:transform .3s,box-shadow .3s,border-color .3s}
+#pane .mom:hover{transform:translateY(-2px);box-shadow:0 12px 26px rgba(70,50,150,.14);border-color:rgba(168,85,247,.5)}
+#pane .mom em{background:linear-gradient(110deg,#5B54FF,#FF4FA3);-webkit-background-clip:text;background-clip:text;color:transparent}
+#pane .note{border:1px dashed rgba(96,76,190,.3);border-radius:14px;background:rgba(255,255,255,.65)}
+#pane .btn{border:0;border-radius:14px;box-shadow:0 12px 28px rgba(91,84,255,.3);padding:12px 20px;transition:transform .3s cubic-bezier(.2,.7,.2,1),box-shadow .3s,filter .3s}
+#pane .btn:hover:not(:disabled){transform:translateY(-2px);box-shadow:0 18px 38px rgba(91,84,255,.42)}
+#pane .btn:active:not(:disabled){transform:translateY(0);box-shadow:0 8px 18px rgba(91,84,255,.3)}
+#pane .btn.ghost{border:1px solid rgba(96,76,190,.25);box-shadow:none;background:rgba(255,255,255,.85)}
+#pane .btn.ghost:hover:not(:disabled){box-shadow:0 12px 26px rgba(70,50,150,.14)}
+#pane .past{border:1px solid rgba(255,255,255,.95);border-radius:16px;box-shadow:0 8px 22px rgba(70,50,150,.08)}
+#pane .past:hover{transform:translateY(-2px);box-shadow:0 16px 34px rgba(70,50,150,.16)}
+#pane .ln{border:1px solid transparent;border-radius:14px;transition:background .3s,border-color .3s}
+#pane .ln:hover{border-color:rgba(96,76,190,.2);background:rgba(255,255,255,.85)}
+.av{border:0;clip-path:none;border-radius:50%;box-shadow:0 6px 14px rgba(70,50,150,.2)}
+/* writing-the-notes state */
+.working{display:grid;justify-items:center;gap:14px;padding:46px 16px;text-align:center}
+.working .core{width:74px;height:74px;border-radius:50%;background:conic-gradient(from 200deg,#5B54FF,#A855F7,#FF4FA3,#FF8A3D,#5B54FF);animation:nglow 2.4s ease-in-out infinite,spin 9s linear infinite;box-shadow:inset 0 -8px 16px rgba(0,0,0,.12),inset 0 6px 14px rgba(255,255,255,.55)}
+.working b{font:500 15px var(--display);letter-spacing:-.01em}
+.working .bars{display:grid;gap:9px;width:min(320px,80%);margin-top:6px}
+.working .bars i{height:9px;border-radius:999px;background:linear-gradient(90deg,rgba(96,76,190,.1),rgba(255,255,255,.95),rgba(96,76,190,.1));background-size:200% 100%;animation:sh 1.4s linear infinite}
+@media (prefers-reduced-motion:reduce){#pane>*,.nbar i,.ntitle::after{animation:none!important}}
+
+.stab{font-size:12.5px;padding:13px 4px;white-space:nowrap}
+/* Meeting reports: espresso and gold cards */
+.rhead{display:grid;gap:4px;margin-bottom:12px}
+.rhead b{font:800 13px var(--display)}.rhead span{font-size:12.5px;color:var(--dim)}
+.rcard{display:grid;gap:10px;padding:18px 18px 16px;margin-bottom:14px;border-radius:20px;border:1px solid rgba(224,179,106,.35);color:#F7EAD8;text-decoration:none;position:relative;overflow:hidden;
+  background:radial-gradient(70% 90% at 100% 0,rgba(224,179,106,.22),transparent 60%),linear-gradient(160deg,#2C1B10,#170D07);box-shadow:0 18px 44px rgba(40,20,5,.35),inset 0 1px 0 rgba(255,235,205,.12);transition:transform .35s cubic-bezier(.2,.7,.2,1),box-shadow .35s;animation:nrise .6s cubic-bezier(.2,.7,.2,1) both}
+.rcard:hover{transform:translateY(-3px);box-shadow:0 26px 56px rgba(40,20,5,.5),inset 0 1px 0 rgba(255,235,205,.18)}
+.rcard .re{font:500 10px var(--mono);letter-spacing:.22em;text-transform:uppercase;color:#E0B36A}
+.rcard .rt{font:500 18px/1.15 var(--display);letter-spacing:-.02em;color:#F7EAD8}
+.rcard .rh{font-size:13.5px;line-height:1.5;color:#CDB394;font-weight:600}
+.rcard .rm{display:flex;flex-wrap:wrap;gap:6px}
+.rcard .rm span{font:500 11px var(--mono);padding:3px 11px;border:1px solid rgba(224,179,106,.35);border-radius:999px;color:#F3D9A8;background:rgba(255,232,200,.05)}
+.rcard .rgo{justify-self:start;margin-top:2px;font:800 12px var(--body);padding:9px 16px;border-radius:12px;color:#2A1608;background:linear-gradient(115deg,#9A5B2E,#C77D45 22%,#E0B36A 52%,#F3D9A8 66%,#E0B36A 82%,#B8742F);box-shadow:0 8px 22px rgba(224,179,106,.3)}
+
+.sidehead{flex-wrap:wrap}.stab{flex:1 1 auto;padding:12px 8px;font-size:12px}
+#pane.dk{background:radial-gradient(80% 50% at 100% 0,rgba(224,179,106,.2),transparent 60%),radial-gradient(70% 40% at 0 100%,rgba(199,125,69,.14),transparent 60%),linear-gradient(170deg,#2B1A10,#150C07);color:#F7EAD8}
+.sm{display:grid;gap:22px;color:#F7EAD8}
+.sm-sel select{width:100%;padding:10px 12px;border-radius:12px;border:1px solid rgba(224,179,106,.4);background:rgba(255,232,200,.06);color:#F7EAD8;font:600 13px var(--body)}
+.sm-sel select option{color:#1B1536}
+.sm-eye{font:500 10px var(--mono);letter-spacing:.26em;text-transform:uppercase;color:#E0B36A;display:flex;align-items:center;gap:10px}
+.sm-eye::before{content:"";width:28px;height:1px;background:linear-gradient(90deg,#9A5B2E,#F3D9A8)}
+.sm-title{margin:0;font:500 22px/1.15 var(--display);letter-spacing:-.025em;background:linear-gradient(115deg,#C77D45,#E0B36A 50%,#F3D9A8);-webkit-background-clip:text;background-clip:text;color:transparent}
+.sm-chips{display:flex;flex-wrap:wrap;gap:6px}.sm-chips span{font:500 11px var(--mono);padding:4px 11px;border:1px solid rgba(224,179,106,.4);border-radius:999px;color:#F3D9A8;background:rgba(255,232,200,.05)}
+.sm-lab{font:500 10px var(--mono);letter-spacing:.24em;text-transform:uppercase;color:#E0B36A;margin-bottom:10px;display:flex;align-items:center;gap:10px}
+.sm-lab::after{content:"";flex:1;height:1px;background:linear-gradient(90deg,rgba(224,179,106,.4),transparent)}
+.sm-p{margin:0 0 12px;font-size:15px;line-height:1.75;color:#F1E2CC;font-weight:500}
+.sm-focus{padding:14px 16px;border:1px solid rgba(224,179,106,.35);border-radius:16px;background:linear-gradient(160deg,rgba(255,232,200,.08),rgba(255,232,200,.02))}
+.sm-focus b{display:block;margin-top:5px;font:500 16px var(--display);letter-spacing:-.02em}
+.sm-take{margin:0;padding:0;list-style:none;display:grid;gap:9px;counter-reset:s}
+.sm-take li{counter-increment:s;display:grid;grid-template-columns:auto 1fr;gap:14px;padding:13px 16px;border:1px solid rgba(224,179,106,.25);border-radius:16px;background:rgba(255,232,200,.05);font-weight:700}
+.sm-take li::before{content:counter(s,decimal-leading-zero);font:500 16px var(--display);background:linear-gradient(115deg,#C77D45,#F3D9A8);-webkit-background-clip:text;background-clip:text;color:transparent}
+.sm-topic{padding:16px 18px;border:1px solid rgba(224,179,106,.28);border-radius:18px;background:linear-gradient(160deg,rgba(255,232,200,.08),rgba(255,232,200,.02));display:grid;gap:9px;margin-bottom:12px}
+.sm-th{display:grid;grid-template-columns:auto 1fr auto;gap:12px;align-items:center}
+.sm-th b{font:500 18px var(--display);background:linear-gradient(115deg,#C77D45,#F3D9A8);-webkit-background-clip:text;background-clip:text;color:transparent}
+.sm-th span{font:500 15px var(--display);letter-spacing:-.02em}
+.sm-th em{font:500 11px var(--mono);font-style:normal;color:#F3D9A8;padding:3px 10px;border:1px solid rgba(224,179,106,.4);border-radius:999px}
+.sm-topic p{margin:0;font-size:14.5px;line-height:1.7;color:#F1E2CC}
+.sm-topic ul{margin:0;padding-left:18px;display:grid;gap:4px;font-size:13.5px;color:#CDB394}
+.sm-out{padding:9px 12px;border-radius:12px;background:rgba(224,179,106,.1);border:1px solid rgba(224,179,106,.3);font-size:13px;font-weight:700}
+.sm-out em{font:500 9.5px var(--mono);letter-spacing:.2em;text-transform:uppercase;color:#E0B36A;font-style:normal;margin-right:8px}
+.sm-row{display:grid;grid-template-columns:auto 1fr auto;gap:12px;align-items:center;padding:11px 14px;border:1px solid rgba(224,179,106,.25);border-radius:14px;background:rgba(255,232,200,.05);font-size:14px;margin-bottom:8px}
+.sm-row .a{width:28px;height:28px;border-radius:50%;display:grid;place-items:center;font:600 11px var(--display);color:#2A1608;background:linear-gradient(115deg,#9A5B2E,#E0B36A,#F3D9A8)}
+.sm-row .d{font:500 11px var(--mono);padding:3px 10px;border:1px solid rgba(224,179,106,.4);border-radius:999px;color:#F3D9A8}
+.sm-btns{display:flex;gap:10px;flex-wrap:wrap}
+.sm-btns .gold{border:0;border-radius:14px;padding:12px 20px;font:800 13px var(--body);color:#2A1608;background:linear-gradient(115deg,#9A5B2E,#C77D45 22%,#E0B36A 52%,#F3D9A8 66%,#E0B36A 82%,#B8742F);box-shadow:0 12px 28px rgba(224,179,106,.3);text-decoration:none;display:inline-block;cursor:pointer}
+.sm-btns .ghost{border:1px solid rgba(224,179,106,.45);border-radius:14px;padding:12px 20px;font:800 13px var(--body);color:#F7EAD8;background:rgba(255,232,200,.06);cursor:pointer}
+@media (max-width:980px){.main{grid-template-columns:minmax(0,1fr)}.side{height:560px}.tabs{margin-left:0;width:100%}.tab{flex:1}.heroface{width:84px;height:84px}}
+@media (max-width:560px){.act{grid-template-columns:auto 1fr}.act .chip{grid-column:2}.glass{box-shadow:6px 6px 0 var(--sh,var(--a))}.brand p b{display:none}}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<div class="cubes" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></div>
+<main class="wrap">
+
+  <header class="glass dock">
+    <div class="brand"><div class="heroface" data-face></div><div><h1>Meridian</h1><p>Records the call. Gives you the notes. <b>Hindi + English</b></p></div></div>
+    <div class="tabs" role="group" aria-label="Meeting source">
+      <button class="tab" data-src="zoom" aria-selected="false">Zoom</button>
+      <button class="tab" data-src="meet" aria-selected="false">Google Meet</button>
+      <button class="tab" data-src="any" aria-selected="true">Any source</button>
+    </div>
+    <div class="setup glass">
+      <div class="field"><label for="title">Meeting name</label><input id="title" placeholder="Friday planning call" autocomplete="off"></div>
+      <div class="field" style="flex:0 1 160px"><label for="you">Your name</label><input id="you" placeholder="Your name" autocomplete="off"></div>
+      <div class="modes" role="group" aria-label="What to record">
+        <button class="mode" data-mode="call" aria-pressed="true">Call on this computer</button>
+        <button class="mode" data-mode="room" aria-pressed="false">People in the room</button>
+      </div>
+      <label class="keep"><input type="checkbox" id="keepVideo" checked> Keep video</label>
+      <button class="btn" id="startBtn" type="button">Start recording</button>
+    </div>
+  </header>
+
+  <section class="glass tip" id="tip"></section>
+
+  <section class="glass tip" id="share" hidden style="--sh:var(--rose);box-shadow:7px 7px 0 var(--rose)"><b>Share with friends</b><div id="shareBody"></div></section>
+
+  <div class="main">
+    <section class="glass stage" id="stage">
+      <div class="screen" id="screen">
+        <div class="recpill"><i></i><span id="recTxt">REC</span></div>
+        <video id="preview" muted playsinline autoplay></video>
+        <div class="idle"><div class="bigface" data-face></div><div id="idleTxt">Ready when you are.</div></div>
+      </div>
+      <div class="controls">
+        <div class="timer" id="timer">00:00:00</div>
+        <div class="waveWrap"><canvas class="wave" id="wave" aria-label="Live sound level"></canvas></div>
+        <button class="btn ghost" id="pauseBtn" type="button" disabled>Pause</button>
+        <button class="btn stop" id="stopBtn" type="button" disabled>Stop and get notes</button>
+      </div>
+      <div class="status" id="status"><span class="dot"></span><span id="statusTxt">Not recording</span></div>
+    </section>
+
+    <aside class="glass side">
+      <div class="sidehead" role="group">
+        <button class="stab" data-p="notes" aria-selected="true">Notes</button>
+        <button class="stab" data-p="summary" aria-selected="false">Summary</button>
+        <button class="stab" data-p="tx" aria-selected="false">Transcript</button>
+        <button class="stab" data-p="past" aria-selected="false">Past meetings</button>
+        <button class="stab" data-p="reports" aria-selected="false">Meeting reports</button>
+      </div>
+      <div class="pane" id="pane"></div>
+    </aside>
+  </div>
+</main>
+
+<script>
+(function(){
+  var _mem={};
+  var LS=function(k,v){try{if(v===undefined)return localStorage.getItem(k)||_mem[k]||"";localStorage.setItem(k,v)}catch(e){}if(v!==undefined)_mem[k]=v;return _mem[k]||""};
+  var KEY=new URLSearchParams(location.search).get("k")||LS("meridian_k");if(KEY)LS("meridian_k",KEY);
+  var OWNER=LS("meridian_o");if(!OWNER){OWNER=Array.prototype.map.call(crypto.getRandomValues(new Uint8Array(8)),function(b){return ("0"+b.toString(16)).slice(-2)}).join("");LS("meridian_o",OWNER)}
+  /* ===== CLOUD MODE: runs on the fixed GitHub address. Recording goes to the Drive mailbox; everything else is forwarded to the host computer when it is on. ===== */
+  var CLOUD=/\.github\.io$/.test(location.hostname);
+  var INBOX="https://script.google.com/macros/s/AKfycbz5MaJsulTfAoGn-_6pcOFG0D7_V4NJxtBmoFjhgVa-hKE_gAZhppwjqT99yV0EVj0k/exec",MKEY="da3792b430930424a1e6",GHCUR="https://api.github.com/repos/harikrishnadhavalkumar-cloud/harikrishnadhavalkumar-cloud.github.io/contents/meridian/current.json";
+  var __real=window.fetch.bind(window),__cnt={},__pend=0,__base="",__baseAt=0;window.__TB="";
+  function __sleep(ms){return new Promise(function(r){setTimeout(r,ms)})}
+  function __js(o,s){return new Response(JSON.stringify(o),{status:s||200,headers:{"Content-Type":"application/json"}})}
+  function __b64(b){return new Promise(function(res,rej){var r=new FileReader();r.onload=function(){res(String(r.result).split(",")[1]||"")};r.onerror=rej;r.readAsDataURL(b)})}
+  async function __box(o,tries){o.key=MKEY;var w=1500;for(var i=0;!tries||i<tries;i++){try{var r=await __real(INBOX,{method:"POST",headers:{"Content-Type":"text/plain"},body:JSON.stringify(o)});var j=await r.json();if(j&&j.ok)return j}catch(e){}await __sleep(w);w=Math.min(w*2,20000)}throw new Error("mailbox")}
+  async function __tunnel(){if(Date.now()-__baseAt<45000)return __base;__baseAt=Date.now();try{var r=await __real(GHCUR+"?t="+Date.now(),{headers:{Accept:"application/vnd.github.raw"},cache:"no-store"});var u=(await r.json()).url;var c=new AbortController();setTimeout(function(){c.abort()},6000);var h=await __real(u+"/api/health?t="+Date.now(),{cache:"no-store",signal:c.signal});__base=h.ok?u:""}catch(e){__base=""}window.__TB=__base;return __base}
+  if(CLOUD){
+    __tunnel();
+    window.addEventListener("beforeunload",function(e){if(__pend>0){e.preventDefault();e.returnValue=""}});
+    window.fetch=async function(u,o){
+      o=o||{};var s=String(u),m=(o.method||"GET").toUpperCase(),p=s.split("?")[0],mm;
+      if(s.charAt(0)!=="/")return __real(u,o);
+      if(p==="/api/health")return __js({free_gb:99,used_mb:0});
+      if(m==="POST"&&p==="/api/start"){var b={};try{b=JSON.parse(o.body||"{}")}catch(e){}
+        var id=Array.prototype.map.call(crypto.getRandomValues(new Uint8Array(6)),function(x){return("0"+x.toString(16)).slice(-2)}).join("");
+        try{await __box({a:"start",id:id,title:b.title,you:b.you,mode:b.mode},4)}catch(e){return __js({error:"mailbox"},500)}return __js({id:id})}
+      if(m==="POST"&&(mm=p.match(/^\/api\/chunk\/([a-f0-9]{12})\/(\w+)$/))){
+        if(mm[2]==="video")return new Response(null,{status:204});
+        var k=mm[1]+mm[2],n=__cnt[k]=(__cnt[k]===undefined?0:__cnt[k]+1);__pend++;
+        try{var d=await __b64(o.body);await __box({a:"chunk",id:mm[1],kind:mm[2],n:n,d:d})}finally{__pend--}return new Response(null,{status:204})}
+      if(m==="POST"&&(mm=p.match(/^\/api\/finish\/([a-f0-9]{12})$/))){var dur=0;try{dur=JSON.parse(o.body||"{}").duration||0}catch(e){}
+        var ch={mic:(__cnt[mm[1]+"mic"]===undefined?0:__cnt[mm[1]+"mic"]+1),others:(__cnt[mm[1]+"others"]===undefined?0:__cnt[mm[1]+"others"]+1)};
+        try{await __box({a:"finish",id:mm[1],duration:dur,chunks:ch},12)}catch(e){}
+        /* if the host computer is on it may already know this meeting; otherwise the pieces wait safely in Drive */
+        return __js({ok:true})}
+      var t=await __tunnel();
+      if(t){try{var h2=Object.assign({},o.headers||{});return await __real(t+s,Object.assign({},o,{headers:h2,mode:"cors"}))}catch(e){}}
+      if(mm=p.match(/^\/api\/status\/([a-f0-9]{12})$/))return __js({id:mm[1],status:"queued",step:"Saved safely in the cloud. Notes are made when the host computer is on"});
+      if(p==="/api/meetings")return __js([]);
+      return __js({error:"The host computer is off right now"},404)};
+    var __kv=document.getElementById("keepVideo");if(__kv){__kv.checked=false;__kv.disabled=true;__kv.parentNode.title="Video is only kept when the host computer is on"}
+  }
+  var _fetch=window.fetch.bind(window);
+  window.fetch=function(u,o){o=o||{};o.headers=Object.assign({},o.headers||{},{"X-Meridian-Owner":OWNER});if(KEY)o.headers["X-Meridian-Key"]=KEY;return _fetch(u,o)};
+  function Q(u){if(window.__TB&&u.charAt(0)==="/")u=window.__TB+u;return u+(u.indexOf("?")>-1?"&":"?")+(KEY?"k="+encodeURIComponent(KEY)+"&":"")+"o="+OWNER}
+  var $=function(s){return document.querySelector(s)};
+  var root=document.documentElement;
+  var TIPS={
+    any:{t:"Any call that plays on this computer",s:["Pick <b>Call on this computer</b>, then <b>Start recording</b>.","In the window Chrome shows, choose the <b>Chrome tab</b> with your meeting and tick <b>Also share tab audio</b>.","Your voice is recorded from the microphone at the same time.","Wear headphones to stop echo. An hour-long meeting uses about 0.3 GB of disk. Keep the laptop plugged in."]},
+    zoom:{t:"Zoom",s:["Open Zoom in Chrome: join with the link, then choose <b>Join from your browser</b>.","Press <b>Start recording</b>, pick that Chrome tab, and tick <b>Also share tab audio</b>.","On the Zoom desktop app, Mac cannot hand over its sound. Use <b>People in the room</b> with speakers on instead."]},
+    meet:{t:"Google Meet",s:["Open your Meet in a Chrome tab as usual.","Press <b>Start recording</b>, pick the Meet tab, and tick <b>Also share tab audio</b>.","Each person other than you shows up as <b>Others</b>. Your own lines carry your name."]}
+  };
+  var ROOMTIP={t:"People in the room, or a phone call on speaker",s:["Put this computer in the middle of the table.","Press <b>Start recording</b> and allow the microphone.","Everyone is recorded as <b>Voices</b>. Names are not separated in this mode."]};
+  var wl=null,src="any",mode="call",panel="notes",current=null,rec=null,state={};
+  var S=function(k){try{return localStorage.getItem(k)||""}catch(e){return ""}};
+  var W=function(k,v){try{localStorage.setItem(k,v)}catch(e){}};
+  $("#you").value=S("meridian_you");$("#title").value="";
+
+  function mmss(t){t=Math.floor(t);return String(Math.floor(t/60)).padStart(2,"0")+":"+String(t%60).padStart(2,"0")}
+  function hms(t){t=Math.floor(t);return String(Math.floor(t/3600)).padStart(2,"0")+":"+mmss(t%3600)}
+  function esc(s){return String(s).replace(/[&<>"]/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]})}
+  function setStatus(t,kind){$("#statusTxt").textContent=t;$("#status").className="status"+(kind==="err"?" err":"");$("#status .dot").className="dot"+(kind==="live"?" live-dot":"")}
+
+  function renderTip(){
+    var d=(mode==="room")?ROOMTIP:TIPS[src];
+    $("#tip").innerHTML="<b>"+d.t+"</b><ol>"+d.s.map(function(x){return "<li>"+x+"</li>"}).join("")+"</ol>";
+    $("#idleTxt").textContent=mode==="room"?"Ready to listen to the room.":"Ready to record your call.";
+  }
+  document.querySelectorAll(".tab").forEach(function(b){b.onclick=function(){
+    src=b.dataset.src;root.setAttribute("data-src",src);
+    document.querySelectorAll(".tab").forEach(function(x){x.setAttribute("aria-selected",String(x===b))});renderTip()}});
+  document.querySelectorAll(".mode").forEach(function(b){b.onclick=function(){
+    if(rec)return;mode=b.dataset.mode;
+    document.querySelectorAll(".mode").forEach(function(x){x.setAttribute("aria-pressed",String(x===b))});renderTip()}});
+  document.querySelectorAll(".stab").forEach(function(b){b.onclick=function(){panel=b.dataset.p;tabs();renderPanel()}});
+  function tabs(){document.querySelectorAll(".stab").forEach(function(x){x.setAttribute("aria-selected",String(x.dataset.p===panel))})}
+
+  /* ---------- recording ---------- */
+  var cv=$("#wave"),cx=cv.getContext("2d"),analyser=null,buf=null;
+  function sizeCv(){var r=cv.getBoundingClientRect(),d=window.devicePixelRatio||1;cv.width=Math.max(1,r.width*d);cv.height=Math.max(1,r.height*d)}
+
+  var FACE='<svg class="face" viewBox="0 0 240 240" aria-hidden="true">'+
+   '<polygon class="ink" points="16,44 118,8 132,122 28,152" style="fill:var(--blue)"/>'+
+   '<polygon class="ink" points="118,8 228,46 212,164 132,122" style="fill:var(--saffron)"/>'+
+   '<polygon class="ink" points="28,152 132,122 212,164 152,232 46,216" style="fill:var(--rose)"/>'+
+   '<path class="ink" d="M90 46 L128 38 L134 96 L152 118 L132 126 L136 152 L94 170 L72 120 Z" style="fill:var(--skin1)"/>'+
+   '<path class="ink" d="M128 38 L178 56 L186 122 L160 170 L136 152 L132 126 L152 118 L134 96 Z" style="fill:var(--skin2)"/>'+
+   '<polygon class="ink" points="96,40 150,28 160,52 128,38" style="fill:var(--ink)"/>'+
+   '<polygon class="ink" points="98,84 124,78 118,96" style="fill:#fff"/><circle class="pupil" cx="115" cy="86" r="3.4" style="fill:var(--ink)"/>'+
+   '<ellipse class="ink" cx="160" cy="88" rx="18" ry="12" style="fill:#fff"/><circle class="pupil" cx="160" cy="88" r="6.5" style="fill:var(--ink)"/>'+
+   '<path class="ink" d="M134 96 L152 130 L130 136" style="fill:none"/>'+
+   '<polyline class="ink mouth" points="102,152 118,160 134,150 150,162 168,150" style="fill:none;stroke-width:5"/>'+
+   '<g class="ears ink" style="fill:none"><path d="M192 96 q14 20 0 40"/><path d="M204 86 q24 30 0 60"/><path d="M216 76 q32 40 0 80"/></g>'+
+   '</svg>';
+  document.querySelectorAll("[data-face]").forEach(function(el){el.innerHTML=FACE});
+  var px=0,py=0;
+  window.addEventListener("pointermove",function(e){px=(e.clientX/innerWidth-.5)*2;py=(e.clientY/innerHeight-.5)*2});
+  function faceLevel(l){
+    var m=document.querySelectorAll(".face .mouth"),p=document.querySelectorAll(".face .pupil"),e=document.querySelectorAll(".face .ears path"),i;
+    for(i=0;i<m.length;i++)m[i].style.transform="scaleY("+(1+Math.min(l,.6)*5)+")";
+    for(i=0;i<p.length;i++)p[i].style.transform="translate("+(px*3.5)+"px,"+(py*3)+"px)";
+    for(i=0;i<e.length;i++)e[i].style.opacity=Math.min(1,.2+l*(2.2+i*.6));
+  }
+  function draw(){
+    var w=cv.width,h=cv.height,d=window.devicePixelRatio||1,n=Math.max(10,Math.floor(w/(16*d)));
+    cx.clearRect(0,0,w,h);
+    var cs=getComputedStyle(root),pal=["--blue","--rose","--saffron","--teal"].map(function(k){return cs.getPropertyValue(k).trim()});
+    var gap=w/n,lvl=0,active=!!(analyser&&rec&&!rec.paused),i;
+    if(active){analyser.getByteFrequencyData(buf);var bins=Math.min(buf.length,64);for(i=0;i<bins;i++)lvl+=buf[i];lvl=lvl/bins/255}
+    cx.lineWidth=2*d;cx.strokeStyle="#16122B";cx.lineJoin="round";
+    for(i=0;i<n;i++){
+      var v=active?buf[Math.floor(i/n*Math.min(buf.length,64))]/255:0;
+      var bh=Math.max(h*.16,h*(.1+v*.85)),x=i*gap,mid=x+gap/2,top=(h-bh)/2,bot=top+bh;
+      cx.fillStyle=pal[i%4];cx.beginPath();
+      if(i%2){cx.moveTo(mid,top);cx.lineTo(x+gap*.95,bot);cx.lineTo(x+gap*.05,bot)}else{cx.moveTo(x+gap*.05,top);cx.lineTo(x+gap*.95,top);cx.lineTo(mid,bot)}
+      cx.closePath();cx.fill();cx.stroke();
+    }
+    faceLevel(lvl);
+    requestAnimationFrame(draw);
+  }
+
+  function pickMime(list){for(var i=0;i<list.length;i++){if(window.MediaRecorder&&MediaRecorder.isTypeSupported(list[i]))return list[i]}return ""}
+
+  function Uploader(id,kind){
+    var q=Promise.resolve();this.failed=false;var self=this;
+    this.push=function(blob){if(!blob||!blob.size)return;q=q.then(function(){return fetch("/api/chunk/"+id+"/"+kind,{method:"POST",body:blob}).then(function(r){if(!r.ok)throw 0})}).catch(function(){self.failed=true})};
+    this.done=function(){return q};
+  }
+
+  async function startRec(){
+    if(rec)return;
+    var you=$("#you").value.trim()||"You";W("meridian_you",$("#you").value.trim());
+    var title=$("#title").value.trim()||"Meeting "+new Date().toLocaleString([], {day:"numeric",month:"short",hour:"2-digit",minute:"2-digit"});
+    if(!window.MediaRecorder||!navigator.mediaDevices){setStatus("This browser cannot record. Open this page in Chrome.","err");return}
+    try{var hh=await (await fetch("/api/health")).json();if(hh.free_gb<2){setStatus("Only "+hh.free_gb+" GB of disk is free. Free some space first. A one-hour meeting needs about 0.3 GB.","err");return}}catch(e){}
+    $("#startBtn").disabled=true;setStatus("Asking for permission…");
+    var mic=null,disp=null;
+    try{
+      if(mode==="call"){
+        try{disp=await navigator.mediaDevices.getDisplayMedia({video:{frameRate:15},audio:{echoCancellation:false,noiseSuppression:false,autoGainControl:false}})}
+        catch(e){setStatus("Sharing was cancelled. Press Start recording and choose the meeting tab.","err");$("#startBtn").disabled=false;return}
+      }
+      try{mic=await navigator.mediaDevices.getUserMedia({audio:{echoCancellation:true,noiseSuppression:true,autoGainControl:true,channelCount:1,voiceIsolation:true}})}
+      catch(e){if(disp)disp.getTracks().forEach(function(t){t.stop()});setStatus("The microphone is blocked. Allow it in Chrome and try again.","err");$("#startBtn").disabled=false;return}
+      var ctx=new (window.AudioContext||window.webkitAudioContext)();
+      var dest=ctx.createMediaStreamDestination();
+      var mixer=ctx.createGain();mixer.connect(dest);
+      ctx.createMediaStreamSource(mic).connect(mixer);
+      var hasOthers=!!(disp&&disp.getAudioTracks().length);
+      if(hasOthers)ctx.createMediaStreamSource(new MediaStream(disp.getAudioTracks())).connect(mixer);
+      analyser=ctx.createAnalyser();analyser.fftSize=256;buf=new Uint8Array(analyser.frequencyBinCount);mixer.connect(analyser);
+
+      var r=await fetch("/api/start",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({title:title,you:you,mode:mode,source:src})});
+      var id=(await r.json()).id;
+      var recorders=[];
+      var aMime=pickMime(["audio/webm;codecs=opus","audio/webm"]);
+      function make(kind,stream,mime){
+        var up=new Uploader(id,kind),mr=new MediaRecorder(stream,Object.assign(mime?{mimeType:mime}:{},kind==="video"?{videoBitsPerSecond:600000,audioBitsPerSecond:48000}:{audioBitsPerSecond:32000}));
+        mr.ondataavailable=function(e){up.push(e.data)};mr.start(5000);recorders.push({mr:mr,up:up});return mr;
+      }
+      make("mic",new MediaStream(mic.getAudioTracks()),aMime);
+      if(hasOthers)make("others",new MediaStream(disp.getAudioTracks()),aMime);
+      if(disp&&$("#keepVideo").checked){
+        var vMime=pickMime(["video/webm;codecs=vp8,opus","video/webm;codecs=vp9,opus","video/webm"]);
+        make("video",new MediaStream(disp.getVideoTracks().concat(dest.stream.getAudioTracks())),vMime);
+      }
+      try{if(navigator.wakeLock){navigator.wakeLock.request("screen").then(function(l){wl=l}).catch(function(){})}}catch(e){}
+      rec={id:id,recorders:recorders,mic:mic,disp:disp,ctx:ctx,t0:Date.now(),paused:false,pausedAt:0,pausedTotal:0,title:title};
+      if(disp){$("#preview").srcObject=disp;disp.getVideoTracks()[0].addEventListener("ended",function(){if(rec)stopRec()})}
+      $("#screen").classList.add("live");$("#screen").classList.toggle("noscreen",!disp);
+      if(!disp){$("#screen").classList.remove("live");$("#screen").classList.add("live");$("#preview").style.display="none";}
+      $("#pauseBtn").disabled=false;$("#stopBtn").disabled=false;
+      document.querySelectorAll(".tab,.mode").forEach(function(b){b.disabled=true});
+      setStatus(mode==="call"&&!hasOthers?"Recording your voice only. No meeting sound was shared. Stop and start again, and tick “Also share tab audio”.":"Recording to this computer",mode==="call"&&!hasOthers?"err":"live");
+      panel="notes";tabs();renderPanel();
+    }catch(e){
+      setStatus("Could not start: "+(e&&e.message||e),"err");$("#startBtn").disabled=false;
+      if(mic)mic.getTracks().forEach(function(t){t.stop()});if(disp)disp.getTracks().forEach(function(t){t.stop()});
+    }
+  }
+  function elapsed(){if(!rec)return 0;var now=rec.paused?rec.pausedAt:Date.now();return (now-rec.t0-rec.pausedTotal)/1000}
+  setInterval(function(){if(rec)$("#timer").textContent=hms(elapsed())},500);
+
+  $("#pauseBtn").onclick=function(){
+    if(!rec)return;
+    if(!rec.paused){rec.recorders.forEach(function(x){if(x.mr.state==="recording")x.mr.pause()});rec.paused=true;rec.pausedAt=Date.now();$("#pauseBtn").textContent="Resume";$("#recTxt").textContent="PAUSED";$("#screen").classList.add("paused")}
+    else{rec.recorders.forEach(function(x){if(x.mr.state==="paused")x.mr.resume()});rec.pausedTotal+=Date.now()-rec.pausedAt;rec.paused=false;$("#pauseBtn").textContent="Pause";$("#recTxt").textContent="REC";$("#screen").classList.remove("paused")}
+  };
+  $("#stopBtn").onclick=function(){stopRec()};
+
+  async function stopRec(){
+    if(!rec)return;var r=rec,dur=elapsed();rec=null;
+    $("#stopBtn").disabled=true;$("#pauseBtn").disabled=true;$("#pauseBtn").textContent="Pause";$("#screen").classList.remove("paused");
+    setStatus("Saving the recording…");
+    await Promise.all(r.recorders.map(function(x){return new Promise(function(res){
+      if(x.mr.state==="inactive"){res();return}
+      x.mr.onstop=function(){res()};x.mr.stop()}).then(function(){return x.up.done()})}));
+    var failed=r.recorders.some(function(x){return x.up.failed});
+    try{if(wl){wl.release();wl=null}}catch(e){}
+    r.mic.getTracks().forEach(function(t){t.stop()});if(r.disp)r.disp.getTracks().forEach(function(t){t.stop()});try{r.ctx.close()}catch(e){}
+    analyser=null;$("#preview").srcObject=null;$("#screen").classList.remove("live");$("#preview").style.display="";
+    $("#startBtn").disabled=false;document.querySelectorAll(".tab,.mode").forEach(function(b){b.disabled=false});
+    if(failed){setStatus("Some of the recording did not save. Check that the server window is still running.","err")}
+    await fetch("/api/finish/"+r.id,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({duration:dur})});
+    current={id:r.id,processing:true,title:r.title};panel="notes";tabs();renderPanel();poll(r.id);
+  }
+  $("#startBtn").onclick=startRec;
+
+  function poll(id){
+    fetch("/api/status/"+id).then(function(r){return r.json()}).then(function(m){
+      if(!current||current.id!==id)return;
+      if(m.status==="done"){setStatus("Notes are ready.","live");loadMeeting(id)}
+      else if(m.status==="error"){setStatus("Could not finish: "+(m.error||"unknown problem"),"err");current={id:id,error:m.error};renderPanel()}
+      else{setStatus(m.step+"…");$("#procStep")&&($("#procStep").textContent=m.step+"…");setTimeout(function(){poll(id)},1500)}
+    }).catch(function(){setTimeout(function(){poll(id)},3000)});
+  }
+  function loadMeeting(id){
+    fetch("/api/meeting/"+id).then(function(r){return r.json()}).then(function(m){current=m;renderPanel()});
+  }
+
+  /* ---------- side panel ---------- */
+  var colors={};
+  function colorFor(n){if(!(n in colors))colors[n]=Object.keys(colors).length%4+1;return "h"+colors[n]}
+  function seek(t){var v=$("#player");if(v){v.currentTime=t;v.play&&v.play().catch(function(){})}}
+  function renderPanel(){
+    var p=$("#pane");p.classList.toggle("dk",panel==="summary");
+    if(panel==="summary"){return renderSummary(p)}
+    if(panel==="past"){return renderPast(p)}
+    if(panel==="reports"){return renderReports(p)}
+    if(!current){p.innerHTML='<div class="empty"><div class="orb" style="width:56px;height:56px"></div><b>Your notes appear here</b><span>Record a meeting, press stop, and the summary, decisions and to-do list show up in about a minute.</span></div>';return}
+    if(current.processing){p.innerHTML='<div class="working"><div class="core"></div><b id="procStep">Saving the recording…</b><span style="color:var(--dim);font-size:13px">This stays on your computer. Long meetings take a few minutes.</span><div class="bars"><i></i><i style="width:82%"></i><i style="width:64%"></i></div></div>';return}
+    if(current.error){p.innerHTML='<div class="empty"><b>Something went wrong</b><span>'+esc(current.error)+'</span></div>';return}
+    var m=current;
+    if(panel==="tx"){
+      var segs=(m.transcript&&m.transcript.segments)||[];
+      if(!segs.length){p.innerHTML='<div class="empty"><b>No speech found</b><span>Check that the microphone or tab sound was on.</span></div>';return}
+      p.innerHTML=segs.map(function(s,i){return '<div class="ln" data-t="'+s.start+'"><div class="av '+colorFor(s.speaker)+'">'+esc(s.speaker.charAt(0).toUpperCase())+'</div><b>'+esc(s.speaker)+'<em>'+mmss(s.start)+'</em></b><p>'+esc(s.text)+'</p></div>'}).join("");
+      p.querySelectorAll(".ln").forEach(function(el){el.onclick=function(){seek(+el.dataset.t)}});
+      return;
+    }
+    var n=m.notes||{};var done=n.done||[];
+    var h='<div class="sec" style="grid-template-columns:1fr 1fr;gap:10px"><a class="btn" target="_blank" rel="noopener" style="text-align:center;background:linear-gradient(115deg,#9A5B2E,#C77D45 22%,#E0B36A 52%,#F3D9A8 66%,#E0B36A 82%,#B8742F);color:#2A1608;text-shadow:none" href="'+Q("/static/report.html?id="+m.id)+'">Executive report</a><a class="btn ghost" target="_blank" rel="noopener" style="text-align:center" href="'+Q("/static/brief.html?id="+m.id)+'">One-page brief</a></div>';
+    if(m.has&&m.has.video)h+='<div class="sec"><video id="player" controls preload="metadata" src="'+Q("/api/media/"+m.id+"/video")+'" style="width:100%;border-radius:16px;background:#14102a"></video></div>';
+    if(n.note)h+='<div class="sec"><div class="note">'+esc(n.note)+'</div></div>';
+    var segs=(m.transcript&&m.transcript.segments)||[],PALN=["#2B45FF","#FF5C93","#12B8A6","#FFB52E","#8A5CFF"],sp=[],tk={},tt=0;
+    segs.forEach(function(x){if(sp.indexOf(x.speaker)<0)sp.push(x.speaker);var d=Math.max(1,x.end-x.start);tk[x.speaker]=(tk[x.speaker]||0)+d;tt+=d});
+    var dsec=Math.round(m.duration||(segs.length?segs[segs.length-1].end:0)),dtxt=dsec>=3600?Math.floor(dsec/3600)+"h "+Math.floor(dsec%3600/60)+"m":(dsec>=60?Math.floor(dsec/60)+" min":dsec+" s");
+    var when=new Date((m.created||0)*1000).toLocaleDateString([], {day:"numeric",month:"short"})+" · "+new Date((m.created||0)*1000).toLocaleTimeString([], {hour:"2-digit",minute:"2-digit"});
+    var lang={hi:"Hindi + English",en:"English"}[(m.transcript||{}).language]||"";
+    h+='<div class="nhero"><div class="neye"><b>MERIDIAN BRIEF</b>'+esc(when)+'</div><div class="ntitle">'+esc(m.title||"Meeting")+'</div><div class="nchips"><span>'+dtxt+'</span>'+(lang?'<span>'+lang+(lang==="English"?"":" · notes in English")+'</span>':'')+'<span>'+sp.length+' voice'+(sp.length===1?"":"s")+'</span></div><p class="ntldr">'+esc(n.summary||"")+'</p></div>'+
+      '<div class="nstats"><div class="nstat"><b>'+(n.decisions||[]).length+'</b><span>Decisions</span></div><div class="nstat"><b>'+(n.actions||[]).length+'</b><span>Tasks</span></div><div class="nstat"><b>'+(m.words||0).toLocaleString()+'</b><span>Words</span></div></div>'+
+      (sp.length?'<div class="sec"><h3>Who talked</h3><div><div class="nbar">'+sp.map(function(k,i){return '<i style="width:'+(tk[k]/tt*100)+'%;background:'+PALN[i%5]+'"></i>'}).join("")+'</div><div class="nleg">'+sp.map(function(k,i){return '<span><i style="background:'+PALN[i%5]+'"></i>'+esc(k)+' '+Math.round(tk[k]/tt*100)+'%</span>'}).join("")+'</div></div></div>':'');
+    if((n.topics||[]).length)h+='<div class="sec"><h3>Topics discussed</h3>'+n.topics.map(function(t,i){return '<div class="decision"><b class="dn">'+(i+1)+'</b><span><b style="display:block">'+esc(t.title)+'</b>'+(t.summary?'<span style="color:var(--dim);font-weight:600;font-size:13px">'+esc(t.summary)+'</span>':'')+'</span></div>'}).join("")+'</div>';
+    if(n.parts){["mine","others"].forEach(function(k){var q=n.parts[k];if(!q)return;
+      h+='<div class="sec"><h3>'+(k==="mine"?"What "+esc(q.name)+" said":"What the others said")+'</h3><p class="sum">'+esc(q.summary||"")+'</p>'+
+        (q.points||[]).map(function(x){return '<div class="decision">'+esc(x)+'</div>'}).join("")+
+        (q.actions||[]).map(function(a){return '<div class="act" style="grid-template-columns:1fr auto"><span><b>'+esc(a.owner)+'</b>  '+esc(a.task)+'</span>'+(a.due?'<span class="chip">'+esc(a.due)+'</span>':'')+'</div>'}).join("")+'</div>'})}
+    if((n.decisions||[]).length)h+='<div class="sec"><h3>Decisions</h3>'+n.decisions.map(function(d,i){return '<div class="decision"><b class="dn">'+(i+1)+'</b><span>'+esc(d)+'</span></div>'}).join("")+'</div>';
+    if((n.actions||[]).length)h+='<div class="sec"><h3>Who does what</h3>'+n.actions.map(function(a,i){return '<label class="act"><input type="checkbox" data-i="'+i+'"'+(done.indexOf(i)>-1?" checked":"")+'><span><b>'+esc(a.owner)+'</b>  '+esc(a.task)+'</span>'+(a.due?'<span class="chip">'+esc(a.due)+'</span>':'')+'</label>'}).join("")+'</div>';
+    if((n.moments||[]).length)h+='<div class="sec"><h3>Key moments</h3><div class="moments">'+n.moments.map(function(x){return '<button class="mom" type="button" data-t="'+x.t+'"><em>'+mmss(x.t)+'</em>'+esc(x.label)+'</button>'}).join("")+'</div></div>';
+    h+='<div class="sec"><h3>Take it with you</h3><div class="row"><button class="btn" type="button" id="copyNotes">Copy notes</button><button class="btn ghost" type="button" id="copyTx">Copy transcript</button><a class="btn ghost" href="'+Q("/api/notes/"+m.id+".txt")+'">Download notes</a>'+
+      (m.has&&m.has.video?'<a class="btn ghost" style="text-decoration:none" href="'+Q("/api/media/"+m.id+"/video?download=1")+'">Download video</a>':'')+
+      ((m.has&&(m.has.mic||m.has.others))?'<a class="btn ghost" style="text-decoration:none" href="'+Q("/api/media/"+m.id+"/"+(m.has.others?"others":"mic")+"?download=1")+'">Download audio</a>':'')+'</div></div>';
+    if(m.has&&(m.has.video||m.has.mic||m.has.others)){h+='<div class="sec"><h3>Storage</h3><div class="row"><button class="btn ghost" type="button" id="delMedia">Delete video and audio ('+Math.round((m.size||0)/1048576)+' MB), keep notes</button></div></div>'}
+    p.innerHTML=h;
+    p.querySelectorAll(".nstat b").forEach(function(el){var t=parseInt(el.textContent.replace(/[^0-9]/g,""),10);if(!isFinite(t)||t<1||matchMedia("(prefers-reduced-motion: reduce)").matches)return;var big=el.textContent.indexOf(",")>-1;var t0=null;(function tick(ts){t0=t0||ts;var k=Math.min(1,(ts-t0)/900),v=Math.round(t*(1-Math.pow(1-k,3)));el.textContent=big?v.toLocaleString():v;if(k<1)requestAnimationFrame(tick)})(performance.now())});
+    var dm=$("#delMedia");if(dm){var armed=false;dm.onclick=function(){if(!armed){armed=true;dm.textContent="Sure? Click again. The notes stay.";setTimeout(function(){armed=false;dm.textContent="Delete video and audio, keep notes"},4000);return}
+      fetch("/api/meeting/"+m.id+"/media",{method:"DELETE"}).then(function(){loadMeeting(m.id)})}}
+    p.querySelectorAll(".mom").forEach(function(b){b.onclick=function(){seek(+b.dataset.t)}});
+    p.querySelectorAll(".act input").forEach(function(c){c.onchange=function(){
+      var ids=[].slice.call(p.querySelectorAll(".act input")).filter(function(x){return x.checked}).map(function(x){return +x.dataset.i});
+      n.done=ids;fetch("/api/meeting/"+m.id+"/actions",{method:"PATCH",headers:{"Content-Type":"application/json"},body:JSON.stringify({done:ids})})}});
+    var cn=$("#copyNotes"),ct=$("#copyTx");
+    cn.onclick=function(){copy(plainNotes(m),cn)};ct.onclick=function(){copy(plainTx(m),ct)};
+  }
+  function plainTx(m){return (((m.transcript||{}).segments)||[]).map(function(s){return "["+mmss(s.start)+"] "+s.speaker+": "+s.text}).join("\n")}
+  function plainNotes(m){var n=m.notes||{};return (m.title||"Meeting")+"\n\nSummary:\n"+(n.summary||"")+"\n\nDecisions:\n"+(n.decisions||[]).map(function(x){return "- "+x}).join("\n")+"\n\nWho does what:\n"+(n.actions||[]).map(function(a){return "- "+a.owner+": "+a.task+(a.due?" ("+a.due+")":"")}).join("\n")+"\n"}
+  function copy(t,btn){
+    var ok=function(){var o=btn.textContent;btn.textContent="Copied";setTimeout(function(){btn.textContent=o},1400)};
+    function fb(){var ta=document.createElement("textarea");ta.value=t;document.body.appendChild(ta);ta.select();try{document.execCommand("copy");ok()}catch(e){}ta.remove()}
+    try{navigator.clipboard.writeText(t).then(ok,fb)}catch(e){fb()}
+  }
+  var smPick="";
+  function drawSummary(p,m,done){
+    var n=m.notes||{},topics=n.topics||[],decs=n.decisions||[],acts=n.actions||[],men=n.mentions||{},oq=n.open_questions||[];
+    var overview=String(n.overview||n.summary||"").split(/\n+/).filter(function(x){return x.trim()});
+    var focus=n.main_focus||"";
+    var key=(n.key_points&&n.key_points.length?n.key_points:decs).slice(0,6);
+    var dsec=Math.round(m.duration||0),dtxt=dsec>=3600?Math.floor(dsec/3600)+"h "+Math.floor(dsec%3600/60)+"m":(dsec>=60?Math.floor(dsec/60)+" min":dsec+" s");
+    var lang={hi:"Hindi + English",en:"English"}[(m.transcript||{}).language]||"";
+    var when=new Date((m.created||0)*1000).toLocaleString([], {day:"numeric",month:"short",hour:"2-digit",minute:"2-digit"});
+    var h='';
+    if(done.length>1)h+='<div class="sm-sel"><select id="smSel" aria-label="Choose a meeting">'+done.map(function(d){return '<option value="'+d.id+'"'+(d.id===m.id?" selected":"")+'>'+esc(d.title)+'</option>'}).join("")+'</select></div>';
+    h+='<div><div class="sm-eye">Meeting summary'+(n.kind?" · "+esc(n.kind):"")+'</div><h3 class="sm-title" style="margin-top:10px">'+esc(n.headline||m.title)+'</h3><div class="sm-chips" style="margin-top:12px"><span>'+dtxt+'</span><span>'+when+'</span>'+(lang?'<span>'+lang+(lang==="English"?"":" · notes in English")+'</span>':'')+'<span>'+topics.length+' topic'+(topics.length===1?"":"s")+'</span></div></div>';
+    h+='<div><div class="sm-lab">Overall summary</div>'+(overview.map(function(x){return '<p class="sm-p">'+esc(x)+'</p>'}).join("")||'<p class="sm-p">No summary was written.</p>')+'</div>';
+    if(focus)h+='<div class="sm-focus"><div class="sm-lab" style="margin:0">Main focus</div><b>'+esc(focus)+'</b></div>';
+    if(key.length)h+='<div><div class="sm-lab">What matters most</div><ol class="sm-take">'+key.map(function(k){return '<li><span>'+esc(k)+'</span></li>'}).join("")+'</ol></div>';
+    if(topics.length)h+='<div><div class="sm-lab">Every topic discussed</div>'+topics.map(function(t,i){return '<div class="sm-topic"><div class="sm-th"><b>'+String(i+1).padStart(2,"0")+'</b><span>'+esc(t.title)+'</span>'+(t.share!=null?'<em>'+t.share+'%</em>':'<i></i>')+'</div><p>'+esc(t.paragraph||t.summary||"")+'</p>'+((t.points||[]).length?'<ul>'+t.points.slice(0,5).map(function(x){return '<li>'+esc(x)+'</li>'}).join("")+'</ul>':'')+(t.outcome?'<div class="sm-out"><em>Outcome</em>'+esc(t.outcome)+'</div>':'')+'</div>'}).join("")+'</div>';
+    if(decs.length)h+='<div><div class="sm-lab">Decisions</div>'+decs.map(function(d,i){return '<div class="sm-row"><span class="a">'+(i+1)+'</span><span>'+esc(d)+'</span><span></span></div>'}).join("")+'</div>';
+    if(acts.length)h+='<div><div class="sm-lab">Who does what</div>'+acts.map(function(a){return '<div class="sm-row"><span class="a">'+esc((a.owner||"?").charAt(0).toUpperCase())+'</span><span><b>'+esc(a.owner)+'</b> · '+esc(a.task)+'</span>'+(a.due?'<span class="d">'+esc(a.due)+'</span>':'<span></span>')+'</div>'}).join("")+'</div>';
+    if(oq.length)h+='<div><div class="sm-lab">Still open</div>'+oq.map(function(q){return '<p class="sm-p" style="margin-bottom:6px">• '+esc(q)+'</p>'}).join("")+'</div>';
+    if((men.terms||[]).length||(men.people||[]).length)h+='<div><div class="sm-lab">Mentioned</div><div class="sm-chips">'+(men.terms||[]).map(function(x){return '<span>'+esc(x)+'</span>'}).join("")+(men.people||[]).map(function(x){return '<span>'+esc(x)+'</span>'}).join("")+'</div></div>';
+    h+='<div class="sm-btns"><button class="gold" type="button" id="smCopy">Copy summary</button><a class="ghost" style="text-decoration:none" target="_blank" rel="noopener" href="'+Q("/static/report.html?id="+m.id)+'">Open executive report</a><a class="ghost" style="text-decoration:none" href="'+Q("/api/notes/"+m.id+".txt")+'">Download</a></div>';
+    p.innerHTML='<div class="sm">'+h+'</div>';
+    var sel=$("#smSel");if(sel)sel.onchange=function(){smPick=sel.value;current=null;renderSummary(p)};
+    $("#smCopy").onclick=function(){
+      var t=(m.title||"Meeting")+"\n"+(n.headline||"")+"\n\n"+overview.join("\n\n")+(focus?"\n\nMAIN FOCUS: "+focus:"")+"\n\nTOPICS\n"+topics.map(function(x,i){return (i+1)+". "+x.title+"\n   "+(x.paragraph||x.summary||"")+(x.outcome?"\n   Outcome: "+x.outcome:"")}).join("\n")+"\n\nDECISIONS\n"+(decs.map(function(d){return "- "+d}).join("\n")||"- none")+"\n\nACTIONS\n"+(acts.map(function(a){return "- "+a.owner+": "+a.task+(a.due?" ("+a.due+")":"")}).join("\n")||"- none");
+      copy(t,$("#smCopy"))};
+  }
+  function renderSummary(p){
+    p.innerHTML='<div class="working"><div class="core"></div><b style="color:#F7EAD8">Opening the summary…</b></div>';
+    fetch("/api/meetings").then(function(r){return r.json()}).then(function(list){
+      var done=list.filter(function(m){return m.status==="done"});
+      if(!done.length){p.innerHTML='<div class="sm"><div class="sm-eye">Meeting summary</div><p class="sm-p">Finish a meeting and its full written summary appears here.</p></div>';return}
+      var id=(current&&current.id&&done.some(function(m){return m.id===current.id}))?current.id:(smPick&&done.some(function(m){return m.id===smPick})?smPick:done[0].id);
+      smPick=id;
+      return fetch("/api/meeting/"+id).then(function(r){return r.json()}).then(function(m){if(panel==="summary")drawSummary(p,m,done)});
+    }).catch(function(){p.innerHTML='<div class="sm"><p class="sm-p">Could not load the summary.</p></div>'});
+  }
+  function renderReports(p){
+    p.innerHTML='<div class="skel"></div>';
+    fetch("/api/meetings").then(function(r){return r.json()}).then(function(list){
+      var done=list.filter(function(m){return m.status==="done"});
+      if(!done.length){p.innerHTML='<div class="empty"><b>No reports yet</b><span>Finish a meeting and its executive report appears here.</span></div>';return}
+      p.innerHTML='<div class="rhead"><b>Executive reports</b><span>One polished presentation per meeting: the bottom line, what was discussed, decisions and next steps.</span></div>'+done.map(function(m,i){
+        var d=new Date((m.created||0)*1000).toLocaleString([], {day:"numeric",month:"short",hour:"2-digit",minute:"2-digit"});
+        return '<a class="rcard" style="animation-delay:'+(i*0.06)+'s" target="_blank" rel="noopener" href="'+Q("/static/report.html?id="+m.id)+'"><div class="re">Executive meeting report'+(m.kind?" · "+esc(m.kind):"")+'</div><div class="rt">'+esc(m.title)+'</div>'+(m.headline?'<div class="rh">'+esc(m.headline)+'</div>':'')+'<div class="rm"><span>'+hms(m.duration||0)+'</span><span>'+d+'</span>'+(m.words?'<span>'+m.words.toLocaleString()+' words</span>':'')+'</div><span class="rgo">Open report</span></a>'}).join("");
+    }).catch(function(){p.innerHTML='<div class="empty"><b>Could not load reports</b></div>'});
+  }
+  function renderPast(p){
+    p.innerHTML='<div class="skel"></div>';
+    fetch("/api/meetings").then(function(r){return r.json()}).then(function(list){
+      if(!list.length){p.innerHTML='<div class="empty"><b>No meetings yet</b><span>Your recordings will be listed here.</span></div>';return}
+      fetch("/api/health").then(function(r){return r.json()}).then(function(h){var e=p.querySelector("#store");if(e)e.textContent="Meetings use "+(h.used_mb>=1000?(h.used_mb/1000).toFixed(1)+" GB":h.used_mb+" MB")+". This computer has "+h.free_gb+" GB free."});
+      p.innerHTML='<div class="note" id="store" style="margin-bottom:10px">Checking storage…</div>'+list.map(function(m){var d=new Date((m.created||0)*1000).toLocaleString([], {day:"numeric",month:"short",hour:"2-digit",minute:"2-digit"});
+        return '<div style="display:grid;grid-template-columns:1fr auto;gap:6px;align-items:start"><button class="past" data-id="'+m.id+'"><b>'+esc(m.title)+'</b><span>'+(m.status==="done"?hms(m.duration||0):(m.status==="recording"?"unfinished":esc(m.status)))+'</span><span>'+d+'</span><span>'+(m.size?Math.round(m.size/1048576)+" MB":"")+'</span></button><button class="del" data-del="'+m.id+'" title="Delete this meeting">Delete</button></div>'}).join("");
+      p.querySelectorAll(".past").forEach(function(b){b.onclick=function(){panel="notes";tabs();current={id:b.dataset.id,processing:true};renderPanel();
+        fetch("/api/meeting/"+b.dataset.id).then(function(r){return r.json()}).then(function(m){if(m.status==="done"){current=m;renderPanel()}else if(m.status==="error"){current={id:m.id,error:m.error};renderPanel()}else if(m.status==="recording"){fetch("/api/finish/"+m.id,{method:"POST",headers:{"Content-Type":"application/json"},body:"{}"}).then(function(){current={id:m.id,processing:true};renderPanel();poll(m.id)})}else{current={id:m.id,processing:true};renderPanel();poll(m.id)}})}});
+      p.querySelectorAll(".del").forEach(function(b){var armed=false;b.onclick=function(){
+        if(!armed){armed=true;b.textContent="Sure? Click again";setTimeout(function(){armed=false;b.textContent="Delete"},3000);return}
+        fetch("/api/meeting/"+b.dataset.del,{method:"DELETE"}).then(function(){if(current&&current.id===b.dataset.del)current=null;renderPast(p)})}});
+    });
+  }
+
+  document.addEventListener("visibilitychange",function(){if(rec&&document.visibilityState==="visible"&&navigator.wakeLock){navigator.wakeLock.request("screen").then(function(l){wl=l}).catch(function(){})}});
+  window.addEventListener("resize",sizeCv);
+  window.addEventListener("beforeunload",function(e){if(rec){e.preventDefault();e.returnValue=""}});
+  if(/^(localhost|127\.0\.0\.1)$/.test(location.hostname)){
+    fetch("/api/share").then(function(r){return r.json()}).then(function(sh){
+      $("#share").hidden=false;
+      if(sh.link){
+        $("#shareBody").innerHTML='<div class="row" style="align-items:center"><input id="shareLink" readonly value="'+esc(sh.link)+'" style="flex:1 1 320px;padding:10px 12px;border:3px solid var(--ink);border-radius:4px 14px 4px 14px;font:600 13px var(--mono);min-width:0;background:#fff;color:var(--ink)"><button class="btn" id="copyShare" type="button">Copy link</button></div><span>Friends open this link in Chrome on a laptop. They install nothing. Their notes are saved into your Drive, one folder per person. Keep this Mac awake and Meridian running.</span>';
+        $("#copyShare").onclick=function(){copy(sh.link,$("#copyShare"))};
+      }else{
+        $("#shareBody").innerHTML='<span>Sharing is off. Double-click <b>Start Meridian Sharing</b> on your Desktop to get a link for friends.</span>';
+      }
+    }).catch(function(){});
+  }
+  if(!(navigator.mediaDevices&&navigator.mediaDevices.getDisplayMedia)||!/Chrome\//.test(navigator.userAgent)||/Mobile|Android|iPhone/.test(navigator.userAgent)){
+    setStatus("Please open this link in Google Chrome on a laptop or computer. Phones and other browsers cannot record a meeting tab.","err");
+  }
+  renderTip();renderPanel();sizeCv();draw();
+})();
+</script>
+</body>
+</html>
