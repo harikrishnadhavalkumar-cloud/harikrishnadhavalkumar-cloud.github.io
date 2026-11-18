@@ -1,17 +1,9 @@
 <!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Meridian</title><meta name="robots" content="noindex">
-<style>body{margin:0;min-height:100vh;display:grid;place-items:center;font:16px system-ui,sans-serif;background:#f6f3fb;color:#241c3a;text-align:center}
-.b{max-width:340px;padding:24px}h1{font-size:22px;margin:0 0 8px}p{color:#5b5370;line-height:1.5}
-.d{width:36px;height:36px;border-radius:50%;border:4px solid #d9d0ee;border-top-color:#6b4fd8;margin:0 auto 16px;animation:s 1s linear infinite}@keyframes s{to{transform:rotate(360deg)}}</style></head>
-<body><div class="b"><div class="d"></div><h1>Opening Meridian…</h1><p id="m">One moment, finding the meeting recorder.</p></div>
-<script>
-var API="https://api.github.com/repos/harikrishnadhavalkumar-cloud/harikrishnadhavalkumar-cloud.github.io/contents/meridian/current.json";
-function say(t){document.getElementById("m").textContent=t}
-async function cur(){var r=await fetch(API+"?t="+Date.now(),{headers:{Accept:"application/vnd.github.raw"},cache:"no-store"});return (await r.json()).url}
-async function alive(u){try{var c=new AbortController();setTimeout(function(){c.abort()},6000);var r=await fetch(u+"/api/health?t="+Date.now(),{signal:c.signal,cache:"no-store"});return r.ok}catch(e){return false}}
-async function go(n){
- try{var u=await cur();if(await alive(u)){location.replace(u+"/");return}}catch(e){}
- say("Meridian is waking up. This can take 1–2 minutes… (try "+(n+1)+")");
- setTimeout(function(){go(n+1)},8000)}
-go(0);
-</script></body></html>
+<style>body{margin:0;min-height:100vh;display:grid;place-items:center;font:16px system-ui,sans-serif;background:#f6f3fb;color:#1d1633;padding:20px}
+.b{max-width:420px;width:100%;display:grid;gap:14px}h1{margin:0;font-size:30px;letter-spacing:-.02em}p{margin:0;color:#5b5370}
+a.x{display:block;text-align:center;text-decoration:none;font-weight:700;padding:18px;border-radius:16px;color:#fff;background:linear-gradient(110deg,#6b4fd8,#e5457f)}
+a.y{display:block;text-align:center;text-decoration:none;font-weight:700;padding:16px;border-radius:16px;color:#1d1633;background:#fff;border:2px solid #d6cfea}
+small{color:#5b5370}</style></head><body><div class="b"><h1>Meridian</h1><p>Meeting recorder with clear English notes.</p>
+<a class="x" href="record.html">Record a meeting</a><small>Always works. Your recording is saved safely, even if the host's computer is off.</small>
+<a class="y" href="go.html">Meetings, notes and reports</a><small>Opens when the host's computer is on.</small></div></body></html>
