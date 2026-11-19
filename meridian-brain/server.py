@@ -132,9 +132,10 @@ def share():
     """Only the host (this Mac) sees the link to give to friends."""
     if g.owner != "host":
         abort(404)
-    f = DATA / ".public_url"
-    url = f.read_text().strip() if f.exists() else ""
-    return jsonify(url=url, link=(url if SITE_OPEN else url + "/?k=" + SITE_KEY) if url else "")
+    fixed = "https://harikrishnadhavalkumar-cloud.github.io/meridian/"
+    kf = DATA / ".inbox_key"
+    code = kf.read_text().strip() if kf.exists() else ""
+    return jsonify(url=fixed, link=fixed + ("#c=" + code if code else ""))
 
 
 @app.get("/api/notes/<mid>.txt")
@@ -197,13 +198,48 @@ def finish(mid):
 def reprocess(mid):
     d = mdir(mid)
     write_meta(d, status="queued", step="Starting again")
-    threading.Thread(target=run_pipeline, args=(mid,), daemon=True).start()
+    threading.Thread(target=run_pipeline, args=(mid, request.args.get("notes_only") == "1"), daemon=True).start()
     return jsonify(ok=True)
 
 
 @app.get("/api/status/<mid>")
 def status(mid):
     return jsonify(read_meta(mdir(mid)))
+
+
+@app.get("/api/voices")
+def voices_list():
+    import voice
+    return jsonify(voice.names())
+
+
+@app.post("/api/voice/<name>")
+def voice_enroll(name):
+    import voice
+    name = re.sub(r"[^\w .'-]", "", name).strip()[:40]
+    if not name:
+        abort(400)
+    raw = DATA / ("_voice_%s.bin" % uuid.uuid4().hex[:8])
+    wav = raw.with_suffix(".wav")
+    try:
+        raw.write_bytes(request.get_data())
+        if not voice.to_wav(raw, wav):
+            return jsonify(error="Could not read the recording"), 400
+        try:
+            clips = voice.enroll(name, wav)
+        except ValueError as e:
+            return jsonify(error=str(e)), 400
+        return jsonify(ok=True, name=name, clips=clips)
+    finally:
+        raw.unlink(missing_ok=True)
+        wav.unlink(missing_ok=True)
+
+
+@app.delete("/api/voice/<name>")
+def voice_delete(name):
+    import voice
+    voice.delete(name)
+    return jsonify(ok=True)
 
 
 @app.get("/api/meetings")
@@ -435,6 +471,18 @@ def quality_issues(segments, n):
             issues.append("no topics were found")
         elif sum(1 for t in topics if t.get("paragraph")) < max(1, len(topics) // 2):
             issues.append("most topics have no written paragraph")
+    if words >= 300 and n.get("engine") == "local-deep":
+        secs = n.get("sections") or []
+        need = max(2, int(0.7 * (-(-words // 380))))
+        if len(secs) < need:
+            issues.append("not every part of the meeting has its own section (%d of %d)" % (len(secs), need))
+        elif sum(1 for x in secs if len((x.get("summary") or "").split()) >= 20) < 0.8 * len(secs):
+            issues.append("many sections are too short")
+        if len((n.get("catchup") or "").split()) < 80:
+            issues.append("the catch-up briefing is short")
+        cov = n.get("coverage") or {}
+        if cov.get("terms_total", 0) >= 8 and cov.get("terms_found", 0) < 0.85 * cov["terms_total"]:
+            issues.append("some key words from the meeting are missing in the notes (%d of %d)" % (cov.get("terms_found", 0), cov["terms_total"]))
     texts = [s["text"].lower().strip() for s in segments]
     rep = sum(1 for i in range(1, len(texts)) if texts[i] == texts[i - 1])
     if segments and rep / len(segments) > 0.08:
@@ -442,59 +490,76 @@ def quality_issues(segments, n):
     return issues
 
 
-def run_pipeline(mid):
+def run_pipeline(mid, notes_only=False):
     d = DATA / mid
     try:
         meta = read_meta(d)
         with _job_lock:
             write_meta(d, status="working", step="Preparing the sound")
-            if (d / "video.webm").exists():
-                if ffmpeg("-i", str(d / "video.webm"), "-c", "copy", str(d / "video_fixed.webm")):
-                    pass
-            # which sound files do we have?
-            sources = []
-            for kind in ("mic", "others"):
-                f = d / (kind + ".webm")
-                if f.exists() and f.stat().st_size > 2000:
-                    sources.append(kind)
-            if not sources and (d / "video.webm").exists():
-                sources = ["video"]
-            if not sources:
-                raise RuntimeError("No sound was recorded")
-            write_meta(d, step="Listening to the recording")
-            parts, lang = [], None
-            for kind in sources:
-                wav = d / (kind + ".wav")
-                src = d / (kind + ".webm")
-                if not ffmpeg("-i", str(src), "-ac", "1", "-ar", "16000", str(wav)):
-                    raise RuntimeError("Could not read the %s sound" % kind)
-                if kind == "mic":
-                    who = meta["you"] if meta["mode"] == "call" else "Voices"
-                elif kind == "others":
-                    who = "Others"
-                else:
-                    who = "Voices"
-                label = {"mic": "your voice", "others": "the other voices", "video": "the recording"}[kind]
-                state = {"last": -1}
+            reuse = notes_only and (d / "transcript.json").exists()
+            if reuse:
+                tj = json.loads((d / "transcript.json").read_text())
+                segments, lang = tj["segments"], tj.get("language")
+            else:
+                if (d / "video.webm").exists():
+                    if ffmpeg("-i", str(d / "video.webm"), "-c", "copy", str(d / "video_fixed.webm")):
+                        pass
+                # which sound files do we have?
+                sources = []
+                for kind in ("mic", "others"):
+                    f = d / (kind + ".webm")
+                    if f.exists() and f.stat().st_size > 2000:
+                        sources.append(kind)
+                if not sources and (d / "video.webm").exists():
+                    sources = ["video"]
+                if not sources:
+                    raise RuntimeError("No sound was recorded")
+                write_meta(d, step="Listening to the recording")
+                parts, lang = [], None
+                voices_found = {}
+                for kind in sources:
+                    wav = d / (kind + ".wav")
+                    src = d / (kind + ".webm")
+                    if not ffmpeg("-i", str(src), "-ac", "1", "-ar", "16000", str(wav)):
+                        raise RuntimeError("Could not read the %s sound" % kind)
+                    if kind == "mic":
+                        who = meta["you"] if meta["mode"] == "call" else "Voices"
+                    elif kind == "others":
+                        who = "Others"
+                    else:
+                        who = "Voices"
+                    label = {"mic": "your voice", "others": "the other voices", "video": "the recording"}[kind]
+                    state = {"last": -1}
 
-                def prog(frac, label=label):
-                    pct = int(frac * 100)
-                    if pct >= state["last"] + 3:
-                        state["last"] = pct
-                        write_meta(d, step="Listening to %s (%d%%)" % (label, pct))
+                    def prog(frac, label=label):
+                        pct = int(frac * 100)
+                        if pct >= state["last"] + 3:
+                            state["last"] = pct
+                            write_meta(d, step="Listening to %s (%d%%)" % (label, pct))
 
-                segs, language = transcribe.transcribe(str(wav), who, prog)
-                lang = lang or language
-                for s in segs:
-                    s["_kind"] = kind
-                parts.extend(segs)
-                wav.unlink(missing_ok=True)
-            segments = merge(parts)
-            (d / "transcript.json").write_text(json.dumps({"language": lang, "segments": segments}, ensure_ascii=False))
+                    segs, language = transcribe.transcribe(str(wav), who, prog)
+                    lang = lang or language
+                    for s in segs:
+                        s["_kind"] = kind
+                    if not (kind == "mic" and meta.get("mode") == "call"):
+                        try:
+                            import voice
+                            write_meta(d, step="Recognising voices")
+                            found = voice.label_segments(segs, str(wav))
+                            if found:
+                                voices_found.update(found)
+                        except Exception:
+                            pass
+                    parts.extend(segs)
+                    wav.unlink(missing_ok=True)
+                segments = merge(parts)
+                (d / "transcript.json").write_text(json.dumps({"language": lang, "segments": segments}, ensure_ascii=False))
+                if voices_found:
+                    write_meta(d, voices=sorted(voices_found, key=lambda k: -voices_found[k]))
             write_meta(d, step="Writing the notes")
             n = notes.generate(segments, meta.get("title", ""), meta.get("you", "You"), meta.get("mode", "call"))
             issues = quality_issues(segments, n)
-            if issues and n.get("engine") == "local":  # not good enough: try once more before anything is shown
+            if issues and str(n.get("engine", "")).startswith("local"):  # not good enough: try once more before anything is shown
                 write_meta(d, step="Writing the notes again (first try was thin)")
                 n2 = notes.generate(segments, meta.get("title", ""), meta.get("you", "You"), meta.get("mode", "call"))
                 if len(quality_issues(segments, n2)) <= len(issues):
