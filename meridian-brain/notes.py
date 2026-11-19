@@ -42,7 +42,7 @@ def _empty_part(name, key, you):
 
 def _split(segments, you):
     mine = [s for s in segments if s["speaker"] == you]
-    others = [s for s in segments if s["speaker"] == "Others"]
+    others = [s for s in segments if s["speaker"] != you]
     return mine, others
 
 
@@ -60,7 +60,27 @@ def generate(segments, title="", you="You", mode="call"):
             return out
     if _local_ready():
         try:
-            return _local_notes(segments, you, split)
+            try:
+                import deep
+                dn = deep.build(segments, you)
+            except Exception as e:
+                dn = None
+                deep_err = "%s: %s" % (type(e).__name__, e)
+            if split or not dn:
+                out = _local_notes(segments, you, split)
+            else:
+                out = _basic_notes(segments, you, False)   # quick base (no AI); the deep notes carry the real content
+            if dn:
+                out.update(dn)
+                out["mentions"] = _mentions(segments)
+                if not out.get("summary") or out.get("summary", "").startswith("The AI"):
+                    out["summary"] = out.get("headline", "")
+                if out.get("catchup"):
+                    out["overview"] = out["catchup"]
+                    out["summary"] = " ".join(out["catchup"].split(". ")[:2]).strip()
+            else:
+                out["deep_error"] = deep_err
+            return out
         except Exception as e:
             out = _basic_notes(segments, you, split)
             out["note"] = "The free AI had a problem (%s). Basic notes shown." % type(e).__name__
