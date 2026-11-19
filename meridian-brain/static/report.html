@@ -69,14 +69,14 @@ h2{font-size:22px;line-height:1.15}
 
 /* columns: the paginator fills these; overflow is measured, never shown */
 .cols{flex:1;min-height:0;display:grid;grid-template-columns:var(--gc,1fr 1fr);grid-template-rows:minmax(0,1fr);gap:26px}
-.col{min-height:0;min-width:0;overflow:hidden;display:flex;flex-direction:column;gap:14px}
+.col{min-height:0;min-width:0;overflow:hidden;display:flex;flex-direction:column;gap:10px}
 .col>*{flex:none}
 .col.e{visibility:hidden}
 .col.side{padding:14px 16px;gap:12px}
-.pg.t1 .cols{--gc:1.22fr 1fr}.pg.t3 .cols{--gc:1.3fr 1fr}
+.pg.t1 .cols{--gc:1.22fr 1fr}.pg.t2 .cols{--gc:1fr 1fr 1fr;gap:18px}
 
 /* typography of content */
-.ov p{margin:0;font-size:13.6px;line-height:1.6;color:#F2E4D0;font-weight:500}
+.ov p{margin:0;font-size:13.2px;line-height:1.6;color:#F2E4D0;font-weight:500}
 .ov:first-child p::first-letter{font:500 29px/.9 var(--display);float:left;padding:4px 8px 0 0;color:var(--gold)}
 .blk h4{margin:0 0 8px;font:500 10px var(--mono);letter-spacing:.22em;text-transform:uppercase;color:var(--gold);display:flex;align-items:center;gap:9px}
 .blk h4::after{content:"";flex:1;height:1px;background:linear-gradient(90deg,var(--edge2),transparent)}
@@ -96,30 +96,32 @@ ol.dec li::before{content:counter(d);position:absolute;left:0;top:1px;font:500 1
 .st.oth{color:var(--soft);border-color:var(--edge2)}
 
 /* detail topics */
-.tp{display:grid;grid-template-columns:28px 1fr;column-gap:9px;padding:10px 13px 11px 11px;border-radius:15px}
-.tp .n{font:500 17px/1 var(--display);letter-spacing:-.04em;padding-top:2px;background:var(--metal);-webkit-background-clip:text;background-clip:text;color:transparent}
-.tp h3{font-size:12.6px;line-height:1.3;letter-spacing:-.02em;font-weight:500}
-.tp .th{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:4px 10px}.tp .chips{gap:5px}.tp .chip{font-size:9px;padding:2px 8px}
-.tp p{margin:7px 0 0;font-size:11.9px;line-height:1.5;color:#EBDCC7}
+.tp{padding:9px 11px 10px;border-radius:13px}
+.tp .th{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:4px 8px}
+.tp h3{font-size:11.8px;line-height:1.3;letter-spacing:-.02em;font-weight:500}
+.tp .n{font:500 11px var(--display);margin-right:6px;background:var(--metal);-webkit-background-clip:text;background-clip:text;color:transparent}
+.tp .chips{gap:4px;margin-top:2px}.tp .chip{font-size:8.5px;padding:1px 7px}
+.tp p{margin:6px 0 0;font-size:11.4px;line-height:1.5;color:#EBDCC7}
 
 /* page 3 */
-.tb{width:100%;border-collapse:collapse;font-size:12px;line-height:1.42}
-.tb th{font:500 9.5px var(--mono);letter-spacing:.16em;text-transform:uppercase;color:var(--mute);text-align:left;padding:0 10px 6px}
-.tb td{padding:8px 10px;border-top:1px solid var(--edge);vertical-align:top;color:#F2E4D0}
-.tb td:first-child{white-space:nowrap;font-weight:700;color:var(--champ);width:1%}
-.tb td:last-child{white-space:nowrap;font:500 11px var(--mono);color:var(--gold);width:1%}
+.ac{display:grid;gap:6px}
+.ac .r{padding:6px 10px 7px;border-top:1px solid var(--edge)}
+.ac .r:first-child{border-top:0}
+.ac .h{display:flex;justify-content:space-between;gap:8px;font:500 10px var(--mono)}
+.ac .h b{color:var(--champ);font-weight:500;letter-spacing:.04em}.ac .h em{color:var(--gold);font-style:normal}
+.ac .r p{margin:2px 0 0;font-size:11.4px;line-height:1.42;color:#F2E4D0}
 .nums{display:grid;grid-template-columns:1fr 1fr;gap:8px}
-.nm{padding:10px 12px 9px;border-radius:13px}
-.nm b{display:block;font:500 17px/1.1 var(--display);letter-spacing:-.04em;background:var(--metal);-webkit-background-clip:text;background-clip:text;color:transparent;overflow-wrap:anywhere}
-.nm span{display:block;margin-top:5px;font-size:11.2px;line-height:1.35;font-weight:700;color:var(--cream)}
-.nm small{display:block;margin-top:2px;font-size:10.6px;line-height:1.35;color:var(--soft);font-weight:500}
+.nm{padding:8px 10px 7px;border-radius:13px}
+.nm b{display:block;font:500 15px/1.1 var(--display);letter-spacing:-.04em;background:var(--metal);-webkit-background-clip:text;background-clip:text;color:transparent;overflow-wrap:anywhere}
+.nm span{display:block;margin-top:4px;font-size:10.8px;line-height:1.35;font-weight:700;color:var(--cream)}
+.nm small{display:block;margin-top:2px;font-size:10px;line-height:1.35;color:var(--soft);font-weight:500}
 .tl{display:grid;gap:8px}
-.tl .r{padding:8px 11px;border-radius:12px}
+.tl .r{padding:6px 10px;border-radius:12px}
 .tl .r b{font-size:12.2px;font-weight:700;color:var(--champ)}
-.tl .r p{margin:3px 0 0;font-size:11.2px;line-height:1.42;color:var(--soft)}
+.tl .r p{margin:2px 0 0;font-size:10.8px;line-height:1.42;color:var(--soft)}
 .tl .m{display:flex;gap:6px;flex-wrap:wrap;margin-top:5px}
 ul.pl{margin:0;padding:0;list-style:none;display:grid;gap:6px}
-ul.pl li{position:relative;padding-left:15px;font-size:11.8px;line-height:1.45;color:#EBDCC7}
+ul.pl li{position:relative;padding-left:15px;font-size:11.2px;line-height:1.45;color:#EBDCC7}
 ul.pl li::before{content:"";position:absolute;left:1px;top:.55em;width:6px;height:6px;border-radius:50%;background:var(--gold);box-shadow:0 0 8px rgba(255,210,122,.7)}
 ul.pl.q li::before{background:none;border:1.5px solid var(--gold);width:7px;height:7px}
 .endnote{font:500 9.5px var(--mono);letter-spacing:.08em;color:var(--mute);margin-top:2px}
@@ -133,10 +135,9 @@ ul.pl.q li::before{background:none;border:1.5px solid var(--gold);width:7px;heig
   .pg{width:100%;height:auto;zoom:1;border-radius:0;border-left:0;border-right:0;padding:24px 16px 16px;gap:16px}
   .cover{grid-template-columns:1fr}.orb{display:none}
   h1{font-size:21px}.bl{font-size:14.5px}
-  .cols,.pg.t1 .cols,.pg.t3 .cols{display:flex;flex-direction:column;gap:18px}
+  .cols,.pg.t1 .cols,.pg.t2 .cols{display:flex;flex-direction:column;gap:18px}
   .col{overflow:visible}.col.side{padding:16px}
   .ov p{font-size:14px}.tp p{font-size:13px}.tp h3{font-size:13.5px}ol.dec li{font-size:13px}
-  .tb{font-size:12.5px}.tb td:first-child,.tb td:last-child{white-space:normal}
   .foot span:nth-child(2){display:none}
 }
 @media print{
@@ -184,12 +185,13 @@ ul.pl.q li::before{background:none;border:1.5px solid var(--gold);width:7px;heig
       "The meeting closed with ownership and timing. Sumit takes the web and AI answer sections, Neha takes app store optimisation and the competitor comparison, and Hari writes the plan, targets and summary. Drafts are due this evening so there is time for one short review before the final document goes out tomorrow. Two points remain open: whether finance approves the AppTweak credits in time, and how to measure visibility inside AI answers, where no reliable tool exists yet. The team will state its method openly instead of guessing."],
      decisions:["Deliver a two to three page strategy update by tomorrow, 11 am.","Track the top 30 keywords in detail and the next 500 in a table.","Use SEMrush for web data and AppTweak for app store data.","Use Groww and MoneyControl as the gold standard.","Show the projection as a range, with its assumptions.","Hold a 20 minute review tonight at 7 pm before sign-off."],
      detail:[
-      {title:"Purpose of the document and the last six months",start:0,end:470,speakers:["Hari","Sumit"],paragraph:"Hari explained why the document exists: leadership wants one clear view of organic growth, and the last update was a long deck nobody finished. He wants two to three pages in plain language, each section leading with the conclusion, then the evidence, then the action. The first section looks back over six months. Sumit will pull monthly web sessions, organic signups and store installs onto one simple trend and mark the dates that explain each bend, such as the core algorithm update. Branded and non branded traffic will be split, and Hari wants one sentence each on what worked, what did not and what was learned."},
-      {title:"Plan and projection",start:470,end:800,speakers:["Hari"],paragraph:"The second section turns the history into a plan for the next quarter. Hari will write it, using the trend data from Sumit and Neha as the base. The projection must be a range, with a low, expected and high case and the assumptions under each, such as how many pages ship and how quickly rankings move. He was firm that a single number would be read as a promise, and he does not want the team held to a figure that depends on search engine updates. The plan should name the three or four initiatives behind the range and how much each is expected to deliver."},
-      {title:"Keyword positions: top 30 and the next 500",start:800,end:1130,speakers:["Hari","Sumit","Neha"],paragraph:"Sumit will export the top 30 transactional keywords from SEMrush with current position, change over six months and the best competitor ranking above Univest. Neha will do the same for app store keywords using AppTweak. The next 500 appear as a summary table grouped by theme, with counts in positions one to three, four to ten and beyond. Neha warned that the AppTweak trial ends on Friday and the larger export needs credits, so Hari will ask finance for approval first thing tomorrow. If credits slip, Neha will use the trial export for the top 30 and mark the 500 as pending."},
-      {title:"Internal targets and the gold standard",start:1130,end:1450,speakers:["Hari","Neha"],paragraph:"Hari will draft the internal targets from numbers already agreed with product, and flag any still unconfirmed so nobody mistakes a draft for a commitment. For the gold standard the group chose Groww and MoneyControl, because they win the transactional searches Univest cares about. Neha will build a side by side table covering ranking, page quality, app listing strength and content depth, ending with a short list of what the leaders do that Univest does not yet do. A third competitor was mentioned, but the name was hard to hear, so it is parked for now."},
-      {title:"Current processes, the ideal plan and initiatives",start:1450,end:2090,speakers:["Hari","Sumit","Neha"],paragraph:"Sumit described the present flow: briefs arrive by chat, keyword research is done per request, content goes live without a ranking check, and results are reviewed only when someone asks. Hari wants this written honestly, because it makes the case for change. The ideal plan is a weekly rhythm with a standing keyword list, a content calendar tied to it, a quality check before publishing and a Monday ranking review. Four initiatives were listed. Neha favoured the store listing rewrite as cheapest and fastest; Sumit favoured the transactional pages as the biggest revenue lever. Both will be shown with effort and impact."},
-      {title:"Action points and timelines",start:2090,end:2430,speakers:["Hari","Sumit","Neha"],paragraph:"Hari closed by fixing owners and dates. Sumit delivers the keyword export by 3 pm today and his two sections by 6 pm. Neha delivers the app store section and the competitor table by 6 pm. Hari writes the plan, projection and targets, requests the AppTweak credits and runs a 20 minute review at 7 pm, moved from 5 pm so the analysts have more time. The final document goes to leadership tomorrow at 11 am. He asked everyone to message him early if a number looks wrong instead of fixing it quietly, because a visible gap is easier to explain than a hidden one."}
+      {title:"Purpose of the document and the last six months",start:0,end:470,speakers:["Hari", "Sumit"],paragraph:"Hari explained why the document exists: leadership wants one clear view of organic growth, and the last update was a long deck that nobody finished reading. He wants two to three pages in plain language that can be read in about ten minutes, with each section leading with the conclusion, then the evidence, then the action. The first section looks back over six months. Sumit will pull monthly web sessions, organic signups and store installs onto one simple trend and mark the dates that explain each bend, such as the core algorithm update and the finance article refresh, so readers see cause and effect rather than a bare curve. Branded and non branded traffic behave very differently, so they will be split. Hari also wants one sentence each on what worked, what did not and what the team learned."},
+      {title:"Plan and projection",start:470,end:800,speakers:["Hari"],paragraph:"The second section turns the history into a plan for the next quarter. Hari will write it himself, using the trend data from Sumit and Neha as the base. The projection must be shown as a range, with a low, expected and high case and the assumptions written under each, such as how many pages ship and how quickly rankings move. He was firm that a single number would be read as a promise, and he does not want the team held to a figure that depends on factors outside its control, like search engine updates. The plan should name the three or four initiatives that drive the range and show how much of the movement each one is expected to deliver, so leadership can see where effort creates the most return and decide what to back."},
+      {title:"Keyword positions: top 30 and the next 500",start:800,end:1130,speakers:["Hari", "Sumit", "Neha"],paragraph:"The third section is the keyword picture. Sumit will export the top 30 transactional keywords from SEMrush with current position, change over six months and the best competitor ranking above Univest. Neha will do the same for app store keywords using AppTweak. The next 500 keywords appear as a summary table grouped by theme, with counts in positions one to three, four to ten and beyond, so the table shows where the team is close to winning. Neha warned that the AppTweak trial ends on Friday and the larger export needs credits, so Hari will ask finance for approval first thing tomorrow. If credits slip, Neha will use the trial export for the top 30 and mark the 500 as pending rather than delay the whole document, and Hari agreed that this is a fair fallback."},
+      {title:"Internal targets and the gold standard",start:1130,end:1450,speakers:["Hari", "Neha"],paragraph:"This section sets targets and compares Univest with the best in the market. Hari will draft the internal targets from numbers already agreed with product, and flag any that are still unconfirmed so nobody mistakes a draft for a commitment. For the gold standard the group chose Groww and MoneyControl, because they win the transactional searches Univest cares about most. Neha will build a side by side table covering ranking, page quality, app listing strength and content depth, and end it with a short list of what the leaders do that Univest does not yet do. Hari asked that each gap be written as a plain fact, for example the number of pages a competitor has for a topic against Univest's number, and not as an opinion. A third competitor was mentioned, but the name was hard to hear, so it is parked for now."},
+      {title:"Current processes and the ideal plan",start:1450,end:1780,speakers:["Hari", "Sumit"],paragraph:"Sumit described how the team works today: briefs arrive by chat, keyword research is done per request, content goes live without a ranking check, and results are reviewed only when someone asks. There is no standing keyword list and no owner for the monthly numbers. Hari wants this written honestly, including the delays, because it makes the case for change better than any argument. The ideal plan is a steady weekly rhythm built on a standing keyword list, a content calendar tied to it, a quality check before publishing, and a Monday ranking review that anyone can read in five minutes. Sumit added that the rhythm should also include a monthly look at what AI answer engines say about Univest, even though no reliable tool exists for it yet. The team will describe its manual method openly instead of guessing."},
+      {title:"Initiatives and priorities",start:1780,end:2090,speakers:["Hari", "Sumit", "Neha"],paragraph:"The initiatives section lists what the team will actually do, ranked by expected effect and effort. Hari suggested four candidates: rebuilding the top transactional pages, a refresh programme for older articles, a structured data project aimed at AI answers, and a rewrite of the Hindi and English store listings. Neha argued that the store listings are the cheapest and fastest and should go first. Sumit preferred the transactional pages because they carry the most revenue and every week of delay costs signups. Instead of settling the argument in the room, they agreed to show both with an effort score and an impact score and let the reasoning speak. Hari will decide the final order after tonight's review and will state it as a recommendation with the trade-off visible, not as a done deal."},
+      {title:"Action points and timelines",start:2090,end:2430,speakers:["Hari", "Sumit", "Neha"],paragraph:"Hari closed by fixing owners and dates. Sumit delivers the keyword export by 3 pm today and his two sections by 6 pm. Neha delivers the app store section and the competitor table by 6 pm. Hari writes the plan, projection and targets, requests the AppTweak credits and runs a 20 minute review at 7 pm, moved from 5 pm so the analysts have more time. The final document goes to leadership tomorrow at 11 am. He asked everyone to message him early if a number looks wrong instead of fixing it quietly, because a visible gap is easier to explain than a hidden one. He also asked that every chart carry its source and date, and that nothing be rounded in a way that flatters the result. The meeting ended on time."}
      ]},
     summary:"Hari briefed two analysts on a two to three page organic growth update, due tomorrow.",
     deadlines:[{item:"Strategy update document",date:"Tomorrow, 11 am",change:"new",owner:"Hari",detail:"Two to three pages, final to leadership"},{item:"Section drafts",date:"Today, 6 pm",change:"new",owner:"Sumit, Neha"},{item:"Keyword export, top 30 and next 500",date:"Today, 3 pm",change:"confirmed",owner:"Sumit"},{item:"Review call",date:"Today, 7 pm",change:"moved",owner:"All",detail:"Moved from 5 pm"},{item:"AppTweak credit approval",date:"Tomorrow, 9 am",change:"at risk",owner:"Hari",detail:"Needed for the next 500 app keywords"}],
@@ -200,27 +202,36 @@ ul.pl.q li::before{background:none;border:1.5px solid var(--gold);width:7px;heig
     unclear:["The organic installs figure for last quarter was hard to hear.","The name of the third competitor was unclear."],
     coverage:{terms_total:24,terms_found:22}}};
   function oldDemo(){var d=JSON.parse(JSON.stringify(DEMO)),n=d.notes,e=n.exec;n.overview=e.overview.join("\n\n");n.topics=e.detail.map(function(t){return{title:t.title,paragraph:t.paragraph}});n.decisions=e.decisions;delete n.exec;delete n.coverage;return d}
-  function longDemo(){var d=JSON.parse(JSON.stringify(DEMO)),de=d.notes.exec.detail,ex=["Reporting cadence","Content calendar","Technical SEO backlog","Schema and structured data","Hindi content","Store listing tests"],i=0;while(de.length<14){var b=de[i%6];de.push({title:ex[i%6]+" (extra "+(i+1)+")",start:b.start,end:b.end,speakers:b.speakers,paragraph:b.paragraph});i++}d.notes.exec.detail=de;return d}
+  function longDemo(){var d=JSON.parse(JSON.stringify(DEMO)),de=d.notes.exec.detail,ex=["Reporting cadence","Content calendar","Technical SEO backlog","Schema and structured data","Hindi content","Store listing tests"],i=0;while(de.length<14){var b=de[i%7];de.push({title:ex[i%6]+" (extra "+(i+1)+")",start:b.start,end:b.end,speakers:b.speakers,paragraph:b.paragraph});i++}d.notes.exec.detail=de;return d}
 
   /* ---------- pagination: fill measured columns, spill to a new page when full ---------- */
   var flat=window.innerWidth<=760&&!(window.matchMedia&&matchMedia("print").matches);
   function over(c){return c.scrollHeight>c.clientHeight+1}
   function el(tag,cls,html){var e=document.createElement(tag);if(cls)e.className=cls;if(html!=null)e.innerHTML=html;return e}
   var pages=[];
-  function mkPage(kind,head,side){
-    var p=el("section","pg "+kind);p.innerHTML='<i class="corner tl"></i><i class="corner br"></i>'+head+'<div class="cols"><div class="col"></div><div class="col'+(side?" glass side":"")+'"></div></div><div class="foot"></div>';
-    $("#root").appendChild(p);var o={el:p,cols:[p.querySelectorAll(".col")[0],p.querySelectorAll(".col")[1]]};pages.push(o);return o}
+  function mkPage(kind,head,side,nc){
+    nc=nc||2;var cs="";for(var i=0;i<nc;i++)cs+='<div class="col'+(side&&i===1?" glass side":"")+'"></div>';
+    var p=el("section","pg "+kind);p.innerHTML='<i class="corner tl"></i><i class="corner br"></i>'+head+'<div class="cols">'+cs+'</div><div class="foot"></div>';
+    $("#root").appendChild(p);var o={el:p,kind:kind,cols:[].slice.call(p.querySelectorAll(".col"))};pages.push(o);return o}
+  function putTo(pg,c,u,cont){var col=pg.cols[c],hh=null;
+    if(cont&&!col.children.length){hh=el("div","blk","<h4>"+esc(cont)+"</h4>");hh.style.marginBottom="-4px";col.appendChild(hh)}
+    col.appendChild(u);
+    if(!flat&&over(col)&&col.children.length>(hh?2:1)){col.removeChild(u);if(hh)col.removeChild(hh);return false}
+    return true}
   function fill(mk,units){
-    var pg=mk(0),cur=0,n=0;
-    function put(c,u,cont){var col=pg.cols[c],hh=null;
-      if(cont&&!col.children.length){hh=el("div","blk","<h4>"+esc(cont)+"</h4>");hh.style.marginBottom="-6px";col.appendChild(hh)}
-      col.appendChild(u);
-      if(!flat&&over(col)&&col.children.length>(hh?2:1)){col.removeChild(u);if(hh)col.removeChild(hh);return false}
-      return true}
+    var pg=mk(0),n=0;
     units.forEach(function(u){
-      var node=u.el,c=u.col,ok,ct=u.cont&&node.firstChild.tagName!=="H4"?u.cont:"";
-      if(c==="a"){ok=put(cur,node);if(!ok&&cur===0){cur=1;ok=put(1,node)}if(!ok){pg=mk(++n);cur=0;put(0,node)}}
-      else{ok=put(c,node,ct);if(!ok){pg=mk(++n);put(c,node,ct)}}
+      var node=u.el,c=u.col,ct=u.cont&&node.firstChild.tagName!=="H4"?u.cont:"";
+      if(!putTo(pg,c,node,ct)){pg=mk(++n);putTo(pg,c,node,ct)}
+    })}
+  /* one continuous flow over 3-column pages: detail topics first, then the compact blocks, filling column after column */
+  function flow(units){
+    var pg,ci=0,k=0;
+    function np(){pg=mkPage("t2",'<div class="ph"><div><div class="eyebrow"></div>'+(k?"":"<h2></h2>")+"</div></div>",false,3);pg.first=!k++;ci=0}
+    np();
+    units.forEach(function(u){
+      var node=u.el,ct=u.cont&&node.firstChild.tagName!=="H4"?u.cont:"";node.setAttribute("data-k",u.k);
+      for(;;){if(putTo(pg,ci,node,ct))break;if(ci<2)ci++;else np()}
     })}
 
   function build(m){
@@ -253,22 +264,23 @@ ul.pl.q li::before{background:none;border:1.5px solid var(--gold);width:7px;heig
       var p=mkPage("t1",head,true);
       return p},u1);
 
-    /* page 2 */
-    if(detail.length){
-      var u2=detail.map(function(t,i){
-        var ch="";if(t.start!=null&&t.end!=null&&(t.end>0))ch+='<span class="chip">'+mmss(t.start)+" - "+mmss(t.end)+"</span>";
-        t.speakers.forEach(function(s){ch+='<span class="chip sp">'+esc(s)+"</span>"});
-        return{col:"a",el:el("article","tp glass",'<div class="n">'+String(i+1).padStart(2,"0")+'</div><div><div class="th"><h3>'+esc(t.title)+"</h3>"+(ch?'<div class="chips">'+ch+"</div>":"")+"</div><p>"+esc(t.paragraph)+"</p></div>")}});
-      fill(function(n){return mkPage("t2",'<div class="ph"><div><div class="eyebrow">Detailed summary'+(n?", continued":"")+'</div><h2>Topic by topic, what was said and why it matters</h2></div></div>')},u2)}
-
-    /* page 3 */
-    var u3=[];
-    chunks(acts,7).forEach(function(c,i){u3.push({col:0,cont:"Action points, continued",el:el("div","blk",(i?"":'<h4>Action points</h4>')+'<table class="tb"><thead><tr><th>Owner</th><th>Task</th><th>Due</th></tr></thead><tbody>'+c.map(function(a){return "<tr><td>"+esc(a.owner||"")+"</td><td>"+esc(a.task||txt(a))+"</td><td>"+esc(a.due||"")+"</td></tr>"}).join("")+"</tbody></table>")})});
-    if(qs.length)u3.push({col:0,el:el("div","blk",'<h4>Open questions</h4><ul class="pl q">'+qs.map(function(q){return "<li>"+esc(q)+"</li>"}).join("")+"</ul>")});
-    if(unc.length)u3.push({col:0,el:el("div","blk",'<h4>Hard to hear</h4><ul class="pl q">'+unc.map(function(q){return "<li>"+esc(q)+"</li>"}).join("")+"</ul>")});
-    chunks(nums,8).forEach(function(c,i){u3.push({col:1,cont:"Numbers, continued",el:el("div","blk",(i?"":'<h4>Numbers</h4>')+'<div class="nums">'+c.map(function(x){return '<div class="nm glass"><b>'+esc(x.value||"")+"</b><span>"+esc(x.label||"")+"</span>"+(x.context?"<small>"+esc(x.context)+"</small>":"")+"</div>"}).join("")+"</div>")})});
-    chunks(tools,4).forEach(function(c,i){u3.push({col:1,cont:"Tools and access, continued",el:el("div","blk",(i?"":'<h4>Tools and access</h4>')+'<div class="tl">'+c.map(function(x){return '<div class="r glass"><b>'+esc(x.name||"")+"</b>"+(x.what?"<p>"+esc(x.what)+"</p>":"")+'<div class="m">'+(x.access?'<span class="chip">'+esc(x.access)+"</span>":"")+(x.cost?'<span class="chip sp">'+esc(x.cost)+"</span>":"")+"</div>"+(x.note?"<p>"+esc(x.note)+"</p>":"")+"</div>"}).join("")+"</div>")})});
-    if(u3.length)fill(function(n){return mkPage("t3",'<div class="ph"><div><div class="eyebrow">Actions, numbers and open points'+(n?", continued":"")+'</div><h2>What happens next, and what is still open</h2></div></div>')},u3);
+    /* pages 2+: detailed summary, then the compact blocks, one flow */
+    var u2=[];
+    detail.forEach(function(t,i){
+      var ch="";if(t.start!=null&&t.end!=null&&(t.end>0))ch+='<span class="chip">'+mmss(t.start)+" - "+mmss(t.end)+"</span>";
+      t.speakers.forEach(function(s){ch+='<span class="chip sp">'+esc(s)+"</span>"});
+      u2.push({k:"d",col:"a",el:el("article","tp glass",'<div class="th"><h3><span class="n">'+String(i+1).padStart(2,"0")+"</span>"+esc(t.title)+"</h3>"+(ch?'<div class="chips">'+ch+"</div>":"")+"</div><p>"+esc(t.paragraph)+"</p>")})});
+    chunks(acts,3).forEach(function(c,i){u2.push({k:"t",cont:"Action points, continued",el:el("div","blk",(i?"":'<h4>Action points</h4>')+'<div class="ac">'+c.map(function(a){return '<div class="r"><div class="h"><b>'+esc(a.owner||"")+"</b><em>"+esc(a.due||"")+"</em></div><p>"+esc(a.task||txt(a))+"</p></div>"}).join("")+"</div>")})});
+    chunks(nums,6).forEach(function(c,i){u2.push({k:"t",cont:"Numbers, continued",el:el("div","blk",(i?"":'<h4>Numbers</h4>')+'<div class="nums">'+c.map(function(x){return '<div class="nm glass"><b>'+esc(x.value||"")+"</b><span>"+esc(x.label||"")+"</span>"+(x.context?"<small>"+esc(x.context)+"</small>":"")+"</div>"}).join("")+"</div>")})});
+    chunks(tools,3).forEach(function(c,i){u2.push({k:"t",cont:"Tools and access, continued",el:el("div","blk",(i?"":'<h4>Tools and access</h4>')+'<div class="tl">'+c.map(function(x){return '<div class="r glass"><b>'+esc(x.name||"")+"</b>"+(x.what?"<p>"+esc(x.what)+"</p>":"")+'<div class="m">'+(x.access?'<span class="chip">'+esc(x.access)+"</span>":"")+(x.cost?'<span class="chip sp">'+esc(x.cost)+"</span>":"")+"</div>"+(x.note?"<p>"+esc(x.note)+"</p>":"")+"</div>"}).join("")+"</div>")})});
+    if(qs.length)u2.push({k:"t",el:el("div","blk",'<h4>Open questions</h4><ul class="pl q">'+qs.map(function(q){return "<li>"+esc(q)+"</li>"}).join("")+"</ul>")});
+    if(unc.length)u2.push({k:"t",el:el("div","blk",'<h4>Hard to hear</h4><ul class="pl q">'+unc.map(function(q){return "<li>"+esc(q)+"</li>"}).join("")+"</ul>")});
+    if(u2.length){flow(u2);
+      pages.forEach(function(p){if(p.kind!=="t2")return;
+        var d=p.el.querySelector('[data-k="d"]'),t=p.el.querySelector('[data-k="t"]'),first=p.first,hasD=!!d||(first&&detail.length),e=p.el.querySelector(".eyebrow"),h=p.el.querySelector("h2");
+        var parts=[];if(d||(first&&detail.length))parts.push("Detailed summary"+(first?"":", continued"));if(t)parts.push("Actions, numbers and open points");
+        e.textContent=parts.join("  ·  ");
+        if(h)h.textContent=detail.length?"Topic by topic, what was said and why it matters":"What happens next, and what is still open"})}
 
     /* footers + fit to screen */
     pages.forEach(function(p,i){
