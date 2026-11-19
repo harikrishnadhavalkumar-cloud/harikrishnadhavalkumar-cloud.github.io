@@ -368,7 +368,7 @@ h1,h2,h3,p{margin:0}
       if(p==="/api/share")return __js({},404);
       if(m==="POST"&&p==="/api/start"){var b={};try{b=JSON.parse(o.body||"{}")}catch(e){}
         var id=Array.prototype.map.call(crypto.getRandomValues(new Uint8Array(6)),function(x){return("0"+x.toString(16)).slice(-2)}).join("");
-        try{await __box({a:"start",id:id,title:b.title,you:b.you,mode:b.mode},4)}catch(e){return __js({error:String(e.message)},500)}return __js({id:id})}
+        try{await __box({a:"start",id:id,title:b.title,you:String(b.you||"").slice(0,30)+(b.mic?"~"+b.mic:""),mode:b.mode},4)}catch(e){return __js({error:String(e.message)},500)}return __js({id:id})}
       if(m==="POST"&&(mm=p.match(/^\/api\/chunk\/([a-f0-9]{12})\/(\w+)$/))){
         if(mm[2]==="video")return new Response(null,{status:204});
         var k=mm[1]+mm[2],n=__cnt[k]=(__cnt[k]===undefined?0:__cnt[k]+1);__pend++;
@@ -377,10 +377,10 @@ h1,h2,h3,p{margin:0}
         var ch={mic:(__cnt[mm[1]+"mic"]===undefined?0:__cnt[mm[1]+"mic"]+1),others:(__cnt[mm[1]+"others"]===undefined?0:__cnt[mm[1]+"others"]+1)};
         try{await __box({a:"finish",id:mm[1],duration:dur,chunks:ch},12)}catch(e){}__lstAt=0;return __js({ok:true})}
       if(p==="/api/voices"){await __list();var vo={};__raw.filter(function(m){return m.kind==="voiceprint"&&m.status!=="deleted"}).forEach(function(m){var k=m.title;vo[k]=vo[k]||{clips:0,updated:0};vo[k].clips+=(m.clips||0);vo[k].updated=Math.max(vo[k].updated,m.created||0)});return __js(vo)}
-      if(m==="POST"&&(mm=p.match(/^\/api\/voice\/(.+)$/))){var vn=decodeURIComponent(mm[1]).replace(/[^\w .'-]/g,"").trim().slice(0,40);if(!vn)return __js({error:"name"},400);
+      if(m==="POST"&&(mm=p.match(/^\/api\/voice\/(.+)$/))){var vmic=(s.split("mic=")[1]||"").replace(/[^a-z0-9]/g,"").slice(0,12);var vn=decodeURIComponent(mm[1]).replace(/[^\w .'-]/g,"").trim().slice(0,40);if(!vn)return __js({error:"name"},400);
         var vid=Array.prototype.map.call(crypto.getRandomValues(new Uint8Array(6)),function(x){return("0"+x.toString(16)).slice(-2)}).join("");
         var vb=o.body,SL=3*1024*1024,n2=Math.max(1,Math.ceil(vb.size/SL));
-        try{await __box({a:"start",id:vid,title:"VOICE::"+vn,you:vn,mode:"room"},4);for(var i2=0;i2<n2;i2++){var d2=await __b64(vb.slice(i2*SL,(i2+1)*SL));await __box({a:"chunk",id:vid,kind:"mic",n:i2,d:d2})}await __box({a:"finish",id:vid,duration:60,chunks:{mic:n2,others:0}},12)}catch(e){return __js({error:"Could not save. Check the connection."},500)}
+        try{await __box({a:"start",id:vid,title:"VOICE::"+vn+(vmic?"::"+vmic:""),you:vn,mode:"room"},4);for(var i2=0;i2<n2;i2++){var d2=await __b64(vb.slice(i2*SL,(i2+1)*SL));await __box({a:"chunk",id:vid,kind:"mic",n:i2,d:d2})}await __box({a:"finish",id:vid,duration:60,chunks:{mic:n2,others:0}},12)}catch(e){return __js({error:"Could not save. Check the connection."},500)}
         __lstAt=0;return __js({ok:true,queued:true})}
       if(p==="/api/meetings")return __js(await __list());
       if(m==="DELETE")return __js({error:"Deleting is done on the host computer"},403);
@@ -507,7 +507,7 @@ h1,h2,h3,p{margin:0}
       if(hasOthers)ctx.createMediaStreamSource(new MediaStream(disp.getAudioTracks())).connect(mixer);
       analyser=ctx.createAnalyser();analyser.fftSize=256;buf=new Uint8Array(analyser.frequencyBinCount);mixer.connect(analyser);
 
-      var r=await fetch("/api/start",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({title:title,you:you,mode:mode,source:src})});
+      var r=await fetch("/api/start",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({title:title,you:you,mode:mode,source:src,mic:micTag(mic)})});
       var id=(await r.json()).id;
       var recorders=[];
       var aMime=pickMime(["audio/webm;codecs=opus","audio/webm"]);
@@ -677,9 +677,10 @@ h1,h2,h3,p{margin:0}
   }
 
   var VSCRIPT=function(n){n=n||"…";return 'Hello, my name is <mark>'+esc(n)+'</mark>. I work with the Univest team on marketing, SEO and app store optimisation. Today we will review our keyword rankings, check the tools we have access to, and finish the weekly tracker before Friday. Namaste, mera naam <mark>'+esc(n)+'</mark> hai. Main roz subah meeting mein baithta hoon aur humare saare projects ke deadlines dekhta hoon. Agar kisi ko koi dikkat ho to mujhe bata do, hum kal tak sab theek kar denge. One, two, three, four, five, six, seven, eight, nine, ten. Ek, do, teen, char, paanch, chhe, saat, aath, nau, das. Thank you, that is all from my side.'};
+  function micTag(stream){try{var l=(stream.getAudioTracks()[0]||{}).label||"";var str=l+"|"+navigator.platform,h=5381;for(var i=0;i<str.length;i++){h=((h<<5)+h+str.charCodeAt(i))>>>0}return h.toString(36).slice(0,8)}catch(e){return ""}}
   var vrec=null;
   function renderVoices(p){
-    p.innerHTML='<div class="vc"><h3>Teach Meridian your team’s voices</h3><p>Type a name, then read the paragraph below out loud (about a minute). From then on, Meridian writes that person’s real name in the transcript and the report. Only a short list of numbers is saved, never the recording.</p><div id="vlist"></div>'+
+    p.innerHTML='<div class="vc"><h3>Teach Meridian your team’s voices</h3><p>Type a name, then read the paragraph below out loud (about a minute). From then on, Meridian writes that person’s real name in the transcript and the report. Only a short list of numbers is saved, never the recording.</p><p><b>Important:</b> teach each person on the <b>same computer and microphone you use to record meetings</b> (for meetings in a room, the meeting laptop). A voice taught on another device is not used, so it can never give a wrong name.</p><div id="vlist"></div>'+
       '<div class="vform"><b>Add a person</b><input id="vname" placeholder="Their name, e.g. Ramesh" maxlength="40" autocomplete="off"><div class="vscript" id="vscript"></div>'+
       '<div class="vlvl"><i id="vlvl"></i></div><div class="vbar"><i id="vbar"></i></div><div class="vmsg" id="vmsg">Ready. Press the button and start reading.</div>'+
       '<div class="row" style="display:flex;gap:8px"><button class="btn" id="vgo" type="button">Start reading</button><button class="btn ghost" id="vstop" type="button" hidden>Done reading</button></div>'+
@@ -688,7 +689,7 @@ h1,h2,h3,p{margin:0}
     function list(){
       fetch("/api/voices").then(function(r){return r.json()}).then(function(v){
         var ks=Object.keys(v||{});var box=$("#vlist");if(!box)return;
-        box.innerHTML=ks.length?ks.map(function(k){return '<div class="vp"><div class="av2">'+esc(k.charAt(0).toUpperCase())+'</div><div><b>'+esc(k)+'</b><span>'+v[k].clips+' voice samples</span></div><button class="vdel" data-v="'+esc(k)+'" type="button">Delete</button></div>'}).join(""):'<div class="vp"><span>No voices taught yet. Add the first person below.</span></div>';
+        box.innerHTML=ks.length?ks.map(function(k){return '<div class="vp"><div class="av2">'+esc(k.charAt(0).toUpperCase())+'</div><div><b>'+esc(k)+'</b><span>'+v[k].clips+' voice samples'+(v[k].old?' · taught before devices were tracked: please teach again on the meeting computer':'')+'</span></div><button class="vdel" data-v="'+esc(k)+'" type="button">Delete</button></div>'}).join(""):'<div class="vp"><span>No voices taught yet. Add the first person below.</span></div>';
         box.querySelectorAll(".vdel").forEach(function(b){var armed=false;b.onclick=function(){if(!armed){armed=true;b.textContent="Sure? Click again";setTimeout(function(){armed=false;b.textContent="Delete"},3000);return}
           fetch("/api/voice/"+encodeURIComponent(b.dataset.v),{method:"DELETE"}).then(function(r){if(r.status===403){$("#vmsg").textContent="Voices are deleted on the host computer.";$("#vmsg").className="vmsg err"}list()})}});
       }).catch(function(){})}
@@ -707,7 +708,7 @@ h1,h2,h3,p{margin:0}
       var done=false;function finish(){if(done)return;done=true;clearInterval(tm);var secs=(Date.now()-t0)/1000;mr.onstop=async function(){st.getTracks().forEach(function(t){t.stop()});try{ctx.close()}catch(e){}vrec=null;$("#vstop").hidden=true;$("#vgo").hidden=false;nm.disabled=false;var b=$("#vbar");if(b)b.style.width="0";var l=$("#vlvl");if(l)l.style.width="0";
         if(secs<25){msg("That was too short ("+Math.round(secs)+" s). Please read the whole paragraph.","err");return}
         msg("Learning the voice…","");
-        try{var r=await fetch("/api/voice/"+encodeURIComponent(name),{method:"POST",body:new Blob(chunks,{type:mr.mimeType||"audio/webm"})});var j=await r.json();
+        try{var r=await fetch("/api/voice/"+encodeURIComponent(name)+"?mic="+encodeURIComponent(micTag(st)),{method:"POST",body:new Blob(chunks,{type:mr.mimeType||"audio/webm"})});var j=await r.json();
           if(j.ok){msg(j.queued?"Saved. "+name+"’s voice is being learned. This takes about a minute when the host computer is on, or happens as soon as it is turned on. Open this tab again to see the name.":"Done. "+name+"’s voice is learned ("+j.clips+" samples). It will be recognised in your next meetings.","ok");nm.value="";sc.innerHTML=VSCRIPT("");list();if(j.queued){setTimeout(list,70000);setTimeout(list,150000)}}
           else msg(j.error||"Could not learn this voice. Try again in a quiet room.","err")}catch(e){msg("Could not save the voice. Check the connection and try again.","err")}};mr.stop()}
       $("#vstop").onclick=finish;mr.start(1000);
