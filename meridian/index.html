@@ -38,12 +38,29 @@ body{margin:0;color:var(--ink);font:15px/1.55 var(--body);font-weight:600;min-he
 .vlvl{height:6px;border-radius:4px;background:rgba(22,18,43,.08);overflow:hidden}.vlvl i{display:block;height:100%;width:0;background:var(--teal);transition:width .08s}
 .vmsg{font-weight:700;font-size:13.5px}.vmsg.err{color:#B3263E}.vmsg.ok{color:#0B7A5E}
 
-.spkc{display:grid;gap:12px}.spkc p{margin:0;color:var(--dim);font-size:13px}
-.spk{padding:12px 14px;border:2px solid var(--ink);border-radius:6px 16px 6px 16px;background:#fff;box-shadow:3px 3px 0 var(--b);display:grid;gap:8px}
-.spk .sh{display:flex;justify-content:space-between;align-items:baseline;gap:8px}.spk .sh b{font:800 15px var(--display)}.spk .sh span{font:600 12px var(--mono);color:var(--mute)}
-.spk .pl{display:flex;flex-wrap:wrap;gap:6px}.spk .play{padding:6px 10px;border:1.5px solid var(--line);border-radius:999px;background:#fff;font-size:12.5px;font-weight:700;cursor:pointer}
-.spk .play.on{background:var(--saffron);border-color:var(--ink)}
-.spk input{font:inherit;font-weight:700;padding:10px 12px;border:2px solid var(--ink);border-radius:8px;background:#fff;width:100%}
+
+.spkc{display:grid;gap:14px}.spkh{display:grid;gap:2px}.spkt{font:800 20px var(--display);letter-spacing:-.02em;background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent}
+.spks,.spkn{margin:0;color:var(--dim);font-size:13px}
+.spkwait{display:flex;align-items:center;gap:6px;padding:14px;border:2px dashed var(--a);border-radius:14px;font-weight:700;color:var(--dim)}
+.spkwait i{width:8px;height:8px;border-radius:50%;background:var(--a);animation:bn 1s infinite ease-in-out}.spkwait i:nth-child(2){animation-delay:.15s}.spkwait i:nth-child(3){animation-delay:.3s}
+@keyframes bn{0%,80%,100%{transform:scale(.5);opacity:.4}40%{transform:scale(1);opacity:1}}
+.spk{--c:hsl(var(--h),72%,56%);display:grid;gap:10px;padding:14px 16px;border:2px solid var(--ink);border-radius:8px 22px 8px 22px;background:#fff;box-shadow:5px 5px 0 var(--c);position:relative}
+.spkrow{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.av3{width:42px;height:42px;border-radius:50%;display:grid;place-items:center;font:800 17px var(--display);color:#fff;background:conic-gradient(from 200deg,var(--c),hsl(calc(var(--h) + 60),80%,62%),var(--c));border:2.5px solid var(--ink);flex:none;box-shadow:0 0 0 4px color-mix(in srgb,var(--c) 22%,transparent)}
+.spkmeta{display:grid;gap:1px;min-width:0}.spkmeta b{font:800 15px var(--display)}.spkmeta span{font:600 12px var(--mono);color:var(--mute)}
+.vt{margin-left:auto;padding:5px 11px;border-radius:999px;font-weight:800;font-size:12px;border:1.5px solid var(--ink);background:#fff}
+.vt.woman{background:#FFE0EE;color:#9B1F58}.vt.man{background:#DDE8FF;color:#1D3FA8}.vt.unclear{background:#F2EEFA;color:#5B5370}
+.bar3{height:7px;border-radius:5px;background:rgba(22,18,43,.09);overflow:hidden}.bar3 i{display:block;height:100%;background:var(--c);border-radius:5px}
+.spk .pl{display:flex;flex-wrap:wrap;gap:7px}
+.spk .play{display:inline-flex;align-items:center;gap:8px;padding:7px 12px;border:1.5px solid var(--line);border-radius:999px;background:#fff;font-size:12.5px;font-weight:700;cursor:pointer;transition:transform .12s,box-shadow .12s}
+.spk .play:hover{transform:translateY(-1px);box-shadow:0 3px 0 var(--c)}
+.spk .play u{display:inline-flex;align-items:flex-end;gap:2px;height:12px;text-decoration:none}.spk .play u i{width:3px;height:4px;background:var(--c);border-radius:2px}
+.spk .play.on{background:var(--saffron);border-color:var(--ink)}.spk .play.on u i{animation:eq .6s infinite ease-in-out}.spk .play.on u i:nth-child(2){animation-delay:.1s}.spk .play.on u i:nth-child(3){animation-delay:.2s}.spk .play.on u i:nth-child(4){animation-delay:.3s}
+@keyframes eq{0%,100%{height:3px}50%{height:12px}}
+.spk input.spkname{font:inherit;font-weight:700;padding:11px 13px;border:2px solid var(--ink);border-radius:10px;background:#fff;width:100%}
+.spk .sg{display:flex;flex-wrap:wrap;gap:6px;align-items:center}.spk .sg span{font-size:12px;color:var(--dim);font-weight:700}
+.spk .chip{padding:5px 11px;border-radius:999px;border:1.5px solid var(--c);background:color-mix(in srgb,var(--c) 12%,#fff);font-weight:800;font-size:12.5px;cursor:pointer}
+.spkfoot{display:flex;gap:12px;align-items:center;flex-wrap:wrap}
 /* floating cubist planes */
 .cubes{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden}
 .cubes i{position:absolute;display:block;opacity:.9;animation:plane 26s ease-in-out infinite alternate}
@@ -731,18 +748,29 @@ h1,h2,h3,p{margin:0}
 
   function loadSpeakers(id){
     var box=$("#spk");if(!box)return;
-    box.innerHTML='<div class="spkc"><h3>Who spoke?</h3><p>Listening to the voices…</p></div>';
+    var head='<div class="spkh"><div class="spkt">Who spoke?</div><div class="spks">Name each voice once. The app remembers it.</div></div>';
+    box.innerHTML='<div class="spkc">'+head+'<div class="spkwait"><i></i><i></i><i></i> Listening to the voices…</div></div>';
     fetch("/api/meeting/"+id+"/speakers").then(function(r){return r.json().then(function(j){return {s:r.status,j:j}})}).then(function(x){
       var b=$("#spk");if(!b||!current||current.id!==id)return;var j=x.j||{};
-      if(j.pending){b.innerHTML='<div class="spkc"><h3>Who spoke?</h3><p>Splitting the meeting into voices. This takes about a minute…</p></div>';setTimeout(function(){loadSpeakers(id)},6000);return}
-      if(x.s===503){b.innerHTML='<div class="spkc"><h3>Who spoke?</h3><p>To name the speakers, the host computer must be on. Open this meeting again then.</p></div>';return}
-      if(j.unavailable||!j.speakers||!j.speakers.length){b.innerHTML=j.unavailable?'<div class="spkc"><h3>Who spoke?</h3><p>'+esc(j.reason||"Not available for this meeting.")+'</p></div>':'';return}
-      var known=(j.known||[]).map(function(k){return '<option value="'+esc(k)+'">'}).join("");
-      b.innerHTML='<div class="spkc"><h3>Who spoke? Name each voice once</h3><p>Tap a sample to hear the voice, then type the name. Two groups that are the same person? Type the same name in both. Leave a box empty to skip it.</p>'+
-        j.speakers.map(function(s,i){return '<div class="spk"><div class="sh"><b>'+esc(s.label)+'</b><span>'+Math.round(s.seconds)+' s · '+s.lines+' lines</span></div><div class="pl">'+
-          s.samples.map(function(m){return '<button class="play" type="button" data-s="'+m.start+'" data-e="'+m.end+'">▶ '+mmss(m.start)+' “'+esc(m.text.slice(0,38))+'”</button>'}).join("")+'</div>'+
-          '<input class="spkname" data-l="'+esc(s.label)+'" list="spkknown" maxlength="40" placeholder="Type the name" value="'+esc(s.name||"")+'"></div>'}).join("")+
-        '<datalist id="spkknown">'+known+'</datalist><div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap"><button class="btn" id="spkSave" type="button">Save names</button><span class="vmsg" id="spkMsg"></span></div></div>';
+      if(j.pending){b.innerHTML='<div class="spkc">'+head+'<div class="spkwait"><i></i><i></i><i></i> Splitting the meeting into voices. About a minute…</div></div>';setTimeout(function(){loadSpeakers(id)},6000);return}
+      if(x.s===503){b.innerHTML='<div class="spkc">'+head+'<p class="spkn">To name the speakers, the host computer must be on. Open this meeting again then.</p></div>';return}
+      if(j.unavailable||!j.speakers||!j.speakers.length){b.innerHTML=j.unavailable?'<div class="spkc">'+head+'<p class="spkn">'+esc(j.reason||"Not available for this meeting.")+'</p></div>':'';return}
+      var total=j.speakers.reduce(function(a,s){return a+s.seconds},0)||1,known=j.known||[];
+      var vlab={woman:"Sounds like a woman",man:"Sounds like a man",unclear:"Pitch in between"},vico={woman:"♀",man:"♂",unclear:"◐"};
+      function sugg(v){var ok=known.filter(function(k){return k.gender===v});return (v==="woman"||v==="man")&&ok.length?ok:known}
+      b.innerHTML='<div class="spkc">'+head+
+        j.speakers.map(function(s,i){var hue=(i*53+250)%360,pct=Math.round(s.seconds/total*100),v=s.voice||"unclear";
+          var sg=sugg(v).slice(0,6).map(function(k){return '<button class="chip" type="button" data-l="'+esc(s.label)+'" data-n="'+esc(k.name)+'">'+esc(k.name)+'</button>'}).join("");
+          return '<div class="spk" style="--h:'+hue+'"><div class="spkrow"><div class="av3">'+(i+1)+'</div><div class="spkmeta"><b>'+esc(s.label)+'</b><span>'+Math.round(s.seconds)+' s · '+s.lines+' lines · '+pct+'% of the talk</span></div>'+
+          '<div class="vt '+v+'" title="'+(s.pitch?s.pitch+' Hz':"")+'">'+vico[v]+' '+vlab[v]+(s.pitch?' · '+Math.round(s.pitch)+' Hz':'')+'</div></div>'+
+          '<div class="bar3"><i style="width:'+pct+'%"></i></div>'+
+          '<div class="pl">'+s.samples.map(function(m){return '<button class="play" type="button" data-s="'+m.start+'" data-e="'+m.end+'"><u><i></i><i></i><i></i><i></i></u>'+mmss(m.start)+' “'+esc(m.text.slice(0,34))+'”</button>'}).join("")+'</div>'+
+          '<input class="spkname" data-l="'+esc(s.label)+'" list="spkknown" maxlength="40" placeholder="Who is this? Type the name" value="'+esc(s.name||"")+'">'+
+          (s.suggest?'<div class="sg"><span>Maybe this is:</span><button class="chip" type="button" data-l="'+esc(s.label)+'" data-n="'+esc(s.suggest)+'">'+esc(s.suggest)+'?</button><span>(a guess from the voice; listen to be sure)</span></div>':'')+(sg?'<div class="sg"><span>'+((v==="woman"||v==="man")&&known.some(function(k){return k.gender===v})?"Known "+(v==="woman"?"women":"men")+":":"Known people:")+'</span>'+sg+'</div>':'')+'</div>'}).join("")+
+        '<datalist id="spkknown">'+known.map(function(k){return '<option value="'+esc(k.name)+'">'}).join("")+'</datalist>'+
+        '<div class="spkfoot"><button class="btn" id="spkSave" type="button">Save names</button><span class="vmsg" id="spkMsg"></span></div>'+
+        '<p class="spkn">Two groups that are the same person? Type the same name in both. The woman/man clue comes from voice pitch. It is only a hint.</p></div>';
+      b.querySelectorAll(".chip").forEach(function(c){c.onclick=function(){var inp=b.querySelector('.spkname[data-l="'+c.dataset.l+'"]');if(inp){inp.value=c.dataset.n;inp.focus()}}});
       var cur=null;b.querySelectorAll(".play").forEach(function(pb){pb.onclick=function(){
         if(cur){try{cur.pause()}catch(e){}}b.querySelectorAll(".play").forEach(function(o){o.classList.remove("on")});
         var u=Q("/api/clip/"+id+"?start="+pb.dataset.s+"&end="+pb.dataset.e);var au=new Audio(u);cur=au;pb.classList.add("on");au.onended=function(){pb.classList.remove("on")};au.onerror=function(){pb.classList.remove("on");var m=$("#spkMsg");if(m){m.textContent="Could not play this sample (the host computer must be on).";m.className="vmsg err"}};au.play().catch(function(){})}});
