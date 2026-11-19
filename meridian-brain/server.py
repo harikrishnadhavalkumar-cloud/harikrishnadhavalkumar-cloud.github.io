@@ -167,6 +167,7 @@ def start():
         you=(body.get("you") or "You")[:40],
         mode=body.get("mode") if body.get("mode") in ("call", "room") else "call",
         source=str(body.get("source") or "any")[:20],
+        mic=re.sub(r"[^a-z0-9]", "", str(body.get("mic") or ""))[:12],
         created=time.time(),
         owner=g.owner,
         status="recording",
@@ -226,7 +227,7 @@ def voice_enroll(name):
         if not voice.to_wav(raw, wav):
             return jsonify(error="Could not read the recording"), 400
         try:
-            clips = voice.enroll(name, wav)
+            clips = voice.enroll(name, wav, re.sub(r"[^a-z0-9]", "", request.args.get("mic", ""))[:12])
         except ValueError as e:
             return jsonify(error=str(e)), 400
         return jsonify(ok=True, name=name, clips=clips)
@@ -545,7 +546,7 @@ def run_pipeline(mid, notes_only=False):
                         try:
                             import voice
                             write_meta(d, step="Recognising voices")
-                            found = voice.label_segments(segs, str(wav))
+                            found = voice.label_segments(segs, str(wav), meta.get("mic", ""))
                             if found:
                                 voices_found.update(found)
                         except Exception:
