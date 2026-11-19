@@ -480,6 +480,11 @@ h1,h2,h3,p{margin:0}
       var mixer=ctx.createGain();mixer.connect(dest);
       ctx.createMediaStreamSource(mic).connect(mixer);
       var hasOthers=!!(disp&&disp.getAudioTracks().length);
+      if(mode==="call"&&!hasOthers){
+        mic.getTracks().forEach(function(t){t.stop()});if(disp)disp.getTracks().forEach(function(t){t.stop()});try{ctx.close()}catch(e){}
+        setStatus("The meeting sound was NOT shared, so only your own voice would be recorded. Press Start again, choose the Chrome TAB with your meeting (not a window or the whole screen) and tick “Also share tab audio”. If you are in a room with people, use “People in the room” instead.","err");
+        $("#startBtn").disabled=false;return;
+      }
       if(hasOthers)ctx.createMediaStreamSource(new MediaStream(disp.getAudioTracks())).connect(mixer);
       analyser=ctx.createAnalyser();analyser.fftSize=256;buf=new Uint8Array(analyser.frequencyBinCount);mixer.connect(analyser);
 
