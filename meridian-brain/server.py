@@ -270,6 +270,122 @@ def meeting(mid):
     return jsonify(out)
 
 
+_spk_jobs = set()
+
+
+def _media_for(d):
+    for n in ("mic.webm", "clean.opus", "others.webm", "video_fixed.webm", "video.webm"):
+        if (d / n).exists():
+            return d / n
+    return None
+
+
+def _analyze_speakers(mid):
+    d = DATA / mid
+    try:
+        import voice
+        src = _media_for(d)
+        tj = d / "transcript.json"
+        if not src or not tj.exists():
+            return
+        wav = d / "_spk.wav"
+        if not ffmpeg("-i", str(src), "-ac", "1", "-ar", "16000", str(wav)):
+            return
+        data = json.loads(tj.read_text())
+        n = voice.diarize(data["segments"], str(wav), d)
+        if n:
+            tj.write_text(json.dumps(data, ensure_ascii=False))
+            write_meta(d, speakers=n)
+        else:
+            (d / "speakers.json").write_text("{}")
+        wav.unlink(missing_ok=True)
+    except Exception:
+        (DATA / mid / "speakers.json").write_text("{}")
+    finally:
+        _spk_jobs.discard(mid)
+
+
+@app.get("/api/meeting/<mid>/speakers")
+def meeting_speakers(mid):
+    d = mdir(mid)
+    sp_path = d / "speakers.json"
+    if not sp_path.exists():
+        if _media_for(d) is None:
+            return jsonify(unavailable=True, reason="The sound of this meeting was removed to save space.")
+        if mid not in _spk_jobs:
+            _spk_jobs.add(mid)
+            threading.Thread(target=_analyze_speakers, args=(mid,), daemon=True).start()
+        return jsonify(pending=True)
+    import voice
+    try:
+        sp = voice.ensure_pitch(d)
+    except Exception:
+        sp = json.loads(sp_path.read_text())
+    nm = voice.names()
+    known = [{"name": k, "gender": v.get("gender", "")} for k, v in sorted(nm.items())]
+    have = {k["name"] for k in known}
+    known += [{"name": s["name"], "gender": s.get("voice", "")} for s in sp.values() if s.get("name") and s["name"] not in have]
+    out = []
+    for lab in sorted(sp, key=lambda k: int(k.split()[-1])):
+        x = sp[lab]
+        out.append({"label": lab, "name": x.get("name", ""), "seconds": x["seconds"], "lines": x["lines"], "samples": x["samples"],
+                    "pitch": x.get("pitch"), "voice": x.get("voice", "unclear")})
+    return jsonify(speakers=out, known=known, mic=read_meta(d).get("mic", ""))
+
+
+@app.get("/api/clip/<mid>")
+def meeting_clip(mid):
+    d = mdir(mid)
+    src = _media_for(d)
+    if not src:
+        abort(404)
+    try:
+        start = max(0.0, float(request.args.get("start", 0)))
+        dur = min(14.0, max(0.5, float(request.args.get("end", start + 5)) - start))
+    except ValueError:
+        abort(400)
+    p = subprocess.run(["ffmpeg", "-loglevel", "error", "-ss", "%.2f" % start, "-t", "%.2f" % dur, "-i", str(src), "-ac", "1", "-c:a", "libopus", "-b:a", "32k", "-f", "ogg", "pipe:1"],
+                       stdout=subprocess.PIPE, stderr=subprocess.DEVNULL)
+    if p.returncode != 0 or not p.stdout:
+        abort(500)
+    return Response(p.stdout, mimetype="audio/ogg", headers={"Cache-Control": "max-age=600"})
+
+
+@app.post("/api/meeting/<mid>/name_speakers")
+def name_speakers(mid):
+    d = mdir(mid)
+    body = request.get_json(silent=True) or {}
+    raw = body.get("mapping") or {}
+    mapping = {}
+    for k, v in raw.items():
+        name = re.sub(r"[^\w .'-]", "", str(v)).strip()[:40]
+        if name and re.fullmatch(r"Speaker \d+", str(k)):
+            mapping[str(k)] = name
+    if not mapping or not (d / "speakers.json").exists():
+        return jsonify(error="Nothing to save"), 400
+    import voice
+    meta = read_meta(d)
+    added = voice.learn_from_meeting(d, mapping, meta.get("mic", ""))
+    tj = d / "transcript.json"
+    data = json.loads(tj.read_text())
+    spj = json.loads((d / "speakers.json").read_text())
+    by_start = {}
+    for lab, nm in mapping.items():
+        for t in spj.get(lab, {}).get("starts", []):
+            by_start[t] = nm
+    for s in data["segments"]:
+        nm = by_start.get(round(s["start"], 1))
+        if nm:
+            s["speaker"] = nm
+        elif s["speaker"] in mapping:
+            s["speaker"] = mapping[s["speaker"]]
+    tj.write_text(json.dumps(data, ensure_ascii=False))
+    write_meta(d, status="queued", step="Rewriting the notes with the names")
+    threading.Thread(target=run_pipeline, args=(mid, True), daemon=True).start()
+    return jsonify(ok=True, learned=added)
+
+
+
 @app.get("/api/media/<mid>/<kind>")
 def media(mid, kind):
     d = mdir(mid)
@@ -549,6 +665,14 @@ def run_pipeline(mid, notes_only=False):
                             found = voice.label_segments(segs, str(wav), meta.get("mic", ""))
                             if found:
                                 voices_found.update(found)
+                        except Exception:
+                            pass
+                    if kind == "others" or (kind == "mic" and meta.get("mode") != "call"):
+                        try:
+                            import voice
+                            n_sp = voice.diarize(segs, str(wav), d)
+                            if n_sp:
+                                write_meta(d, speakers=n_sp)
                         except Exception:
                             pass
                     parts.extend(segs)
