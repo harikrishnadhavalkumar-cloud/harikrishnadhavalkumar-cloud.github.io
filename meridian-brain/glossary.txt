@@ -85,3 +85,17 @@ semrus => SEMrush
 sem rush => SEMrush
 appwee => AppTweak
 app we => AppTweak
+
+# meanings (ASO and friends). Used so the notes never invent a wrong expansion. Format: WORD = meaning
+# meanings
+SEO = search engine optimisation (ranking in Google search)
+AEO = answer engine optimisation (being quoted in AI answers and AI overviews)
+GEO = generative engine optimisation (being cited by AI tools)
+ASO = app store optimisation (ranking and converting in the App Store and Play Store)
+CSL = custom store listing (alternative app store pages for different keywords)
+CRO = conversion rate optimisation
+CTI = click to install rate
+ORM = online reputation management
+TMB = a keyword score the team uses
+PLTV = predicted lifetime value of a user
+M0 revenue = revenue in the first month
