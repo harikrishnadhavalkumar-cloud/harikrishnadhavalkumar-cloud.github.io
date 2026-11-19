@@ -5,6 +5,21 @@ from pathlib import Path
 PATH = Path(__file__).parent / "glossary.txt"
 
 
+def meanings():
+    out = []
+    try:
+        on = False
+        for ln in PATH.read_text(encoding="utf-8").splitlines():
+            if ln.strip() == "# meanings":
+                on = True
+                continue
+            if on and " = " in ln and not ln.startswith("#"):
+                out.append(ln.strip())
+    except Exception:
+        pass
+    return "; ".join(out)
+
+
 def load():
     terms, fixes = [], []
     try:
@@ -14,6 +29,8 @@ def load():
     for ln in lines:
         ln = ln.strip()
         if not ln or ln.startswith("#"):
+            continue
+        if " = " in ln and "=>" not in ln:
             continue
         if "=>" in ln:
             a, b = [x.strip() for x in ln.split("=>", 1)]
