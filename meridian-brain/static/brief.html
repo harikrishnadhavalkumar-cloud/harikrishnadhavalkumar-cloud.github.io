@@ -1,0 +1,223 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Meridian Brief</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Unbounded:wght@400;500;600&family=Manrope:wght@500;600;700;800&family=DM+Mono:wght@400;500&display=swap">
+<style>
+/* MERIDIAN BRIEF: executive summary in pearl liquid glass. Hairline edges, iridescent light, gradient numerals, quiet type. */
+:root{--paper:#F6F3FF;--ink:#1B1536;--dim:#5A5378;--mute:#8C85AB;--line:rgba(96,76,190,.16);--line2:rgba(96,76,190,.3);
+  --c1:#5B54FF;--c2:#A855F7;--c3:#FF4FA3;--c4:#FF8A3D;--c5:#12B8A6;
+  --iri:linear-gradient(110deg,#5B54FF,#A855F7 28%,#FF4FA3 60%,#FF8A3D 96%);
+  --glass:rgba(255,255,255,.72);--shadow:0 30px 80px rgba(70,50,150,.16),0 2px 8px rgba(70,50,150,.06);
+  --display:"Unbounded","Arial Black",system-ui,sans-serif;--body:"Manrope",system-ui,-apple-system,"Segoe UI",sans-serif;--mono:"DM Mono",ui-monospace,Menlo,monospace;color-scheme:light}
+*{box-sizing:border-box}
+html{background:#EAE5FB}
+body{margin:0;font:15px/1.6 var(--body);font-weight:500;color:var(--ink);background:#EAE5FB;padding:28px max(16px,env(safe-area-inset-left,0px)) 64px}
+[hidden]{display:none!important}
+.bar{max-width:880px;margin:0 auto 18px;display:flex;gap:10px;flex-wrap:wrap;align-items:center;justify-content:space-between}
+.bar a,.bar button{font:700 13px var(--body);color:var(--ink);text-decoration:none;padding:10px 18px;border:1px solid var(--line2);background:rgba(255,255,255,.8);border-radius:12px;cursor:pointer;backdrop-filter:blur(10px)}
+.bar .go{background:var(--iri);color:#fff;border:0;box-shadow:0 10px 28px rgba(91,84,255,.32)}
+.sheet{max-width:880px;margin:0 auto 30px;border:1px solid rgba(255,255,255,.95);border-radius:30px;box-shadow:var(--shadow);padding:44px 48px 34px;position:relative;overflow:hidden;
+  background:radial-gradient(60% 38% at 0 0,#E2D8FF 0,transparent 65%),radial-gradient(50% 36% at 100% 0,#FFD6E7 0,transparent 62%),radial-gradient(56% 44% at 100% 100%,#D6EEFF 0,transparent 64%),radial-gradient(46% 36% at 0 100%,#FFE8CF 0,transparent 64%),#F6F3FF}
+.inner{position:relative;display:grid;gap:30px}
+.top{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
+.brand{display:flex;align-items:center;gap:10px;font:500 11px var(--mono);letter-spacing:.22em;text-transform:uppercase;color:var(--dim)}
+.brand i{width:20px;height:20px;border-radius:50%;background:conic-gradient(from 200deg,#5B54FF,#A855F7,#FF4FA3,#FF8A3D,#5B54FF);box-shadow:0 0 0 4px rgba(255,255,255,.7),0 0 18px rgba(168,85,247,.5)}
+.date{font:500 11px var(--mono);letter-spacing:.12em;color:var(--mute);text-transform:uppercase}
+.hero{display:grid;grid-template-columns:1fr auto;gap:24px;align-items:center}
+h1{margin:0 0 18px;font:500 clamp(28px,5.2vw,48px)/1.06 var(--display);letter-spacing:-.03em;color:var(--ink);overflow-wrap:anywhere;position:relative;padding-bottom:18px}
+h1::after{content:"";position:absolute;left:0;bottom:0;width:64px;height:4px;border-radius:3px;background:var(--iri)}
+.meta{display:flex;flex-wrap:wrap;gap:8px}
+.pill{font:500 12px var(--mono);padding:5px 14px;border:1px solid var(--line2);border-radius:999px;background:rgba(255,255,255,.7);color:var(--dim)}
+.glyph{width:140px;height:140px;flex:none}
+.label{display:flex;align-items:center;gap:12px;margin:0 0 14px;font:500 11px var(--mono);letter-spacing:.22em;text-transform:uppercase;color:var(--dim)}
+.label::after{content:"";flex:1;height:1px;background:linear-gradient(90deg,var(--line2),transparent)}
+.tldr{margin:0;padding:6px 0 6px 22px;font-size:19px;line-height:1.65;font-weight:600;position:relative;max-width:720px}
+.tldr::before{content:"";position:absolute;left:0;top:0;bottom:0;width:4px;border-radius:3px;background:var(--iri)}
+.stats{display:grid;grid-template-columns:repeat(5,1fr);gap:12px}
+.stat{background:var(--glass);border:1px solid rgba(255,255,255,.95);border-radius:20px;padding:16px 16px 14px;box-shadow:0 14px 34px rgba(70,50,150,.1);backdrop-filter:blur(14px)}
+.stat b{display:block;font:500 28px/1 var(--display);letter-spacing:-.03em;background:var(--iri);-webkit-background-clip:text;background-clip:text;color:transparent}
+.stat span{display:block;margin-top:8px;font:500 10px var(--mono);letter-spacing:.16em;text-transform:uppercase;color:var(--mute)}
+.topics{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}.topic{padding:16px 18px;display:grid;grid-template-columns:auto 1fr;gap:14px;align-items:start}.topic .tn{font:500 22px/1 var(--display);background:var(--iri);-webkit-background-clip:text;background-clip:text;color:transparent;min-width:30px}.topic b{display:block;font-weight:800;margin-bottom:2px}.topic span{font-size:13.5px;color:var(--dim)}
+.two{display:grid;grid-template-columns:1.25fr 1fr;gap:26px}
+.card{background:var(--glass);border:1px solid rgba(255,255,255,.95);border-radius:22px;box-shadow:0 14px 34px rgba(70,50,150,.1);backdrop-filter:blur(14px)}
+.list{display:grid}
+.row{display:grid;grid-template-columns:auto 1fr auto;gap:14px;align-items:center;padding:14px 18px;border-bottom:1px solid var(--line)}
+.row:last-child{border-bottom:0}
+.num{width:32px;height:32px;border-radius:50%;display:grid;place-items:center;font:500 13px var(--display);color:#fff;background:var(--iri);box-shadow:0 8px 18px rgba(91,84,255,.3)}
+.av{width:32px;height:32px;border-radius:50%;display:grid;place-items:center;font:600 12px var(--display);color:#fff}
+.row b{font-weight:700}
+.row small{display:block;font:500 11px var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--mute);margin-bottom:1px}
+.due{font:500 11px var(--mono);padding:4px 12px;border:1px solid var(--line2);border-radius:999px;background:rgba(255,255,255,.8);color:var(--dim);white-space:nowrap}
+.empty{padding:16px 18px;color:var(--mute);font-weight:600}
+.ringwrap{display:flex;align-items:center;gap:20px;padding:18px;flex-wrap:wrap}
+.ring{width:132px;height:132px;flex:none}
+.legend{display:grid;gap:9px;font-size:13px;font-weight:700}
+.legend span{display:flex;align-items:center;gap:9px}
+.legend i{width:9px;height:9px;border-radius:50%}
+.legend em{font:500 11px var(--mono);color:var(--mute);font-style:normal;margin-left:2px}
+.tl{padding:86px 26px 78px;position:relative}
+.track{position:relative;height:12px;border-radius:999px;background:rgba(96,76,190,.1);overflow:visible}
+.track i{position:absolute;top:0;bottom:0;border-radius:2px}
+.dotpin{position:absolute;top:50%;width:14px;height:14px;margin:-7px 0 0 -7px;border-radius:50%;background:#fff;border:3px solid var(--c3);box-shadow:0 0 0 5px rgba(255,79,163,.18),0 6px 16px rgba(255,79,163,.4)}
+.pin{position:absolute;width:1px;background:var(--line2)}
+.pin span{position:absolute;left:50%;transform:translateX(-50%);width:132px;text-align:center;font:600 11px/1.3 var(--body);color:var(--ink);background:rgba(255,255,255,.92);border:1px solid var(--line2);padding:5px 8px;border-radius:10px;box-shadow:0 8px 20px rgba(70,50,150,.12)}
+.pin.up{bottom:50%;height:34px}.pin.up span{bottom:100%;margin-bottom:4px}
+.pin.down{top:50%;height:34px}.pin.down span{top:100%;margin-top:4px}
+.axis{position:absolute;left:26px;right:26px;bottom:14px;display:flex;justify-content:space-between;font:500 10px var(--mono);letter-spacing:.1em;color:var(--mute)}
+.sides{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+.side{padding:20px 22px;display:grid;gap:10px;align-content:start}
+.side h3{margin:0;display:flex;align-items:center;gap:10px;font:500 13px var(--display);letter-spacing:-.01em}
+.side h3 i{width:10px;height:10px;border-radius:50%}
+.side p{margin:0;font-size:14.5px}
+.side ul{margin:0;padding-left:18px;display:grid;gap:5px;font-size:14px;color:var(--dim)}
+.quotes{display:grid;gap:14px}
+.quote{padding:22px 26px 20px 62px;position:relative;font:600 18px/1.55 var(--body)}
+.quote::before{content:"“";position:absolute;left:22px;top:8px;font:500 60px/1 var(--display);background:var(--iri);-webkit-background-clip:text;background-clip:text;color:transparent}
+.quote small{display:block;margin-top:10px;font:500 11px var(--mono);letter-spacing:.14em;text-transform:uppercase;color:var(--mute)}
+.foot{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;font:500 10.5px var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--mute);border-top:1px solid var(--line);padding-top:14px}
+@media screen and (max-width:780px){.topics{grid-template-columns:1fr}.sheet{padding:28px 18px;border-radius:24px}.hero{grid-template-columns:1fr}.glyph{width:96px;height:96px}.stats{grid-template-columns:repeat(2,1fr)}.two,.sides{grid-template-columns:1fr}.row{grid-template-columns:auto 1fr}.row .due{grid-column:2;justify-self:start}.pin span{width:104px}}
+
+@keyframes rise{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+@keyframes grow{from{transform:scaleX(0)}to{transform:scaleX(1)}}
+.sheet .inner>*{animation:rise .75s cubic-bezier(.2,.7,.2,1) both}
+.sheet .inner>*:nth-child(2){animation-delay:.06s}.sheet .inner>*:nth-child(3){animation-delay:.14s}.sheet .inner>*:nth-child(4){animation-delay:.22s}.sheet .inner>*:nth-child(5){animation-delay:.3s}.sheet .inner>*:nth-child(6){animation-delay:.38s}
+.track i{transform-origin:left;animation:grow 1.1s cubic-bezier(.2,.7,.2,1) .5s both}
+.stat,.card,.pill,.bar a,.bar button{transition:transform .35s cubic-bezier(.2,.7,.2,1),box-shadow .35s}
+.stat:hover,.card:hover{transform:translateY(-3px);box-shadow:0 22px 50px rgba(70,50,150,.18)}
+.bar .go:hover{transform:translateY(-2px);box-shadow:0 14px 34px rgba(91,84,255,.42)}
+.ring circle:nth-of-type(n+2){animation:rise 1s ease .3s both}
+@media print{*{animation:none!important;transition:none!important}}
+@page{size:A4;margin:7mm}
+@media print{
+  .stat b,.topic .tn,.quote::before{background:none!important;-webkit-background-clip:border-box!important;background-clip:border-box!important;color:#5B54FF!important;-webkit-text-fill-color:#5B54FF!important}
+  .sheet{padding:26px 32px 22px;min-height:0}.inner{gap:16px}h1{font-size:34px;margin-bottom:12px;padding-bottom:12px}.tldr{font-size:15.5px}.glyph{width:84px;height:84px}
+  .stat{padding:11px 13px}.stat b{font-size:22px}.row{padding:9px 14px}.topic{padding:11px 14px}.topics{gap:9px}.quote{padding:15px 22px 14px 56px;font-size:15.5px}.side{padding:15px 18px}.tl{padding:86px 22px 78px}.label{margin-bottom:9px}
+  .card,.stat,.row,.topic,.quote,.side{break-inside:avoid;page-break-inside:avoid}.label{break-after:avoid}
+  .stats{gap:9px}.two{gap:18px}.card,.stat{box-shadow:none;border:1px solid rgba(96,76,190,.18);background:rgba(255,255,255,.9)}
+}
+
+@media print{html,body{background:#fff}body{padding:0}.bar{display:none}.sheet{box-shadow:none;margin:0 auto;max-width:none;border-radius:0;border:0;page-break-after:always;-webkit-print-color-adjust:exact;print-color-adjust:exact}.sheet:last-of-type{page-break-after:auto}.stat,.card{backdrop-filter:none}}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<div class="bar" id="bar">
+  <a href="/">Back to Meridian</a>
+  <div style="display:flex;gap:10px;flex-wrap:wrap"><button type="button" id="copyBtn">Copy brief text</button><button class="go" type="button" id="printBtn">Save as PDF</button></div>
+</div>
+<div id="root"><div class="sheet"><div class="inner"><div class="brand"><i></i>Meridian brief · loading</div></div></div></div>
+
+<script>
+(function(){
+  var PAL=["#5B54FF","#FF4FA3","#12B8A6","#FF8A3D","#A855F7"];
+  var GLYPH='<svg class="glyph" viewBox="0 0 140 140" aria-hidden="true"><defs><linearGradient id="gg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#5B54FF"/><stop offset=".5" stop-color="#FF4FA3"/><stop offset="1" stop-color="#FF8A3D"/></linearGradient><radialGradient id="gc" cx=".35" cy=".3" r=".9"><stop offset="0" stop-color="#fff"/><stop offset=".45" stop-color="#E4DAFF"/><stop offset="1" stop-color="#A855F7"/></radialGradient></defs>'+
+    '<circle cx="70" cy="70" r="66" fill="none" stroke="url(#gg)" stroke-width="1.2" opacity=".35"/><circle cx="70" cy="70" r="52" fill="none" stroke="url(#gg)" stroke-width="1.6" opacity=".55" stroke-dasharray="3 7"/>'+
+    '<circle cx="70" cy="70" r="38" fill="none" stroke="url(#gg)" stroke-width="2" opacity=".85"/><circle cx="70" cy="70" r="24" fill="url(#gc)"/><circle cx="62" cy="62" r="7" fill="#fff" opacity=".75"/></svg>';
+  var $=function(s){return document.querySelector(s)};
+  var esc=function(s){return String(s==null?"":s).replace(/[&<>"]/g,function(c){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]})};
+  function mmss(t){t=Math.max(0,Math.floor(t));return String(Math.floor(t/60)).padStart(2,"0")+":"+String(t%60).padStart(2,"0")}
+  function dur(t){t=Math.round(t);var h=Math.floor(t/3600),m=Math.floor(t%3600/60),s=t%60;return h?h+"h "+m+"m":(m?m+" min":s+" s")}
+
+  /* sample for design preview: brief.html?demo=1 */
+  var DEMO={title:"Friday planning call",you:"Aarav",created:1794996178,duration:1260,language:"hi",words:2140,
+   notes:{summary:"The team locked Friday the 28th for launch, raised the ad budget from 40,000 to 50,000 rupees with a Saturday check, and split five follow-ups between four people. The voiceover is the only thing that can still move the date.",
+    decisions:["Launch on Friday the 28th","Ad budget goes to 50,000 rupees, review on Saturday","Voiceover must be ready by Wednesday evening"],
+    actions:[{owner:"Kabir",task:"Finish the voiceover",due:"Wed"},{owner:"Meera",task:"Review the final cut",due:"Thu morning"},{owner:"Kabir",task:"Call the vendor and get the invoice",due:"Mon"},{owner:"Meera",task:"Send the launch checklist to everyone",due:"Tonight"},{owner:"Riya",task:"Check ad numbers and report",due:"Sat"}],
+    moments:[{t:95,label:"Launch date discussed"},{t:340,label:"Voiceover risk raised"},{t:610,label:"Budget raised to 50,000"},{t:930,label:"Vendor invoice"},{t:1180,label:"Checklist promised"}],
+    parts:{mine:{name:"Aarav",summary:"Aarav opened the call, pushed for a firm launch date and closed each topic with a decision.",points:["Asked for a firm date","Confirmed the budget with a Saturday check","Closed the meeting with next steps"],actions:[]},
+           others:{name:"Others",summary:"The others confirmed the date, explained the voiceover delay and took the follow-ups.",points:["Video is 90% done, voiceover needs two days","Raised the budget after last week's good return","Took the vendor call and the checklist"],actions:[]}}},
+   segments:[]};
+  (function(){var sp=["Aarav","Riya","Kabir","Meera"],txt=["Okay, quick plan. Launch date, budget, and who calls the vendor.","I think we can lock Friday the 28th if the video is ready by Wednesday.","Video is ninety percent done. I need two more days for the voiceover.","Then Wednesday evening works. I will review the cut on Thursday morning.","Good. Decision: we launch on Friday the 28th.","Last week we spent forty thousand and the return was good. I would raise it to fifty.","Fifty is fine, but only if the first two days look healthy.","Agreed. Let us check the numbers on Saturday and then decide.","I will call the vendor tomorrow and get the invoice by Monday.","I will send everyone the final checklist tonight."];
+    for(var i=0;i<46;i++){var s=i*27+Math.floor((i*7)%9);DEMO.segments.push({start:s,end:s+18+(i%5)*2,speaker:sp[(i*3+(i>>2))%4],text:txt[i%txt.length]})}})();
+
+  function build(m){
+    var n=m.notes||{},segs=(m.transcript&&m.transcript.segments)||m.segments||[];
+    var total=Math.max(m.duration||0,segs.length?segs[segs.length-1].end:0,30);
+    var speakers=[];segs.forEach(function(s){if(speakers.indexOf(s.speaker)<0)speakers.push(s.speaker)});
+    var talk={};segs.forEach(function(s){talk[s.speaker]=(talk[s.speaker]||0)+Math.max(1,s.end-s.start)});
+    var talkTotal=Object.keys(talk).reduce(function(a,k){return a+talk[k]},0)||1;
+    var col=function(sp){return PAL[Math.max(0,speakers.indexOf(sp))%PAL.length]};
+    var words=m.words||segs.reduce(function(a,s){return a+s.text.split(/\s+/).length},0);
+    var when=new Date((m.created||Date.now()/1000)*1000);
+    var dateTxt=when.toLocaleDateString([], {day:"numeric",month:"short",year:"numeric"})+"  ·  "+when.toLocaleTimeString([], {hour:"2-digit",minute:"2-digit"});
+    var langTxt={hi:"Hindi + English",en:"English"}[m.language]||(m.language||"").toUpperCase();
+    var decs=n.decisions||[],acts=n.actions||[],moms=(n.moments||[]).slice();
+    var spreadOK=moms.length>=3&&(Math.max.apply(null,moms.map(function(x){return x.t}))-Math.min.apply(null,moms.map(function(x){return x.t})))>total*.4;
+    if(!spreadOK&&segs.length>=8){
+      var KW=/\b(decid|agree|will|plan|launch|budget|deadline|invoice|important|must|need|update|review|keyword|metric|send|fix)\w*/i,N=5;moms=[];
+      for(var wi=0;wi<N;wi++){var lo=total*wi/N,hi=total*(wi+1)/N,best=null,bs=-1;
+        segs.forEach(function(sg){if(sg.start>=lo&&sg.start<hi){var wc=sg.text.split(/\s+/).length,sc=(KW.test(sg.text)?12:0)+Math.min(wc,14);if(wc>=4&&sc>bs){bs=sc;best=sg}}});
+        if(best)moms.push({t:best.start,label:best.text})}
+    }
+    moms=moms.map(function(x){var w=String(x.label||"").replace(/[.!?]+$/,"").split(/\s+/);return{t:x.t,label:w.slice(0,7).join(" ")+(w.length>7?"…":"")}});
+
+    /* gradient donut */
+    var R=52,C=2*Math.PI*R,acc=0,arcs=speakers.map(function(sp){var len=Math.max(1,talk[sp]/talkTotal*C-3),a=acc;acc+=talk[sp]/talkTotal*C;return '<circle cx="66" cy="66" r="'+R+'" fill="none" stroke="'+col(sp)+'" stroke-width="12" stroke-linecap="round" stroke-dasharray="'+len+' '+(C-len)+'" stroke-dashoffset="'+(-a)+'" transform="rotate(-90 66 66)"/>'}).join("");
+    var lead=speakers.length?speakers.slice().sort(function(a,b){return talk[b]-talk[a]})[0]:"";
+    var ring='<svg class="ring" viewBox="0 0 132 132"><circle cx="66" cy="66" r="'+R+'" fill="none" stroke="rgba(96,76,190,.1)" stroke-width="12"/>'+arcs+'<text x="66" y="64" text-anchor="middle" font-family="Unbounded,sans-serif" font-size="20" font-weight="500" fill="#1B1536">'+(speakers.length?Math.round(talk[lead]/talkTotal*100)+"%":"–")+'</text><text x="66" y="82" text-anchor="middle" font-family="DM Mono,monospace" font-size="8.5" letter-spacing="1.5" fill="#8C85AB">'+esc((lead||"").toUpperCase().slice(0,12))+'</text></svg>';
+    var legend=speakers.map(function(sp){return '<span><i style="background:'+col(sp)+'"></i>'+esc(sp)+'<em>'+Math.round(talk[sp]/talkTotal*100)+'%</em></span>'}).join("")||'<span>No speech found</span>';
+
+    var buckets=24,bw=total/buckets,bw_words=[],mx=1;for(var bi=0;bi<buckets;bi++)bw_words.push(0);
+    segs.forEach(function(sg){var b=Math.min(buckets-1,Math.floor(sg.start/bw));bw_words[b]+=sg.text.split(/\s+/).length});bw_words.forEach(function(v){if(v>mx)mx=v});
+    var peak=bw_words.indexOf(mx);
+    var activity='<div class="card" style="padding:18px 20px"><div style="display:flex;align-items:flex-end;gap:4px;height:92px">'+bw_words.map(function(v,i){return '<i style="flex:1;border-radius:6px 6px 2px 2px;height:'+Math.max(6,v/mx*100)+'%;background:'+(i===peak?'linear-gradient(180deg,#FF4FA3,#FF8A3D)':'linear-gradient(180deg,#A855F7,#5B54FF)')+';opacity:'+(i===peak?1:.55+v/mx*.4)+'"></i>'}).join("")+'</div><div style="display:flex;justify-content:space-between;margin-top:8px;font:500 10px var(--mono);letter-spacing:.1em;color:var(--mute)"><span>00:00</span><span>BUSIEST AT '+mmss(peak*bw)+'</span><span>'+mmss(total)+'</span></div></div>';
+    /* timeline */
+    var track=segs.map(function(s){return '<i style="left:'+(s.start/total*100)+'%;width:'+Math.max(.35,(s.end-s.start)/total*100)+'%;background:'+col(s.speaker)+';opacity:.85"></i>'}).join("");
+    var pins=moms.map(function(x,i){var L=Math.min(95,Math.max(5,x.t/total*100));return '<div class="pin '+(i%2?"down":"up")+'" style="left:'+L+'%"><span>'+esc(x.label)+"</span></div><div class=\"dotpin\" style=\"left:"+L+'%"></div>'}).join("");
+
+    /* quotes */
+    var KEY=/\b(decid|agree|will|launch|budget|deadline|by (mon|tues|wednes|thurs|fri|satur|sun)|invoice|plan|important|must|need to)\w*/i;
+    var cand=segs.map(function(s){return{s:s,score:s.text.split(/\s+/).length+(KEY.test(s.text)?14:0)}}).filter(function(c){return c.s.text.split(/\s+/).length>=6}).sort(function(a,b){return b.score-a.score});
+    var picked=[];cand.forEach(function(c){if(picked.length<3&&picked.every(function(p){return Math.abs(p.s.start-c.s.start)>25}))picked.push(c)});
+    picked.sort(function(a,b){return a.s.start-b.s.start});
+    var quotes=picked.map(function(c){return '<div class="card quote">'+esc(c.s.text)+'<small>'+esc(c.s.speaker)+"  ·  "+mmss(c.s.start)+"</small></div>"}).join("")||'<div class="card empty">Not enough speech for highlights.</div>';
+
+    var partsHtml="";
+    ["mine","others"].forEach(function(k){var q=n.parts&&n.parts[k];if(!q)return;
+      var c=k==="mine"?col(q.name):col("Others");
+      partsHtml+='<div class="card side"><h3><i style="background:'+c+'"></i>'+(k==="mine"?"What "+esc(q.name)+" said":"What the others said")+'</h3><p>'+esc(q.summary)+"</p>"+((q.points||[]).length?"<ul>"+q.points.map(function(x){return "<li>"+esc(x)+"</li>"}).join("")+"</ul>":"")+"</div>"});
+    if(!partsHtml)partsHtml='<div class="card side" style="grid-column:1/-1"><h3><i style="background:#5B54FF"></i>What was said</h3><p>'+esc(n.summary||"")+"</p></div>";
+
+    var p1='<section class="sheet"><div class="inner">'+
+      '<div class="top"><div class="brand"><i></i>Meridian · Brief</div><div class="date">'+esc(dateTxt)+'</div></div>'+
+      '<div class="hero"><div><h1>'+esc(m.title||"Meeting")+'</h1><div class="meta"><span class="pill">'+dur(total)+'</span><span class="pill">'+(m.language==="en"?"English":esc(langTxt)+" · notes in English")+'</span><span class="pill">'+speakers.length+' voice'+(speakers.length===1?"":"s")+'</span>'+((m.you&&m.you!=="You")?'<span class="pill">recorded by '+esc(m.you)+'</span>':'')+'</div></div>'+GLYPH+'</div>'+
+      '<div><div class="label">The short version</div><p class="tldr">'+esc(n.summary||"No summary was written.")+'</p></div>'+
+      '<div class="stats"><div class="stat"><b>'+dur(total)+'</b><span>Length</span></div><div class="stat"><b>'+words.toLocaleString()+'</b><span>Words</span></div><div class="stat"><b>'+speakers.length+'</b><span>Voices</span></div><div class="stat"><b>'+decs.length+'</b><span>Decisions</span></div><div class="stat"><b>'+acts.length+'</b><span>Tasks</span></div></div>'+
+      ((n.topics||[]).length?'<div><div class="label">Topics discussed</div><div class="topics">'+n.topics.slice(0,6).map(function(t,i){return '<div class="card topic"><div class="tn">'+String(i+1).padStart(2,"0")+'</div><div><b>'+esc(t.title)+'</b>'+(t.summary?'<span>'+esc(t.summary)+'</span>':'')+'</div></div>'}).join("")+'</div></div>':'')+
+      '<div class="two"><div><div class="label">Decisions</div><div class="card list">'+(decs.map(function(d,i){return '<div class="row"><div class="num">'+(i+1)+'</div><b>'+esc(d)+'</b><span></span></div>'}).join("")||'<div class="empty">No decisions were made in this meeting.</div>')+'</div></div>'+
+      (speakers.length>1?'<div><div class="label">Who talked</div><div class="card ringwrap">'+ring+'<div class="legend">'+legend+'</div></div></div></div>':'<div><div class="label">Talking over time</div>'+activity+'</div></div>')+
+      '<div class="foot"><span>Written by Meridian · free · stays on your computer</span><span>01 / 02</span></div></div></section>';
+    var p2='<section class="sheet"><div class="inner">'+
+      '<div class="top"><div class="brand"><i></i>Meridian · Brief</div><div class="date">'+esc(m.title||"Meeting")+'</div></div>'+
+      '<div><div class="label">Timeline</div><div class="card tl"><div class="track">'+track+pins+'</div><div class="axis"><span>00:00</span><span>'+mmss(total)+'</span></div></div></div>'+
+      '<div><div class="label">Who does what</div><div class="card list">'+(acts.map(function(a){var c=col(a.owner)===PAL[0]&&speakers.indexOf(a.owner)<0?"#5B54FF":col(a.owner);return '<div class="row"><div class="av" style="background:'+c+'">'+esc((a.owner||"?").charAt(0).toUpperCase())+'</div><div><small>'+esc(a.owner)+'</small><b>'+esc(a.task)+'</b></div>'+(a.due?'<span class="due">'+esc(a.due)+'</span>':'<span></span>')+'</div>'}).join("")||'<div class="empty">No tasks were given out.</div>')+'</div></div>'+
+      (n.parts?'<div><div class="label">Side by side</div><div class="sides">'+partsHtml+'</div></div>':'')+
+      '<div><div class="label">Lines worth remembering</div><div class="quotes">'+quotes+'</div></div>'+
+      '<div class="foot"><span>Notes and transcript are in your Drive · Meridian Notes</span><span>02 / 02</span></div></div></section>';
+    $("#root").innerHTML=p1+p2;
+    document.title=(m.title||"Meeting")+" · Meridian Brief";
+
+    $("#copyBtn").onclick=function(){
+      var t=(m.title||"Meeting")+"\n\n"+(n.summary||"")+"\n\nDECISIONS\n"+(decs.map(function(d){return "- "+d}).join("\n")||"- none")+"\n\nWHO DOES WHAT\n"+(acts.map(function(a){return "- "+a.owner+": "+a.task+(a.due?" ("+a.due+")":"")}).join("\n")||"- none");
+      var b=$("#copyBtn"),ok=function(){var o=b.textContent;b.textContent="Copied";setTimeout(function(){b.textContent=o},1400)};
+      try{navigator.clipboard.writeText(t).then(ok,function(){})}catch(e){}};
+    $("#printBtn").onclick=function(){window.print()};
+  }
+
+  /* data: demo, embedded copy, or fetched from the server */
+  var qs=new URLSearchParams(location.search),LSget=function(k){try{return localStorage.getItem(k)||""}catch(e){return ""}};
+  if(qs.get("demo")){build(DEMO);return}
+  if(window.__MERIDIAN__){var bk=document.querySelector("#bar a");if(bk)bk.hidden=true;build(window.__MERIDIAN__);return}
+  var id=qs.get("id");
+  if(!id){$("#root").innerHTML='<div class="sheet"><div class="inner"><div class="brand"><i></i>No meeting chosen. Open a finished meeting in Meridian and press Open the one-page brief.</div></div></div>';return}
+  var h={"X-Meridian-Owner":LSget("meridian_o")};if(LSget("meridian_k"))h["X-Meridian-Key"]=LSget("meridian_k");
+  fetch("/api/meeting/"+encodeURIComponent(id),{headers:h}).then(function(r){if(!r.ok)throw 0;return r.json()}).then(function(m){
+    if(m.status!=="done"){$("#root").innerHTML='<div class="sheet"><div class="inner"><div class="brand"><i></i>This meeting is still being written up. Reload in a minute.</div></div></div>';return}
+    build(m)}).catch(function(){$("#root").innerHTML='<div class="sheet"><div class="inner"><div class="brand"><i></i>Could not open this meeting.</div></div></div>'});
+})();
+</script>
+</body>
+</html>
