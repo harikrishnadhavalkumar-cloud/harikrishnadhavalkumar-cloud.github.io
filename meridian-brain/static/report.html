@@ -6,427 +6,298 @@
 <title>Meridian Executive Report</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Unbounded:wght@400;500;600&family=Manrope:wght@500;600;700;800&family=DM+Mono:wght@400;500&display=swap">
 <style>
-/* MERIDIAN EXECUTIVE REPORT v2: espresso, bronze and neon gold. Aurora glow, glass cards with gold hairlines, slide pages. Read it and you know the whole meeting. */
-:root{--bg0:#0B0603;--cream:#F7EAD8;--soft:#CDB394;--mute:#8F7660;--edge:rgba(224,179,106,.2);--edge2:rgba(224,179,106,.42);
+/* MERIDIAN EXECUTIVE REPORT v3: three text-first A4 landscape pages. Espresso, bronze, neon gold. */
+:root{--bg0:#0B0603;--cream:#F7EAD8;--soft:#D3BB9D;--mute:#97806A;--edge:rgba(224,179,106,.2);--edge2:rgba(224,179,106,.42);
   --copper:#C77D45;--gold:#E0B36A;--champ:#F3D9A8;--neon:#FFD27A;
   --metal:linear-gradient(115deg,#9A5B2E,#C77D45 22%,#E0B36A 48%,#F3D9A8 62%,#E0B36A 78%,#B8742F);
   --panel:linear-gradient(160deg,rgba(255,232,200,.085),rgba(255,232,200,.022));
-  --display:"Unbounded","Arial Black",system-ui,sans-serif;--body:"Manrope",system-ui,-apple-system,"Segoe UI",sans-serif;--mono:"DM Mono",ui-monospace,Menlo,monospace;color-scheme:dark}
-*{box-sizing:border-box}
-html{background:var(--bg0);scroll-snap-type:y proximity;scroll-behavior:smooth}
-body{margin:0;font:15px/1.65 var(--body);font-weight:500;color:var(--cream);background:var(--bg0);padding:26px max(16px,env(safe-area-inset-left,0px)) 70px;position:relative;min-height:100vh}
+  --display:"Unbounded","Arial Black",system-ui,sans-serif;--body:"Manrope",system-ui,-apple-system,"Segoe UI",sans-serif;--mono:"DM Mono",ui-monospace,Menlo,monospace;color-scheme:dark;--z:1}
+*{box-sizing:border-box;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+html{background:var(--bg0)}
+body{margin:0;font:14px/1.6 var(--body);font-weight:500;color:var(--cream);background:var(--bg0);padding:22px 12px 60px;position:relative;min-height:100vh}
 [hidden]{display:none!important}
-/* aurora behind everything (screen only) */
 .aurora{position:fixed;inset:0;z-index:0;overflow:hidden;pointer-events:none}
-.aurora i{position:absolute;border-radius:50%;filter:blur(90px);opacity:.55;will-change:transform}
+.aurora i{position:absolute;border-radius:50%;filter:blur(90px);opacity:.5}
 .aurora i:nth-child(1){width:60vmax;height:60vmax;left:-18vmax;top:-22vmax;background:radial-gradient(closest-side,#7A3E18,transparent 70%);animation:drift1 26s ease-in-out infinite alternate}
-.aurora i:nth-child(2){width:52vmax;height:52vmax;right:-20vmax;top:10vmax;background:radial-gradient(closest-side,#B07A2A,transparent 70%);opacity:.32;animation:drift2 32s ease-in-out infinite alternate}
-.aurora i:nth-child(3){width:48vmax;height:48vmax;left:20vmax;bottom:-26vmax;background:radial-gradient(closest-side,#5C2B14,transparent 70%);animation:drift3 38s ease-in-out infinite alternate}
-.aurora i:nth-child(4){width:30vmax;height:30vmax;right:12vmax;bottom:6vmax;background:radial-gradient(closest-side,#E0B36A,transparent 70%);opacity:.14;animation:drift1 44s ease-in-out infinite alternate-reverse}
-@keyframes drift1{to{transform:translate(7vmax,5vmax) scale(1.12)}}@keyframes drift2{to{transform:translate(-8vmax,6vmax) scale(.92)}}@keyframes drift3{to{transform:translate(6vmax,-6vmax) scale(1.1)}}
-.tools,#root{position:relative;z-index:1}
-.tools{max-width:1180px;margin:0 auto 18px;display:flex;gap:10px;flex-wrap:wrap;justify-content:space-between;align-items:center}
-.tools a,.tools button{font:700 13px var(--body);color:var(--cream);text-decoration:none;padding:10px 18px;border:1px solid var(--edge2);background:rgba(255,232,200,.06);border-radius:12px;cursor:pointer;transition:transform .3s,box-shadow .3s,background .3s;backdrop-filter:blur(10px)}
-.tools a:hover,.tools button:hover{transform:translateY(-2px);background:rgba(255,232,200,.11);box-shadow:0 0 24px rgba(224,179,106,.18)}
-.tools .go{background:var(--metal);color:#2A1608;border:0;box-shadow:0 10px 30px rgba(224,179,106,.32)}
-.slide{max-width:1180px;margin:0 auto 26px;min-height:640px;border-radius:30px;border:1px solid var(--edge);
-  background:radial-gradient(60% 50% at 0 0,rgba(199,125,69,.16),transparent 65%),radial-gradient(50% 45% at 100% 0,rgba(224,179,106,.13),transparent 65%),linear-gradient(160deg,rgba(40,25,15,.82) 0%,rgba(22,13,8,.86) 55%,rgba(14,8,5,.9) 100%);
-  -webkit-backdrop-filter:blur(22px) saturate(1.2);backdrop-filter:blur(22px) saturate(1.2);
-  box-shadow:0 40px 110px rgba(0,0,0,.6),0 0 0 1px rgba(255,210,122,.04),inset 0 1px 0 rgba(255,235,205,.14),inset 0 0 90px rgba(224,179,106,.03);
-  padding:54px 64px 40px;position:relative;overflow:hidden;display:flex;flex-direction:column;gap:24px;scroll-snap-align:start;scroll-margin-top:12px}
-.slide::before{content:"";position:absolute;inset:0;border-radius:inherit;padding:1px;background:linear-gradient(135deg,rgba(255,210,122,.55),rgba(224,179,106,0) 30%,rgba(224,179,106,0) 70%,rgba(255,210,122,.4));-webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask-composite:exclude;pointer-events:none;z-index:2}
-.slide::after{content:"";position:absolute;inset:0;background-image:linear-gradient(rgba(224,179,106,.04) 1px,transparent 1px),linear-gradient(90deg,rgba(224,179,106,.04) 1px,transparent 1px);background-size:56px 56px;-webkit-mask-image:radial-gradient(70% 70% at 85% 8%,#000,transparent 75%);mask-image:radial-gradient(70% 70% at 85% 8%,#000,transparent 75%);pointer-events:none}
-.slide>*{position:relative;z-index:1}
-.slide{opacity:0;transform:translateY(22px);transition:opacity .9s cubic-bezier(.2,.7,.2,1),transform .9s cubic-bezier(.2,.7,.2,1)}
-.slide.in{opacity:1;transform:none}
-.slide .glass{opacity:0}
-.slide.in .glass{animation:rise .75s cubic-bezier(.2,.7,.2,1) both;animation-delay:calc(var(--i,0)*70ms + 120ms)}
-.corner{position:absolute!important;width:22px;height:22px;border:2px solid var(--gold);opacity:.75;z-index:2;filter:drop-shadow(0 0 6px rgba(255,210,122,.5))}
-.corner.tl{left:20px;top:20px;border-right:0;border-bottom:0}.corner.br{right:20px;bottom:20px;border-left:0;border-top:0}
-@keyframes rise{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}
-@keyframes grow{from{transform:scaleX(0)}to{transform:scaleX(1)}}
+.aurora i:nth-child(2){width:52vmax;height:52vmax;right:-20vmax;top:10vmax;background:radial-gradient(closest-side,#B07A2A,transparent 70%);opacity:.3;animation:drift2 32s ease-in-out infinite alternate}
+.aurora i:nth-child(3){width:48vmax;height:48vmax;left:20vmax;bottom:-26vmax;background:radial-gradient(closest-side,#5C2B14,transparent 70%);animation:drift1 38s ease-in-out infinite alternate-reverse}
+@keyframes drift1{to{transform:translate(7vmax,5vmax) scale(1.12)}}@keyframes drift2{to{transform:translate(-8vmax,6vmax) scale(.92)}}
 @keyframes spin{to{transform:rotate(360deg)}}
 @keyframes pulse{0%,100%{transform:scale(1);filter:brightness(1)}50%{transform:scale(1.045);filter:brightness(1.18)}}
-@keyframes blink{50%{opacity:.35}}
-.eyebrow{font:500 11px var(--mono);letter-spacing:.26em;text-transform:uppercase;color:var(--gold);display:flex;align-items:center;gap:12px;text-shadow:0 0 14px rgba(255,210,122,.35)}
-.eyebrow::before{content:"";width:34px;height:1px;background:var(--metal);box-shadow:0 0 8px rgba(255,210,122,.7)}
-h1,h2{margin:0;font-family:var(--display);font-weight:500;letter-spacing:-.03em;color:var(--cream)}
-h1{font-size:clamp(30px,4.6vw,54px);line-height:1.06;overflow-wrap:anywhere}
-h2{font-size:clamp(22px,2.9vw,32px);line-height:1.14}
+.tools,#root{position:relative;z-index:1}
+.tools{max-width:297mm;margin:0 auto 16px;display:flex;gap:10px;flex-wrap:wrap;justify-content:space-between;align-items:center}
+.tools a,.tools button{font:700 13px var(--body);color:var(--cream);text-decoration:none;padding:10px 18px;border:1px solid var(--edge2);background:rgba(255,232,200,.06);border-radius:12px;cursor:pointer;transition:transform .3s,box-shadow .3s,background .3s}
+.tools a:hover,.tools button:hover{transform:translateY(-2px);background:rgba(255,232,200,.11);box-shadow:0 0 24px rgba(224,179,106,.18)}
+.tools .go{background:var(--metal);color:#2A1608;border:0;box-shadow:0 10px 30px rgba(224,179,106,.32)}
+#root{display:flex;flex-direction:column;align-items:center;gap:22px}
+
+/* ---- the page ---- */
+.pg{width:297mm;height:209.6mm;zoom:var(--z);flex:none;border-radius:22px;border:1px solid var(--edge);position:relative;overflow:hidden;display:flex;flex-direction:column;gap:12px;padding:30px 40px 18px;
+  background:radial-gradient(60% 50% at 0 0,rgba(199,125,69,.17),transparent 65%),radial-gradient(50% 45% at 100% 0,rgba(224,179,106,.13),transparent 65%),linear-gradient(160deg,#281910 0%,#160D08 55%,#0E0805 100%);
+  box-shadow:0 40px 100px rgba(0,0,0,.6),inset 0 1px 0 rgba(255,235,205,.14),inset 0 0 90px rgba(224,179,106,.03)}
+.pg::before{content:"";position:absolute;inset:0;border-radius:inherit;padding:1px;background:linear-gradient(135deg,rgba(255,210,122,.55),rgba(224,179,106,0) 30%,rgba(224,179,106,0) 70%,rgba(255,210,122,.4));-webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask-composite:exclude;pointer-events:none}
+.pg::after{content:"";position:absolute;inset:0;background-image:linear-gradient(rgba(224,179,106,.035) 1px,transparent 1px),linear-gradient(90deg,rgba(224,179,106,.035) 1px,transparent 1px);background-size:48px 48px;-webkit-mask-image:radial-gradient(60% 60% at 88% 6%,#000,transparent 75%);mask-image:radial-gradient(60% 60% at 88% 6%,#000,transparent 75%);pointer-events:none}
+.pg>*{position:relative;z-index:1}
+.corner{position:absolute!important;width:18px;height:18px;border:2px solid var(--gold);opacity:.7;z-index:2;filter:drop-shadow(0 0 5px rgba(255,210,122,.5))}
+.corner.tl{left:14px;top:14px;border-right:0;border-bottom:0}.corner.br{right:14px;bottom:14px;border-left:0;border-top:0}
+.eyebrow{font:500 10.5px var(--mono);letter-spacing:.26em;text-transform:uppercase;color:var(--gold);display:flex;align-items:center;gap:12px;text-shadow:0 0 14px rgba(255,210,122,.35)}
+.eyebrow::before{content:"";width:30px;height:1px;background:var(--metal);box-shadow:0 0 8px rgba(255,210,122,.7)}
+h1,h2,h3{margin:0;font-family:var(--display);font-weight:500;letter-spacing:-.03em;color:var(--cream)}
+h1{font-size:25px;line-height:1.2;overflow-wrap:anywhere}
+h2{font-size:22px;line-height:1.15}
 .gold{background:var(--metal);-webkit-background-clip:text;background-clip:text;color:transparent}
-.lead{font-size:clamp(16px,1.8vw,20px);line-height:1.6;color:var(--cream);max-width:780px;font-weight:600}
-.dim{color:var(--soft)}
-.sub{margin:-12px 0 0;color:var(--soft);font-size:14px;max-width:760px}
-.chip{display:inline-flex;align-items:center;gap:7px;font:500 11px var(--mono);letter-spacing:.08em;padding:6px 14px;border:1px solid var(--edge2);border-radius:999px;color:var(--champ);background:rgba(255,232,200,.05)}
-.chips{display:flex;flex-wrap:wrap;gap:8px}
-.tg.s{border-color:rgba(243,217,168,.55);color:#F3D9A8;background:rgba(243,217,168,.08)}
-.tg.s::before{content:"\1F399";margin-right:6px;font-size:11px}
-.glass{background:var(--panel);border:1px solid var(--edge);border-radius:20px;box-shadow:inset 0 1px 0 rgba(255,235,205,.1),0 18px 44px rgba(0,0,0,.3);position:relative}
-.foot{margin-top:auto;display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;border-top:1px solid var(--edge);padding-top:14px;font:500 10.5px var(--mono);letter-spacing:.16em;text-transform:uppercase;color:var(--mute)}
-.body{margin-block:auto;display:grid;gap:22px;width:100%}
-.ico{width:13px;height:13px;flex:none;stroke:currentColor;fill:none;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
-/* hero */
-.cover{justify-content:space-between}
-.cover .grid{display:grid;grid-template-columns:1.5fr .5fr;gap:34px;align-items:center;flex:1}
-.cover h1{margin:16px 0 14px}
-.orb{width:100%;max-width:250px;aspect-ratio:1;position:relative;justify-self:center}
+.chips{display:flex;flex-wrap:wrap;gap:7px}
+.chip{display:inline-flex;align-items:center;gap:6px;font:500 10px var(--mono);letter-spacing:.07em;padding:4px 11px;border:1px solid var(--edge2);border-radius:999px;color:var(--champ);background:rgba(255,232,200,.05);white-space:nowrap}
+.chip.cov{border-style:dashed;color:var(--soft)}
+.chip.sp{border-color:rgba(243,217,168,.35);color:var(--soft)}
+.glass{background:var(--panel);border:1px solid var(--edge);border-radius:18px;box-shadow:inset 0 1px 0 rgba(255,235,205,.1),0 14px 36px rgba(0,0,0,.28)}
+.foot{margin-top:auto;display:flex;justify-content:space-between;gap:10px;border-top:1px solid var(--edge);padding-top:8px;font:500 9px var(--mono);letter-spacing:.15em;text-transform:uppercase;color:var(--mute)}
+.foot span:nth-child(2){flex:1;text-align:center;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;padding:0 14px}
+
+/* cover band */
+.cover{display:grid;grid-template-columns:1fr 112px;gap:24px;align-items:center;padding-bottom:12px;border-bottom:1px solid var(--edge)}
+.cover h1{margin:10px 0 8px}
+.bl{font:600 15.5px/1.5 var(--body);color:var(--champ);margin:0 0 11px;max-width:820px}
+.orb{width:104px;aspect-ratio:1;position:relative;justify-self:center}
 .orb i{position:absolute;border-radius:50%}
-.orb .core{inset:23%;background:radial-gradient(circle at 34% 28%,#FFF6E0,#F3D9A8 22%,#E0B36A 48%,#8A4F22 82%,#4A260F);box-shadow:0 0 50px 8px rgba(255,210,122,.5),0 0 130px 40px rgba(199,125,69,.32);animation:pulse 6s ease-in-out infinite}
-.orb .r1{inset:8%;border:1px solid rgba(243,217,168,.55);animation:spin 40s linear infinite}
-.orb .r1::after{content:"";position:absolute;left:50%;top:-4px;width:8px;height:8px;margin-left:-4px;border-radius:50%;background:#FFE3A6;box-shadow:0 0 12px 3px rgba(255,210,122,.9)}
-.orb .r2{inset:-2%;border:1px dashed rgba(224,179,106,.35);animation:spin 70s linear infinite reverse}
-.orb .r2::after{content:"";position:absolute;right:6%;bottom:12%;width:6px;height:6px;border-radius:50%;background:#C77D45;box-shadow:0 0 10px 2px rgba(199,125,69,.9)}
-.orb .halo{inset:-22%;background:conic-gradient(from 0deg,rgba(255,210,122,0),rgba(255,210,122,.16),rgba(199,125,69,0) 50%,rgba(255,210,122,.1),rgba(255,210,122,0));filter:blur(22px);animation:spin 24s linear infinite}
-.catch{padding:24px 28px 22px;border-color:var(--edge2);background:linear-gradient(160deg,rgba(255,226,180,.11),rgba(255,226,180,.025));box-shadow:inset 0 1px 0 rgba(255,235,205,.16),0 0 0 1px rgba(255,210,122,.05),0 24px 60px rgba(0,0,0,.4),0 0 60px rgba(224,179,106,.08)}
-.catch .ch{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:12px}
-.catch .lab{font:500 11px var(--mono);letter-spacing:.24em;text-transform:uppercase;color:var(--neon);display:flex;align-items:center;gap:10px;text-shadow:0 0 16px rgba(255,210,122,.45)}
-.catch .lab::before{content:"";width:8px;height:8px;border-radius:50%;background:var(--neon);box-shadow:0 0 12px 3px rgba(255,210,122,.8);animation:blink 2.6s ease-in-out infinite}
-.catch p{margin:0 0 10px;font-size:15.5px;line-height:1.72;color:var(--cream)}.catch p:last-child{margin:0}
-.cov{display:inline-flex;align-items:center;gap:8px;font:500 11px var(--mono);letter-spacing:.06em;color:var(--champ);padding:6px 14px;border-radius:999px;border:1px solid rgba(143,211,164,.4);background:rgba(143,211,164,.08)}
-.cov b{color:#9BE0B2;font-weight:500}.cov i{width:7px;height:7px;border-radius:50%;background:#9BE0B2;box-shadow:0 0 10px 2px rgba(155,224,178,.7)}
-/* overview */
-.cols{display:grid;grid-template-columns:1.5fr 1fr;gap:34px;align-items:start}
-.prose p{margin:0 0 16px;font-size:17px;line-height:1.75;color:var(--cream);font-weight:500}
-.prose p:first-child::first-letter{font:500 44px/0.9 var(--display);float:left;margin:6px 10px 0 0;background:var(--metal);-webkit-background-clip:text;background-clip:text;color:transparent}
-.story{column-count:2;column-gap:46px}.story p{break-inside:avoid;margin:0 0 15px;font-size:15.5px;line-height:1.78;color:var(--cream)}.story p:first-child::first-letter{font:500 40px/0.9 var(--display);float:left;margin:6px 10px 0 0;background:var(--metal);-webkit-background-clip:text;background-clip:text;color:transparent}
-.side{display:grid;gap:14px}
-.focus{padding:20px 22px}.focus .lab{font:500 10px var(--mono);letter-spacing:.22em;text-transform:uppercase;color:var(--gold)}
-.focus b{display:block;margin-top:8px;font:500 20px/1.2 var(--display);letter-spacing:-.02em}
-.mini{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
-.mini div{padding:14px 16px}.mini b{display:block;font:500 21px/1 var(--display);background:var(--metal);-webkit-background-clip:text;background-clip:text;color:transparent}
-.mini span{display:block;margin-top:7px;font:500 9.5px var(--mono);letter-spacing:.16em;text-transform:uppercase;color:var(--soft)}
-.tagrow{padding:16px 18px;display:grid;gap:10px}.tagrow .lab{font:500 10px var(--mono);letter-spacing:.22em;text-transform:uppercase;color:var(--gold)}
-/* takeaways */
-.take{display:grid;gap:12px;margin:0;padding:0;list-style:none;counter-reset:t}
-.take li{counter-increment:t;display:grid;grid-template-columns:auto 1fr;gap:18px;align-items:start;padding:18px 22px}
-.take li::before{content:counter(t,decimal-leading-zero);font:500 26px/1.1 var(--display);background:var(--metal);-webkit-background-clip:text;background-clip:text;color:transparent}
-.take li span{font-size:17px;font-weight:700;line-height:1.55}
-.next{display:grid;gap:9px}.next .it{display:grid;grid-template-columns:auto 1fr auto;gap:12px;align-items:center;padding:11px 16px}
-.av{width:30px;height:30px;border-radius:50%;display:grid;place-items:center;font:600 11px var(--display);color:#2A1608;background:var(--metal);box-shadow:0 0 14px rgba(224,179,106,.35)}
-.due{font:500 11px var(--mono);padding:4px 12px;border:1px solid var(--edge2);border-radius:999px;color:var(--champ);white-space:nowrap}
-.banner{padding:12px 18px;border-radius:14px;border:1px dashed var(--edge2);color:var(--champ);font-weight:700;background:rgba(224,179,106,.07)}
-/* timeline */
-.rail{position:relative;display:grid;gap:14px;padding-left:30px}
-.rail::before{content:"";position:absolute;left:8px;top:10px;bottom:10px;width:2px;border-radius:2px;background:linear-gradient(180deg,rgba(255,210,122,.9),rgba(199,125,69,.5) 60%,rgba(199,125,69,.1));box-shadow:0 0 12px rgba(255,210,122,.45)}
-.sec{display:grid;grid-template-columns:96px 1fr;gap:18px;padding:16px 20px 15px;position:relative}
-.sec::before{content:"";position:absolute;left:-27px;top:22px;width:12px;height:12px;border-radius:50%;background:var(--bg0);border:2px solid var(--neon);box-shadow:0 0 12px 2px rgba(255,210,122,.7)}
-.sec .tm{font:500 12px/1.35 var(--mono);color:var(--neon);letter-spacing:.04em;text-shadow:0 0 12px rgba(255,210,122,.35)}
-.sec .tm small{display:block;color:var(--mute);font-size:10px;letter-spacing:.14em;text-transform:uppercase;margin-top:3px}
-.sec h3{margin:0 0 7px;font:500 16.5px/1.25 var(--display);letter-spacing:-.02em}
-.sec .two{display:grid;grid-template-columns:1.25fr 1fr;gap:22px;align-items:start}
-.sec p{margin:0;font-size:14px;line-height:1.68;color:var(--cream)}
-.sec ul{margin:0;padding-left:16px;display:grid;gap:3px;font-size:12.5px;line-height:1.5;color:var(--soft)}
-.sec ul li::marker{color:var(--gold)}
-.tags{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
-.tg{display:inline-flex;align-items:flex-start;gap:6px;font:600 11px/1.35 var(--body);padding:4px 10px;border-radius:999px;border:1px solid var(--edge);background:rgba(255,232,200,.045);color:var(--champ)}
-.tg .ico{margin-top:1.5px}
-.tg.d{color:#FFB070;border-color:rgba(255,154,82,.4)}.tg.t{color:#9ED0F0;border-color:rgba(130,190,235,.35)}.tg.k{color:#D8B6F5;border-color:rgba(200,160,240,.35)}.tg.n{color:var(--neon);border-color:rgba(255,210,122,.4)}.tg.c{color:#9BE0B2;border-color:rgba(143,211,164,.38)}
-/* deadlines */
-.dl{display:grid}
-.dr{display:grid;grid-template-columns:116px 1.35fr 1.7fr auto;gap:18px;align-items:center;padding:13px 22px;border-bottom:1px solid var(--edge)}
-.dr:last-child{border-bottom:0}.dr.h{font:500 10px var(--mono);letter-spacing:.2em;text-transform:uppercase;color:var(--mute);padding-block:12px}
-.dr b{font-weight:700;font-size:15px;line-height:1.35;text-align:left}.dr>*{text-align:left}.dr>.who{text-align:right}.dr .dt{font-size:13px;color:var(--soft);line-height:1.5}.dr .dt strong{color:var(--cream);font-weight:700}
-.st{display:inline-flex;align-items:center;justify-content:center;gap:7px;font:500 10.5px var(--mono);letter-spacing:.12em;text-transform:uppercase;padding:6px 12px;border-radius:999px;border:1px solid;white-space:nowrap}
-.st i{width:7px;height:7px;border-radius:50%;background:currentColor;box-shadow:0 0 9px 1px currentColor}
-.st.new{color:#FFD27A;border-color:rgba(255,210,122,.5);background:rgba(255,210,122,.09)}.st.moved{color:#FF9A52;border-color:rgba(255,154,82,.55);background:rgba(255,154,82,.1)}
-.st.confirmed{color:#9BE0B2;border-color:rgba(143,211,164,.5);background:rgba(143,211,164,.09)}.st.risk{color:#FF7A7A;border-color:rgba(255,107,107,.55);background:rgba(255,107,107,.1)}.st.other{color:var(--soft);border-color:var(--edge2);background:rgba(255,232,200,.05)}
-.legend{display:flex;gap:10px;flex-wrap:wrap}
-.who{font:500 11px var(--mono);color:var(--mute);white-space:nowrap;text-align:right}.who em{display:block;font-style:normal;color:var(--champ);font-size:12px}
-/* tools */
-.board{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
-.tc{padding:20px 22px 18px;display:grid;gap:9px;align-content:start}
-.tc .top{display:flex;justify-content:space-between;align-items:flex-start;gap:10px}
-.tc h3{margin:0;font:500 18px/1.2 var(--display);letter-spacing:-.02em;overflow-wrap:anywhere}
-.tc p{margin:0;font-size:13.5px;line-height:1.6;color:var(--cream)}
-.tc .cost{font:500 13px var(--mono);color:var(--neon);text-shadow:0 0 12px rgba(255,210,122,.3)}
-.tc .note{font-size:12.5px;color:var(--soft);line-height:1.55;border-top:1px solid var(--edge);padding-top:9px}
-.ac{font:500 10px var(--mono);letter-spacing:.12em;text-transform:uppercase;padding:5px 11px;border-radius:999px;border:1px solid;white-space:nowrap}
-.ac.free{color:#9BE0B2;border-color:rgba(143,211,164,.5);background:rgba(143,211,164,.09)}.ac.paid{color:#E8955A;border-color:rgba(232,149,90,.5);background:rgba(232,149,90,.09)}
-.ac.trial{color:#9ED0F0;border-color:rgba(130,190,235,.5);background:rgba(130,190,235,.09)}.ac.credits{color:#FFD27A;border-color:rgba(255,210,122,.5);background:rgba(255,210,122,.09)}
-.ac.shared{color:#D8B6F5;border-color:rgba(200,160,240,.5);background:rgba(200,160,240,.09)}.ac.unknown{color:var(--soft);border-color:var(--edge2);background:rgba(255,232,200,.05)}
-/* projects / numbers */
-.pj{display:grid;grid-template-columns:repeat(2,1fr);gap:16px}
-.pc{padding:20px 24px 18px;display:grid;gap:8px;align-content:start}
-.pc .top{display:flex;justify-content:space-between;gap:12px;align-items:flex-start}
-.pc h3{margin:0;font:500 17px/1.25 var(--display);letter-spacing:-.02em}
-.pc p{margin:0;font-size:13.8px;line-height:1.65}
-.pc .from{font:500 11px var(--mono);letter-spacing:.06em;color:var(--champ)}.pc .from em{color:var(--mute);font-style:normal;text-transform:uppercase;letter-spacing:.16em;font-size:10px;margin-right:6px}
-.kd{font:500 10px var(--mono);letter-spacing:.14em;text-transform:uppercase;padding:5px 11px;border-radius:999px;border:1px solid var(--edge2);color:var(--neon);background:rgba(255,210,122,.07);white-space:nowrap}
-.nums{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
-.nm{padding:18px 20px 16px;display:grid;gap:6px;align-content:start}
-.nm b{font:500 26px/1.1 var(--display);letter-spacing:-.03em;background:var(--metal);-webkit-background-clip:text;background-clip:text;color:transparent;overflow-wrap:anywhere}
-.nm span{font:500 10.5px var(--mono);letter-spacing:.14em;text-transform:uppercase;color:var(--champ)}
-.nm p{margin:0;font-size:12.5px;line-height:1.55;color:var(--soft)}
-.sh{font:500 10.5px var(--mono);letter-spacing:.22em;text-transform:uppercase;color:var(--gold);margin:0 0 -8px}
-/* topics */
-.tpair{display:grid;grid-template-columns:1fr 1fr;gap:22px;align-items:start}
-.tp{padding:26px 28px 24px;display:grid;gap:12px;align-content:start}
-.tp .th{display:grid;grid-template-columns:auto 1fr auto;gap:14px;align-items:center}
-.tp .n{font:500 26px/1 var(--display);background:var(--metal);-webkit-background-clip:text;background-clip:text;color:transparent}
-.tp h3{margin:0;font:500 19px/1.2 var(--display);letter-spacing:-.02em}
-.tp .pct{font:500 11px var(--mono);color:var(--champ);padding:4px 10px;border:1px solid var(--edge2);border-radius:999px}
-.tp .bar{height:3px;border-radius:999px;background:rgba(255,232,200,.1);overflow:hidden}.tp .bar i{display:block;height:100%;background:var(--metal);box-shadow:0 0 10px rgba(255,210,122,.7);transform-origin:left;animation:grow 1.1s cubic-bezier(.2,.7,.2,1) .3s both}
-.tp p{margin:0;font-size:15px;line-height:1.75;color:var(--cream)}
-.tp ul{margin:0;padding-left:18px;display:grid;gap:5px;font-size:14px;color:var(--soft)}
-.tp .out{margin-top:2px;padding:11px 14px;border-radius:12px;border:1px solid var(--edge);background:rgba(224,179,106,.07);font-size:13.5px;font-weight:700}
-.tp .out em,.tp .q em{font:500 10px var(--mono);letter-spacing:.2em;text-transform:uppercase;color:var(--gold);font-style:normal;margin-right:8px}
-.tp .q{font-size:13px;color:var(--soft)}
-/* plan */
-.dec{display:grid;grid-template-columns:auto 1fr;gap:16px;align-items:center;padding:16px 20px}
-.dn{width:36px;height:36px;border-radius:50%;display:grid;place-items:center;font:500 14px var(--display);color:#2A1608;background:var(--metal);box-shadow:0 0 20px rgba(224,179,106,.45)}
-.tbl{display:grid}.tr{display:grid;grid-template-columns:auto 1.2fr 2.2fr auto;gap:16px;align-items:center;padding:14px 20px;border-bottom:1px solid var(--edge)}
-.tr:last-child{border-bottom:0}.tr.h{font:500 10px var(--mono);letter-spacing:.2em;text-transform:uppercase;color:var(--mute);padding-block:12px}
-.empty{padding:18px 22px;color:var(--soft);font-weight:600}
-.oq{padding:16px 22px;display:grid;gap:8px}.oq li{margin-left:18px;color:var(--cream);font-weight:600}
-/* highlights */
-.quote{padding:22px 28px 20px 70px;position:relative;font:600 18px/1.55 var(--body)}
-.quote::before{content:"\201C";position:absolute;left:24px;top:8px;font:500 64px/1 var(--display);background:var(--metal);-webkit-background-clip:text;background-clip:text;color:transparent}
-.quote small{display:block;margin-top:10px;font:500 11px var(--mono);letter-spacing:.16em;text-transform:uppercase;color:var(--mute)}
-.hard{padding:16px 22px;border-style:dashed;border-color:var(--edge2)}.hard .eyebrow{margin-bottom:8px}.hard ul{margin:0;padding-left:18px;display:grid;gap:4px;font-size:13px;color:var(--soft)}
-details{padding:16px 20px}summary{cursor:pointer;font:500 11px var(--mono);letter-spacing:.2em;text-transform:uppercase;color:var(--gold)}
-.tx{margin-top:14px;max-height:340px;overflow:auto;display:grid;gap:7px;font-size:13.5px;color:var(--soft)}.tx b{color:var(--champ)}.tx em{font:500 10.5px var(--mono);color:var(--mute);font-style:normal;margin-right:8px}
-.slide>*,.body>*,.rail>*,.sec>*,.cols>*,.grid>*,.board>*,.pj>*,.nums>*,.tpair>*,.glass{min-width:0}.tg,.chip{max-width:100%;overflow-wrap:anywhere}p,li,h1,h2,h3{overflow-wrap:break-word}
-@media screen and (max-width:900px){html{scroll-snap-type:none}html,body{overflow-x:hidden}.slide{max-width:100%}.rail{max-width:100%}.story{column-count:1}.slide{padding:34px 20px 28px;min-height:0;border-radius:24px}.cover .grid,.cols,.tpair,.sec .two,.board,.pj{grid-template-columns:1fr}.nums{grid-template-columns:repeat(2,1fr)}.mini{grid-template-columns:repeat(3,1fr)}
-  .tr{grid-template-columns:auto 1fr}.tr .due{grid-column:2;justify-self:start}.tr.h,.dr.h{display:none}.dr{grid-template-columns:1fr;gap:8px;padding:14px 16px}.dr .st{justify-self:start}.dr>.who{text-align:left}.orb{max-width:170px}
-  .sec{grid-template-columns:1fr;gap:6px;padding:14px 16px}.rail{padding-left:22px}.rail::before{left:4px}.sec::before{left:-24px}.catch{padding:20px 18px}.mini b{font-size:17px}h1{font-size:28px}}
-@page{size:A4 landscape;margin:0}
-@media print{
-  html{scroll-snap-type:none;scroll-behavior:auto}html,body{background:var(--bg0);-webkit-print-color-adjust:exact;print-color-adjust:exact;min-height:0}body{padding:0}.tools,.aurora{display:none}
-  *{-webkit-print-color-adjust:exact;print-color-adjust:exact}
-  .slide{width:297mm;height:209mm;min-height:0;max-width:none;margin:0;border-radius:0;border:0;box-shadow:none;page-break-after:always;break-after:page;padding:12mm 14mm 8mm;gap:10px;overflow:hidden;opacity:1!important;transform:none!important;-webkit-backdrop-filter:none;backdrop-filter:none;
-    background:radial-gradient(55% 55% at 0 0,rgba(199,125,69,.3),transparent 65%),radial-gradient(45% 45% at 100% 0,rgba(224,179,106,.2),transparent 65%),radial-gradient(40% 40% at 100% 100%,rgba(120,60,24,.28),transparent 65%),linear-gradient(160deg,#2C1B10 0%,#1C110A 55%,#120A06 100%)}
-  .slide::before{display:none}
-  .slide .glass{opacity:1!important}.slide *{animation:none!important;transition:none!important}.slide:last-of-type{page-break-after:auto;break-after:auto}
-  .glass{break-inside:avoid;page-break-inside:avoid}
-  h1{font-size:40px}h2{font-size:22px}.lead{font-size:14.5px}.prose p{font-size:15.5px;line-height:1.65;margin-bottom:11px}.take li{padding:10px 16px}.take li span{font-size:16px}.tp{padding:16px 18px;gap:8px}.tp p{font-size:14px;line-height:1.62}.tp ul{font-size:12.8px}.tp .out{font-size:12.8px;padding:8px 12px}.tp h3{font-size:16.5px}.dec{padding:10px 16px}.tr{padding:8px 16px}.quote{padding:13px 20px 11px 56px;font-size:13.8px}.body{gap:12px}
-  .catch{padding:18px 22px 16px}.catch p{font-size:13.6px;line-height:1.62}
-  .sec{padding:11px 16px 10px;gap:14px;grid-template-columns:84px 1fr}.sec h3{font-size:14.5px;margin-bottom:5px}.sec p{font-size:12.4px;line-height:1.55}.sec ul{font-size:11.5px;line-height:1.42;gap:2px}.tags{margin-top:7px;gap:5px}.tg{font-size:10.3px;padding:3px 9px}.sec::before{top:17px}.rail{gap:10px}
-  .dr{padding:10px 18px;gap:14px}.dr b{font-size:13.8px}.dr .dt{font-size:12.2px}.tc{padding:14px 18px 13px;gap:7px}.tc h3{font-size:16px}.tc p{font-size:12.4px;line-height:1.52}.tc .note{font-size:11.5px;padding-top:7px}.pc{padding:14px 20px 13px}.pc p{font-size:12.6px;line-height:1.55}.nm{padding:13px 16px 12px}.nm b{font-size:22px}.nm p{font-size:11.5px}
-  .gold,.take li::before,.quote::before,.tp .n,.mini b,.nm b,.prose p:first-child::first-letter,.story p:first-child::first-letter{-webkit-text-fill-color:#E0B36A!important;background:none!important;color:#E0B36A!important}
-  .story{column-gap:34px}.story p{font-size:12.8px;line-height:1.6;margin-bottom:10px}
-  details{display:none}.orb .halo{display:none}
+.orb .core{inset:26%;background:radial-gradient(circle at 34% 28%,#FFF6E0,#F3D9A8 22%,#E0B36A 48%,#8A4F22 82%,#4A260F);box-shadow:0 0 34px 5px rgba(255,210,122,.42),0 0 90px 26px rgba(199,125,69,.25);animation:pulse 6s ease-in-out infinite}
+.orb .r1{inset:8%;border:1px solid rgba(243,217,168,.5);animation:spin 40s linear infinite}
+.orb .r1::after{content:"";position:absolute;left:50%;top:-3px;width:6px;height:6px;margin-left:-3px;border-radius:50%;background:#FFE3A6;box-shadow:0 0 10px 2px rgba(255,210,122,.9)}
+.orb .r2{inset:-4%;border:1px dashed rgba(224,179,106,.3);animation:spin 70s linear infinite reverse}
+.ph{display:flex;align-items:baseline;gap:18px;justify-content:space-between;padding-bottom:10px;border-bottom:1px solid var(--edge)}
+.ph h2{margin-top:8px}
+
+/* columns: the paginator fills these; overflow is measured, never shown */
+.cols{flex:1;min-height:0;display:grid;grid-template-columns:var(--gc,1fr 1fr);grid-template-rows:minmax(0,1fr);gap:26px}
+.col{min-height:0;min-width:0;overflow:hidden;display:flex;flex-direction:column;gap:14px}
+.col>*{flex:none}
+.col.e{visibility:hidden}
+.col.side{padding:14px 16px;gap:12px}
+.pg.t1 .cols{--gc:1.22fr 1fr}.pg.t3 .cols{--gc:1.3fr 1fr}
+
+/* typography of content */
+.ov p{margin:0;font-size:13.6px;line-height:1.6;color:#F2E4D0;font-weight:500}
+.ov:first-child p::first-letter{font:500 29px/.9 var(--display);float:left;padding:4px 8px 0 0;color:var(--gold)}
+.blk h4{margin:0 0 8px;font:500 10px var(--mono);letter-spacing:.22em;text-transform:uppercase;color:var(--gold);display:flex;align-items:center;gap:9px}
+.blk h4::after{content:"";flex:1;height:1px;background:linear-gradient(90deg,var(--edge2),transparent)}
+ol.dec{list-style:none;margin:0;padding:0;counter-reset:d;display:grid;gap:6px}
+ol.dec li{counter-increment:d;position:relative;padding-left:26px;font-size:11.8px;line-height:1.42;color:#F2E4D0}
+ol.dec li::before{content:counter(d);position:absolute;left:0;top:1px;font:500 10px/1 var(--mono);width:18px;height:18px;display:grid;place-items:center;border-radius:50%;border:1px solid var(--edge2);color:var(--gold)}
+.dl{display:grid;gap:6px}
+.dl .r{padding:4px 10px 5px;border:1px solid var(--edge);border-radius:11px;background:rgba(255,232,200,.035)}
+.dl .r b{display:block;font-size:12px;line-height:1.4;font-weight:700;color:var(--cream)}
+.dl .m{display:flex;flex-wrap:wrap;gap:6px 8px;align-items:center;margin-top:3px;font:500 10px var(--mono);color:var(--soft)}
+.dl .d{font-size:10.5px;line-height:1.35;color:var(--soft);margin-top:2px}
+.st{font:500 9px var(--mono);letter-spacing:.1em;text-transform:uppercase;padding:2px 8px;border-radius:999px;border:1px solid;color:var(--champ)}
+.st.new{color:#FFD27A;border-color:rgba(255,210,122,.55);background:rgba(255,210,122,.08)}
+.st.moved{color:#E8A06A;border-color:rgba(232,160,106,.55);background:rgba(232,160,106,.09)}
+.st.confirmed{color:#A9D1A0;border-color:rgba(169,209,160,.5);background:rgba(169,209,160,.08)}
+.st.risk{color:#F08C6E;border-color:rgba(240,140,110,.6);background:rgba(240,140,110,.1)}
+.st.oth{color:var(--soft);border-color:var(--edge2)}
+
+/* detail topics */
+.tp{display:grid;grid-template-columns:28px 1fr;column-gap:9px;padding:10px 13px 11px 11px;border-radius:15px}
+.tp .n{font:500 17px/1 var(--display);letter-spacing:-.04em;padding-top:2px;background:var(--metal);-webkit-background-clip:text;background-clip:text;color:transparent}
+.tp h3{font-size:12.6px;line-height:1.3;letter-spacing:-.02em;font-weight:500}
+.tp .th{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:4px 10px}.tp .chips{gap:5px}.tp .chip{font-size:9px;padding:2px 8px}
+.tp p{margin:7px 0 0;font-size:11.9px;line-height:1.5;color:#EBDCC7}
+
+/* page 3 */
+.tb{width:100%;border-collapse:collapse;font-size:12px;line-height:1.42}
+.tb th{font:500 9.5px var(--mono);letter-spacing:.16em;text-transform:uppercase;color:var(--mute);text-align:left;padding:0 10px 6px}
+.tb td{padding:8px 10px;border-top:1px solid var(--edge);vertical-align:top;color:#F2E4D0}
+.tb td:first-child{white-space:nowrap;font-weight:700;color:var(--champ);width:1%}
+.tb td:last-child{white-space:nowrap;font:500 11px var(--mono);color:var(--gold);width:1%}
+.nums{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.nm{padding:10px 12px 9px;border-radius:13px}
+.nm b{display:block;font:500 17px/1.1 var(--display);letter-spacing:-.04em;background:var(--metal);-webkit-background-clip:text;background-clip:text;color:transparent;overflow-wrap:anywhere}
+.nm span{display:block;margin-top:5px;font-size:11.2px;line-height:1.35;font-weight:700;color:var(--cream)}
+.nm small{display:block;margin-top:2px;font-size:10.6px;line-height:1.35;color:var(--soft);font-weight:500}
+.tl{display:grid;gap:8px}
+.tl .r{padding:8px 11px;border-radius:12px}
+.tl .r b{font-size:12.2px;font-weight:700;color:var(--champ)}
+.tl .r p{margin:3px 0 0;font-size:11.2px;line-height:1.42;color:var(--soft)}
+.tl .m{display:flex;gap:6px;flex-wrap:wrap;margin-top:5px}
+ul.pl{margin:0;padding:0;list-style:none;display:grid;gap:6px}
+ul.pl li{position:relative;padding-left:15px;font-size:11.8px;line-height:1.45;color:#EBDCC7}
+ul.pl li::before{content:"";position:absolute;left:1px;top:.55em;width:6px;height:6px;border-radius:50%;background:var(--gold);box-shadow:0 0 8px rgba(255,210,122,.7)}
+ul.pl.q li::before{background:none;border:1.5px solid var(--gold);width:7px;height:7px}
+.endnote{font:500 9.5px var(--mono);letter-spacing:.08em;color:var(--mute);margin-top:2px}
+
+@media screen and (max-width:760px){
+  body{padding:14px 0 40px}
+  .tools{padding:0 16px}
+  #root{gap:14px;align-items:stretch}
+  .pg,.pg *{max-width:100%}.pg{min-width:0}
+  .tools{flex-wrap:wrap}
+  .pg{width:100%;height:auto;zoom:1;border-radius:0;border-left:0;border-right:0;padding:24px 16px 16px;gap:16px}
+  .cover{grid-template-columns:1fr}.orb{display:none}
+  h1{font-size:21px}.bl{font-size:14.5px}
+  .cols,.pg.t1 .cols,.pg.t3 .cols{display:flex;flex-direction:column;gap:18px}
+  .col{overflow:visible}.col.side{padding:16px}
+  .ov p{font-size:14px}.tp p{font-size:13px}.tp h3{font-size:13.5px}ol.dec li{font-size:13px}
+  .tb{font-size:12.5px}.tb td:first-child,.tb td:last-child{white-space:normal}
+  .foot span:nth-child(2){display:none}
 }
-@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}.slide,.slide .glass{opacity:1!important;transform:none!important}html{scroll-behavior:auto}}
+@media print{
+  @page{size:A4 landscape;margin:0}
+  html,body{background:var(--bg0)!important;padding:0;margin:0;min-height:0}
+  .aurora,.tools{display:none!important}
+  #root{display:block;gap:0}
+  .pg{zoom:1!important;margin:0;border-radius:0;border:0;box-shadow:none;width:297mm;height:209.6mm;break-after:page;page-break-after:always;break-inside:avoid;overflow:hidden}
+  .pg:last-child{break-after:auto;page-break-after:auto}
+  .pg::before{display:none}
+  .tp,.nm,.dl .r,.tl .r{break-inside:avoid}
+  .orb .halo{display:none}
+  .gold,.tp .n,.nm b{-webkit-text-fill-color:#E0B36A!important;background:none!important;color:#E0B36A!important}
+}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 </style>
 </head>
 <body>
-<div class="aurora" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
+<div class="aurora" aria-hidden="true"><i></i><i></i><i></i></div>
 <div class="tools" id="tools">
   <a href="/">Back to Meridian</a>
   <div style="display:flex;gap:10px;flex-wrap:wrap"><button type="button" id="copyBtn">Copy summary</button><button class="go" type="button" id="printBtn">Save as PDF</button></div>
 </div>
-<div id="root"><section class="slide in"><div class="eyebrow">Meridian executive report</div><p class="lead dim">Loading the meeting…</p></section></div>
+<div id="root"><section class="pg"><div class="eyebrow">Meridian executive report</div><p class="dim" style="color:var(--soft)">Loading the meeting…</p></section></div>
 
 <script>
 (function(){
   var $=function(s){return document.querySelector(s)};
   var esc=function(s){return String(s==null?"":s).replace(/[&<>"]/g,function(c){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]})};
   function mmss(t){t=Math.max(0,Math.floor(t||0));return String(Math.floor(t/60)).padStart(2,"0")+":"+String(t%60).padStart(2,"0")}
-  function dur(t){t=Math.round(t);var h=Math.floor(t/3600),m=Math.floor(t%3600/60),s=t%60;return h?h+"h "+m+"m":(m?m+" min":s+" s")}
+  function mins(t){return Math.max(1,Math.round((t||0)/60))+" min"}
   function txt(x){if(x==null)return "";if(typeof x==="object")return Object.keys(x).map(function(k){return x[k]}).filter(function(v){return typeof v!=="object"&&v!==""&&v!=null}).join(" · ");return String(x)}
   function arr(x){return Array.isArray(x)?x.filter(function(v){return v!=null&&txt(v).trim()!==""}):[]}
-  function paras(t){return String(t||"").split(/\n{1,}/).map(function(x){return x.trim()}).filter(Boolean)}
+  function paras(t){return String(t||"").split(/\n+/).map(function(x){return x.trim()}).filter(Boolean)}
+  var LANG={en:"English",hi:"Hindi",hinglish:"Hinglish",mr:"Marathi",ta:"Tamil",te:"Telugu",bn:"Bengali",gu:"Gujarati"};
 
-  /* ---------- sample for design preview: report.html?demo=1  (demo=old drops the new fields, demo=long stresses the layout) ---------- */
-  var DEMO={title:"SEO and ASO weekly sync",you:"Aarav",created:1794996178,duration:1740,language:"hi",words:4980,
-   notes:{headline:"The new partner ASO project starts, the keyword map moves from the 13th to the 20th, and Ahrefs and AppTweak are covered at almost no cost.",kind:"SEO and ASO sync",main_focus:"New ASO project and tools access",
-    summary:"The team took on an ASO project for the partner team, moved the keyword map deadline from the 13th to the 20th, and confirmed free shared access to Ahrefs and AppTweak plus a credit pack bought at a steep discount.",
-    catchup:"The weekly SEO and ASO sync ran 29 minutes and covered almost everything that changes the plan for the next two weeks. Organic traffic is up 12 percent over the last 30 days, mostly from the finance blog refresh. A new ASO project arrived from the Partnerships team: they want store listings for two partner apps in Hindi and English. Because of that, the keyword map deadline moved from the 13th to the 20th, while the store listing drafts stay on the 24th. On tools, Ahrefs and SEMrush are reachable for free through the shared marketing account, AppTweak runs on trial credits, and a bulk credit pack was bought for 500 rupees against an 18,000 list price. Play Console access for the second partner app is still pending and is the one real risk. Meera owns the project plan, Kabir owns the keyword map, and everyone should confirm their access by Friday.",
-    overview:"The team met for the weekly SEO and ASO sync. It began with organic numbers, which are up 12 percent in 30 days thanks to the refreshed finance articles, and moved quickly to the main news: a new ASO project requested by the Partnerships team.\n\nThe new project changed two dates. The keyword map moves from the 13th to the 20th because the team now needs to cover partner app keywords too, while store listing drafts stay on the 24th. The second half of the meeting was about tools, access and credits: what is free, what is shared, and what still needs approval.\n\nThe meeting closed with owners and a Friday access check. The only open risk is Play Console access for the second partner app, which has been requested but not yet granted.",
-    key_points:["New ASO project from Partnerships: store listings for two partner apps","Keyword map deadline moved from the 13th to the 20th","Ahrefs and SEMrush are free through the shared marketing account","Credit pack bought for 500 rupees instead of the 18,000 list price","Play Console access for the second partner app is still pending","Everyone confirms tool access by Friday"],
-    decisions:["Take on the partner ASO project, with Meera as owner","Move the keyword map from the 13th to the 20th","Use the shared account for Ahrefs and SEMrush, no new paid seats","Keep store listing drafts on the 24th"],
-    actions:[{owner:"Kabir",task:"Finish the keyword map including partner app keywords",due:"20th"},{owner:"Meera",task:"Write the partner ASO project plan",due:"Tue"},{owner:"Riya",task:"Draft Hindi and English store listings",due:"24th"},{owner:"Aarav",task:"Chase Play Console access for the second partner app",due:"Wed"},{owner:"Kabir",task:"Share the credit pack login with the team",due:"Today"},{owner:"Riya",task:"Refresh two more finance blog posts",due:"Fri"}],
-    open_questions:["Will Play Console access arrive before the 24th?","Does the credit pack cover both partner apps or only one?"],
-    mentions:{people:["Kabir","Meera","Riya","Aarav"],terms:["ASO","Ahrefs","SEMrush","AppTweak","Play Console","keyword map"]},
-    topics:[{title:"New partner ASO project",share:30,paragraph:"The Partnerships team asked for store listing work for two of their apps, in Hindi and English. The team agreed to take it on, with Meera owning the plan. The work covers keyword research, listing copy and a simple weekly ranking check.",points:["Two partner apps, Hindi and English","Meera owns the plan","Weekly ranking check added"],outcome:"Project accepted, plan due Tuesday."},
-            {title:"Deadlines and date changes",share:24,paragraph:"Because the partner app keywords must be included, the keyword map moves from the 13th to the 20th. Store listing drafts stay on the 24th, which leaves four days between the map and the drafts. Kabir said this is tight but possible.",points:["Keyword map: 13th moved to 20th","Listings stay on the 24th"],outcome:"New dates agreed.",questions:["Is four days enough between map and drafts?"]},
-            {title:"Tools, access and credits",share:30,paragraph:"Ahrefs and SEMrush are available at no cost through the shared marketing account. AppTweak is on trial credits. A bulk credit pack was bought for 500 rupees, far below the 18,000 list price. Play Console access for the second app is still pending.",points:["Ahrefs and SEMrush free via shared account","AppTweak on trial credits","Pack bought for 500 vs 18,000 list"],outcome:"No new paid seats needed."},
-            {title:"Organic traffic review",share:16,paragraph:"Organic sessions rose 12 percent over 30 days. The finance blog refresh drove most of the gain, so two more posts will be refreshed this week.",points:["Up 12 percent in 30 days","Finance refresh is the driver"],outcome:"Refresh two more posts."}],
-    sections:[
-     {start:0,end:150,title:"Kick-off and agenda",summary:"Aarav opened the call and listed four things to cover: traffic, the new ASO request, deadlines, and tools and access. Meera asked to keep tools for last so the project talk is not rushed.",bullets:["Agenda: traffic, ASO request, deadlines, tools","Tools moved to the end by request","Kabir joined late from another call"],decisions:[],deadlines:[],tasks:[],tools:[],numbers:[]},
-     {start:150,end:420,title:"Organic traffic: last 30 days",summary:"Riya shared that organic sessions are up 12 percent. Most of the lift came from the refreshed finance articles. Branded search stayed flat. She suggested refreshing two more posts before the month ends.",bullets:["Organic sessions up 12 percent","Finance blog refresh is the main driver","Branded search flat","Two more posts to refresh"],decisions:[],deadlines:["Two blog refreshes by Friday"],tasks:["Riya: refresh two finance posts"],tools:[],numbers:["+12% organic sessions"]},
-     {start:420,end:690,title:"New ASO project from Partnerships",summary:"The Partnerships team asked for store listing work for two partner apps in Hindi and English. Meera explained the scope: keyword research, listing copy and a weekly ranking check. The team agreed to take it on and Meera will own the plan.",bullets:["Request came from the Partnerships team","Two partner apps, Hindi and English","Scope: keywords, listing copy, weekly ranking check","Meera owns the plan"],decisions:["Take on the partner ASO project"],deadlines:["Project plan due Tuesday"],tasks:["Meera: write the project plan"],tools:[],numbers:["2 partner apps"]},
-     {start:690,end:930,title:"Deadline changes: keyword map and listings",summary:"Including partner app keywords means the keyword map needs more time. Kabir asked to move it from the 13th to the 20th and the team agreed. Store listing drafts stay on the 24th, which Kabir called tight but doable.",bullets:["Keyword map moved from 13th to 20th","Store listing drafts stay on the 24th","Four days between map and drafts","Kabir flagged the tight gap"],decisions:["Move the keyword map to the 20th"],deadlines:["Keyword map: 13th to 20th","Listing drafts: 24th"],tasks:["Kabir: finish keyword map","Riya: draft listings"],tools:[],numbers:[]},
-     {start:930,end:1170,title:"Tools and access: Ahrefs, SEMrush, AppTweak",summary:"Aarav listed which tools the team can use. Ahrefs and SEMrush are free through the shared marketing account, so no new seats are needed. AppTweak is running on trial credits that expire at month end.",bullets:["Ahrefs: free via shared account","SEMrush: free via shared account","AppTweak: trial credits, expire at month end","No new paid seats"],decisions:["Use the shared account, no new seats"],deadlines:["AppTweak trial ends at month end"],tasks:[],tools:["Ahrefs","SEMrush","AppTweak"],numbers:[]},
-     {start:1170,end:1350,title:"Credits and the 500 vs 18,000 pack",summary:"Kabir explained that a bulk credit pack was bought for 500 rupees, compared with an 18,000 rupee list price, through a reseller deal. Meera asked whether it covers both partner apps. Kabir will share the login and check the limits.",bullets:["Pack bought for 500 rupees","List price is 18,000 rupees","Bought through a reseller deal","Unclear if it covers both partner apps"],decisions:[],deadlines:[],tasks:["Kabir: share the credit pack login"],tools:["Credit pack"],numbers:["500 vs 18,000 rupees"]},
-     {start:1350,end:1500,title:"Play Console access",summary:"Access to the Play Console for the second partner app has been requested but not granted. Aarav will chase the Partnerships team on Wednesday. Without it, listing tests cannot start for that app.",bullets:["Access requested, not yet granted","Aarav chases Partnerships on Wednesday","Listing tests blocked without it"],decisions:[],deadlines:["Play Console access: chase Wednesday"],tasks:["Aarav: chase Play Console access"],tools:["Play Console"],numbers:[]},
-     {start:1500,end:1650,title:"Content calendar and blog refresh",summary:"Riya showed the next two weeks of content. Two finance posts are being refreshed and one new comparison page is planned for the partner app. Meera asked to keep the calendar visible in the shared sheet.",bullets:["Two finance posts refreshed","One comparison page for the partner app","Calendar lives in the shared sheet"],decisions:[],deadlines:[],tasks:["Riya: update the shared calendar"],tools:[],numbers:["2 posts, 1 new page"]},
-     {start:1650,end:1740,title:"Wrap-up and owners",summary:"Aarav read back the owners and dates. Everyone agreed to confirm their tool access by Friday. The next sync is the same time next week.",bullets:["Owners read back","Access check by Friday","Next sync same time next week"],decisions:[],deadlines:["Access check: Friday"],tasks:["Everyone: confirm tool access"],tools:[],numbers:[]}],
-    deadlines:[{item:"Keyword map",date:"20th",change:"moved",detail:"Moved from the 13th to the 20th to include partner app keywords",owner:"Kabir",at:760},
-               {item:"Store listing drafts",date:"24th",change:"confirmed",detail:"Stays on the 24th, only four days after the keyword map",owner:"Riya",at:880},
-               {item:"Partner ASO project plan",date:"Tuesday",change:"new",detail:"Meera writes the plan and scope for the Partnerships team",owner:"Meera",at:600},
-               {item:"Play Console access",date:"Wednesday",change:"at risk",detail:"Requested, not granted yet. Listing tests are blocked without it",owner:"Aarav",at:1400},
-               {item:"AppTweak trial",date:"Month end",change:"new",detail:"Trial credits expire, decide before then whether to keep it",owner:"Kabir",at:1100},
-               {item:"Tool access check",date:"Friday",change:"new",detail:"Everyone confirms they can log in",owner:"Everyone",at:1700}],
-    tools:[{name:"Ahrefs",what:"Backlinks, keyword and competitor research for the blog",access:"shared account",cost:"Free (shared)",note:"Through the marketing team account. No new seats.",at:960},
-           {name:"SEMrush",what:"Keyword gaps and site audit",access:"free",cost:"Free",note:"Same shared account, read-only seat is enough.",at:1010},
-           {name:"AppTweak",what:"App store keyword ranks and listing tests",access:"trial",cost:"Trial until month end",note:"Decide on a paid plan before the trial ends.",at:1090},
-           {name:"Credit pack",what:"Bulk credits for keyword and rank checks",access:"credits",cost:"500 rupees (list 18,000)",note:"Bought through a reseller deal. Kabir holds the login.",at:1200},
-           {name:"Play Console",what:"Publish and test store listings for the second app",access:"unknown",cost:"",note:"Access requested, still pending.",at:1380}],
-    projects:[{name:"Partner app store listings",kind:"new project",from:"Partnerships team",detail:"Hindi and English store listings for two partner apps, with keyword research and a weekly ranking check. Meera owns the plan.",at:450},
-              {name:"Finance blog refresh",kind:"ongoing",from:"SEO team",detail:"Two more posts to refresh this week after the first batch lifted organic sessions by 12 percent.",at:300},
-              {name:"Partner comparison page",kind:"idea",from:"Riya",detail:"One comparison page for the partner app, to be added to the content calendar.",at:1560},
-              {name:"Ranking dashboard",kind:"request",from:"Meera",detail:"A simple weekly ranking view for partner apps in the shared sheet.",at:620}],
-    numbers:[{label:"Organic growth",value:"+12%",context:"Sessions over the last 30 days",at:240},{label:"Credit pack price",value:"500",context:"Rupees paid, against an 18,000 list price",at:1220},{label:"Savings on pack",value:"97%",context:"Compared with the list price",at:1230},{label:"Partner apps",value:"2",context:"Hindi and English listings each",at:520},{label:"Gap map to drafts",value:"4 days",context:"Between the 20th and the 24th",at:900},{label:"Meeting length",value:"29 min",context:"Whole sync",at:0}],
-    unclear:["Around 11:40 the speaker's name for the reseller was hard to hear","The exact trial end date for AppTweak was spoken over another voice (about 17:10)"],
-    coverage:{sections:9,chunks:9,terms_total:31,terms_found:29,missing:["reseller name","trial end date"],checked:true}},
-   segments:[]};
-  (function(){var sp=["Aarav","Riya","Kabir","Meera"],txt0=["Okay, quick agenda. Traffic first, then the new ASO request, deadlines, and tools last.","Organic sessions are up twelve percent, mostly from the finance blog refresh we did.","The keyword map needs to move from the thirteenth to the twentieth because of the partner app keywords.","Ahrefs and SEMrush are free through the shared account, so we do not need new seats.","I bought the credit pack for five hundred rupees, the list price is eighteen thousand."];
-    for(var i=0;i<60;i++){var s=i*29+((i*7)%11);DEMO.segments.push({start:s,end:s+16+(i%6)*2,speaker:sp[(i*3+(i>>2))%4],text:txt0[Math.floor(i/12)%5]+(i%3?" "+txt0[(Math.floor(i/12)+i)%5]:"")})}})();
-  function longDemo(){var d=JSON.parse(JSON.stringify(DEMO)),n=d.notes,base=n.sections.slice(),out=[],i=0;
-    d.duration=25*100;while(out.length<25){var b=base[out.length%base.length];out.push({start:out.length*100,end:out.length*100+100,title:b.title+" part "+(out.length+1)+" with a deliberately long heading to test wrapping",summary:b.summary+" "+b.summary,bullets:b.bullets.concat(b.bullets).slice(0,8),decisions:b.decisions.concat(["An extra decision to test chips"]),deadlines:b.deadlines.concat(["An extra date that moved"]),tasks:b.tasks.concat(["Someone: another task to test the layout"]),tools:b.tools.concat(["Extra tool"]),numbers:b.numbers.concat(["1,25,000 rupees"])})}
-    n.sections=out;n.deadlines=n.deadlines.concat(n.deadlines).concat(n.deadlines);n.tools=n.tools.concat(n.tools).slice(0,10);n.projects=n.projects.concat(n.projects).slice(0,7);n.numbers=n.numbers.concat(n.numbers).slice(0,11);n.unclear=n.unclear.concat(n.unclear).concat(n.unclear);
-    n.catchup=n.catchup+" "+n.catchup.split(". ").slice(0,3).join(". ")+".";return d}
-  function oldDemo(){var d=JSON.parse(JSON.stringify(DEMO));["catchup","sections","deadlines","tools","projects","numbers","unclear","coverage"].forEach(function(k){delete d.notes[k]});return d}
+  /* ---------- sample for design preview: ?demo=1  (demo=old drops notes.exec, demo=long has 14 detail topics) ---------- */
+  var DEMO={title:"SEO, AEO and ASO strategy update: planning brief",you:"Sumit",created:1794996178,duration:2430,language:"en",words:6150,
+   notes:{headline:"SEO, AEO and ASO strategy update: planning brief",kind:"Planning brief",
+    exec:{
+     bottom_line:"Hari briefed two analysts on a two to three page organic growth update across web search, AI answers and the app stores, due to leadership tomorrow.",
+     overview:[
+      "Hari briefed Sumit and Neha on one document he needs by tomorrow: a two to three page strategy update on organic growth across web search, AI answer engines and the app stores. The aim is a view that senior leadership can read in ten minutes, showing where Univest stands today, what changed over the last six months, where the team expects to be next quarter and what it will take to get there. He asked for plain language, a few well chosen charts and no padding, and stressed that numbers matter more than adjectives.",
+      "The brief has eleven sections: the six month trend, the plan and projection, keyword positions for the top 30 transactional terms and the next 500 from SEMrush and AppTweak, internal targets, a gold standard comparison against Groww and MoneyControl, current processes, the ideal plan, the main initiatives, action points and timelines. Hari wants every claim backed by a figure and every gap shown against a named competitor rather than described in the abstract. The projection should be a range with its assumptions written beside it, so nobody reads it as a promise.",
+      "The meeting closed with ownership and timing. Sumit takes the web and AI answer sections, Neha takes app store optimisation and the competitor comparison, and Hari writes the plan, targets and summary. Drafts are due this evening so there is time for one short review before the final document goes out tomorrow. Two points remain open: whether finance approves the AppTweak credits in time, and how to measure visibility inside AI answers, where no reliable tool exists yet. The team will state its method openly instead of guessing."],
+     decisions:["Deliver a two to three page strategy update by tomorrow, 11 am.","Track the top 30 keywords in detail and the next 500 in a table.","Use SEMrush for web data and AppTweak for app store data.","Use Groww and MoneyControl as the gold standard.","Show the projection as a range, with its assumptions.","Hold a 20 minute review tonight at 7 pm before sign-off."],
+     detail:[
+      {title:"Purpose of the document and the last six months",start:0,end:470,speakers:["Hari","Sumit"],paragraph:"Hari explained why the document exists: leadership wants one clear view of organic growth, and the last update was a long deck nobody finished. He wants two to three pages in plain language, each section leading with the conclusion, then the evidence, then the action. The first section looks back over six months. Sumit will pull monthly web sessions, organic signups and store installs onto one simple trend and mark the dates that explain each bend, such as the core algorithm update. Branded and non branded traffic will be split, and Hari wants one sentence each on what worked, what did not and what was learned."},
+      {title:"Plan and projection",start:470,end:800,speakers:["Hari"],paragraph:"The second section turns the history into a plan for the next quarter. Hari will write it, using the trend data from Sumit and Neha as the base. The projection must be a range, with a low, expected and high case and the assumptions under each, such as how many pages ship and how quickly rankings move. He was firm that a single number would be read as a promise, and he does not want the team held to a figure that depends on search engine updates. The plan should name the three or four initiatives behind the range and how much each is expected to deliver."},
+      {title:"Keyword positions: top 30 and the next 500",start:800,end:1130,speakers:["Hari","Sumit","Neha"],paragraph:"Sumit will export the top 30 transactional keywords from SEMrush with current position, change over six months and the best competitor ranking above Univest. Neha will do the same for app store keywords using AppTweak. The next 500 appear as a summary table grouped by theme, with counts in positions one to three, four to ten and beyond. Neha warned that the AppTweak trial ends on Friday and the larger export needs credits, so Hari will ask finance for approval first thing tomorrow. If credits slip, Neha will use the trial export for the top 30 and mark the 500 as pending."},
+      {title:"Internal targets and the gold standard",start:1130,end:1450,speakers:["Hari","Neha"],paragraph:"Hari will draft the internal targets from numbers already agreed with product, and flag any still unconfirmed so nobody mistakes a draft for a commitment. For the gold standard the group chose Groww and MoneyControl, because they win the transactional searches Univest cares about. Neha will build a side by side table covering ranking, page quality, app listing strength and content depth, ending with a short list of what the leaders do that Univest does not yet do. A third competitor was mentioned, but the name was hard to hear, so it is parked for now."},
+      {title:"Current processes, the ideal plan and initiatives",start:1450,end:2090,speakers:["Hari","Sumit","Neha"],paragraph:"Sumit described the present flow: briefs arrive by chat, keyword research is done per request, content goes live without a ranking check, and results are reviewed only when someone asks. Hari wants this written honestly, because it makes the case for change. The ideal plan is a weekly rhythm with a standing keyword list, a content calendar tied to it, a quality check before publishing and a Monday ranking review. Four initiatives were listed. Neha favoured the store listing rewrite as cheapest and fastest; Sumit favoured the transactional pages as the biggest revenue lever. Both will be shown with effort and impact."},
+      {title:"Action points and timelines",start:2090,end:2430,speakers:["Hari","Sumit","Neha"],paragraph:"Hari closed by fixing owners and dates. Sumit delivers the keyword export by 3 pm today and his two sections by 6 pm. Neha delivers the app store section and the competitor table by 6 pm. Hari writes the plan, projection and targets, requests the AppTweak credits and runs a 20 minute review at 7 pm, moved from 5 pm so the analysts have more time. The final document goes to leadership tomorrow at 11 am. He asked everyone to message him early if a number looks wrong instead of fixing it quietly, because a visible gap is easier to explain than a hidden one."}
+     ]},
+    summary:"Hari briefed two analysts on a two to three page organic growth update, due tomorrow.",
+    deadlines:[{item:"Strategy update document",date:"Tomorrow, 11 am",change:"new",owner:"Hari",detail:"Two to three pages, final to leadership"},{item:"Section drafts",date:"Today, 6 pm",change:"new",owner:"Sumit, Neha"},{item:"Keyword export, top 30 and next 500",date:"Today, 3 pm",change:"confirmed",owner:"Sumit"},{item:"Review call",date:"Today, 7 pm",change:"moved",owner:"All",detail:"Moved from 5 pm"},{item:"AppTweak credit approval",date:"Tomorrow, 9 am",change:"at risk",owner:"Hari",detail:"Needed for the next 500 app keywords"}],
+    actions:[{owner:"Sumit",task:"Export the top 30 transactional keywords and the next 500 from SEMrush",due:"Today, 3 pm"},{owner:"Sumit",task:"Write the six month web trend and AI answers sections",due:"Today, 6 pm"},{owner:"Neha",task:"Pull app keyword rankings from AppTweak and write the ASO section",due:"Today, 6 pm"},{owner:"Neha",task:"Build the Groww and MoneyControl gold standard comparison table",due:"Today, 6 pm"},{owner:"Hari",task:"Write the plan, projection range and internal targets",due:"Today, 6 pm"},{owner:"Hari",task:"Ask finance to approve the AppTweak credit pack",due:"Tomorrow, 9 am"}],
+    numbers:[{label:"Document length",value:"2-3 pages",context:"Read in about ten minutes"},{label:"Priority keywords",value:"30",context:"Transactional terms in detail"},{label:"Extended keyword set",value:"500",context:"Summary table by theme"},{label:"Trend window",value:"6 months",context:"Traffic and ranking history"},{label:"Sections",value:"11",context:"Fixed structure"},{label:"Due",value:"Tomorrow",context:"Final copy at 11 am"}],
+    tools:[{name:"SEMrush",what:"Web keyword positions and competitor gaps",access:"Shared team login",cost:"Already paid",note:"Export limit of 10,000 rows a day"},{name:"AppTweak",what:"App store keyword rankings and competitor listings",access:"Trial, ends Friday",cost:"Credit pack awaiting approval",note:"Needed for the next 500 app keywords"}],
+    open_questions:["How do we measure visibility inside AI answers when no tool reports it reliably?","Will finance approve the AppTweak credit pack before tomorrow morning?","Which internal targets are already agreed with product?"],
+    unclear:["The organic installs figure for last quarter was hard to hear.","The name of the third competitor was unclear."],
+    coverage:{terms_total:24,terms_found:22}}};
+  function oldDemo(){var d=JSON.parse(JSON.stringify(DEMO)),n=d.notes,e=n.exec;n.overview=e.overview.join("\n\n");n.topics=e.detail.map(function(t){return{title:t.title,paragraph:t.paragraph}});n.decisions=e.decisions;delete n.exec;delete n.coverage;return d}
+  function longDemo(){var d=JSON.parse(JSON.stringify(DEMO)),de=d.notes.exec.detail,ex=["Reporting cadence","Content calendar","Technical SEO backlog","Schema and structured data","Hindi content","Store listing tests"],i=0;while(de.length<14){var b=de[i%6];de.push({title:ex[i%6]+" (extra "+(i+1)+")",start:b.start,end:b.end,speakers:b.speakers,paragraph:b.paragraph});i++}d.notes.exec.detail=de;return d}
 
-  var IC={clock:'<path d="M12 7v5l3 2"/><circle cx="12" cy="12" r="9"/>',check:'<path d="M5 12.5l4.5 4.5L19 7.5"/>',wrench:'<path d="M14.5 6.5a4 4 0 005 5l-9 9a2.1 2.1 0 01-3-3z"/><path d="M14.5 6.5l3 3"/>',hash:'<path d="M5 9h14M5 15h14M10 4L8 20M16 4l-2 16"/>',flag:'<path d="M6 21V4M6 4h11l-2 4 2 4H6"/>'};
-  function ico(k){return '<svg class="ico" viewBox="0 0 24 24" aria-hidden="true">'+IC[k]+'</svg>'}
-  function paginate(items,wf,cap,max){var out=[],cur=[],w=0;items.forEach(function(it){var x=wf(it);if(cur.length&&(w+x>cap||cur.length>=max)){out.push(cur);cur=[];w=0}cur.push(it);w+=x});if(cur.length)out.push(cur);
-    while(out.length>1&&out[out.length-1].length<out[out.length-2].length-1){out[out.length-1].unshift(out[out.length-2].pop())}return out}
-  function sOf(x){return txt(x).length}
+  /* ---------- pagination: fill measured columns, spill to a new page when full ---------- */
+  var flat=window.innerWidth<=760&&!(window.matchMedia&&matchMedia("print").matches);
+  function over(c){return c.scrollHeight>c.clientHeight+1}
+  function el(tag,cls,html){var e=document.createElement(tag);if(cls)e.className=cls;if(html!=null)e.innerHTML=html;return e}
+  var pages=[];
+  function mkPage(kind,head,side){
+    var p=el("section","pg "+kind);p.innerHTML='<i class="corner tl"></i><i class="corner br"></i>'+head+'<div class="cols"><div class="col"></div><div class="col'+(side?" glass side":"")+'"></div></div><div class="foot"></div>';
+    $("#root").appendChild(p);var o={el:p,cols:[p.querySelectorAll(".col")[0],p.querySelectorAll(".col")[1]]};pages.push(o);return o}
+  function fill(mk,units){
+    var pg=mk(0),cur=0,n=0;
+    function put(c,u,cont){var col=pg.cols[c],hh=null;
+      if(cont&&!col.children.length){hh=el("div","blk","<h4>"+esc(cont)+"</h4>");hh.style.marginBottom="-6px";col.appendChild(hh)}
+      col.appendChild(u);
+      if(!flat&&over(col)&&col.children.length>(hh?2:1)){col.removeChild(u);if(hh)col.removeChild(hh);return false}
+      return true}
+    units.forEach(function(u){
+      var node=u.el,c=u.col,ok,ct=u.cont&&node.firstChild.tagName!=="H4"?u.cont:"";
+      if(c==="a"){ok=put(cur,node);if(!ok&&cur===0){cur=1;ok=put(1,node)}if(!ok){pg=mk(++n);cur=0;put(0,node)}}
+      else{ok=put(c,node,ct);if(!ok){pg=mk(++n);put(c,node,ct)}}
+    })}
 
   function build(m){
-    var n=m.notes||{},segs=(m.transcript&&m.transcript.segments)||m.segments||[];
-    var total=Math.max(m.duration||0,segs.length?segs[segs.length-1].end:0,30);
-    var words=m.words||segs.reduce(function(a,s){return a+String(s.text||"").split(/\s+/).length},0);
-    var decs=arr(n.decisions),acts=arr(n.actions),topics=arr(n.topics).slice(0,8),men=n.mentions||{};
-    var secs=arr(n.sections).slice().sort(function(a,b){return (a.start||0)-(b.start||0)}),dls=arr(n.deadlines),tools=arr(n.tools),projs=arr(n.projects),nums=arr(n.numbers),unclear=arr(n.unclear),cov=n.coverage&&typeof n.coverage==="object"?n.coverage:null;
-    var when=new Date((m.created||Date.now()/1000)*1000);
-    var dateTxt=when.toLocaleDateString([], {weekday:"long",day:"numeric",month:"long",year:"numeric"}),timeTxt=when.toLocaleTimeString([], {hour:"2-digit",minute:"2-digit"});
-    var langTxt={hi:"Hindi + English",en:"English"}[m.language]||(m.language||"").toUpperCase();
-    var firstSentence=(String(n.summary||"").match(/^[^.!?]+[.!?]?/)||[""])[0];
-    var headline=n.headline||firstSentence||"A short meeting with limited content.";
-    var kind=n.kind||"Team meeting";
-    var generic=/^Meeting \d{1,2} \w{3}/.test(String(m.title||""));
-    var coverTitle=(generic&&n.headline)?n.headline:(m.title||"Meeting");
-    var shortTitle=generic?("Meeting · "+when.toLocaleDateString([], {day:"numeric",month:"short"})):(m.title||"Meeting");
-    var overview=paras(n.overview||n.summary||"No summary was written.");
-    var catchup=paras(n.catchup);var hasCatch=catchup.length>0;if(!hasCatch)catchup=overview.slice(0,1);
-    var mainFocus=n.main_focus||(topics.length?topics.slice().sort(function(a,b){return (b.share||0)-(a.share||0)})[0].title:"");
-    var keyPts=(arr(n.key_points).length?arr(n.key_points):decs.concat(acts.slice(0,3).map(function(a){return a.owner+": "+a.task}))).slice(0,6);
-    var lowSignal=words<250||(decs.length===0&&acts.length===0&&!topics.length&&!secs.length);
-    var oq=arr(n.open_questions);
+    var nt=m.notes||{},ex=nt.exec||{},root=$("#root");root.innerHTML="";pages=[];
+    var title=nt.headline||m.title||"Meeting report";
+    var overview=arr(ex.overview).map(txt);if(!overview.length)overview=paras(nt.overview);if(!overview.length)overview=paras(nt.catchup||nt.summary);
+    var bottom=ex.bottom_line||nt.bottom_line||(nt.headline&&m.title&&nt.headline!==m.title?m.title:"")||"";
+    var decs=arr(ex.decisions).length?arr(ex.decisions):arr(nt.decisions);decs=decs.map(txt);
+    var detail=arr(ex.detail);
+    if(!detail.length)detail=arr(nt.topics).map(function(t){return{title:t.title,paragraph:t.paragraph||t.summary||txt(t.points),speakers:t.speakers}});
+    if(!detail.length)detail=arr(nt.sections).map(function(s){return{title:s.title,start:s.start,end:s.end,paragraph:s.summary||txt(s.bullets)}});
+    detail=detail.map(function(t){return{title:txt(t.title),start:t.start,end:t.end,speakers:arr(t.speakers).map(txt),paragraph:txt(t.paragraph||t.summary)}}).filter(function(t){return t.title||t.paragraph});
+    var dls=arr(nt.deadlines),acts=arr(nt.actions),nums=arr(nt.numbers),tools=arr(nt.tools),qs=arr(nt.open_questions).map(txt),unc=arr(nt.unclear).map(txt);
+    var cov=nt.coverage||{};
+    var date="";if(m.created){try{date=new Date(m.created*1000).toLocaleDateString("en-GB",{day:"numeric",month:"short",year:"numeric"})}catch(e){}}
+    var chips=[];if(nt.kind)chips.push(nt.kind);if(m.duration)chips.push(mins(m.duration));if(m.language)chips.push(LANG[m.language]||m.language);if(date)chips.push(date);
+    var chipHtml=chips.map(function(c){return '<span class="chip">'+esc(c)+'</span>'}).join("")+(cov.terms_total?'<span class="chip cov">Coverage check: '+esc(cov.terms_found||0)+" of "+esc(cov.terms_total)+" key items captured</span>":"");
 
-    var KEY=/\b(decid|agree|will|launch|budget|deadline|by (mon|tues|wednes|thurs|fri|satur|sun)|invoice|plan|important|must|need to)\w*/i;
-    var cand=segs.map(function(s){return{s:s,score:String(s.text||"").split(/\s+/).length+(KEY.test(s.text)?14:0)}}).filter(function(c){return String(c.s.text||"").split(/\s+/).length>=6}).sort(function(a,b){return b.score-a.score});
-    var picked=[];cand.forEach(function(c){if(picked.length<3&&picked.every(function(p){return Math.abs(p.s.start-c.s.start)>25}))picked.push(c)});picked.sort(function(a,b){return a.s.start-b.s.start});
+    /* page 1 */
+    var u1=[],tight=function(u,i){if(i)u.el.style.marginTop="-7px";return u};
+    overview.forEach(function(p){u1.push({col:0,el:el("div","ov","<p>"+esc(p)+"</p>")})});
+    var chunks=function(a,n){var r=[];for(var i=0;i<a.length;i+=n)r.push(a.slice(i,i+n));return r};
+    chunks(decs,8).forEach(function(c,i){u1.push({col:1,cont:"Decisions, continued",el:el("div","blk",(i?"":'<h4>Decisions</h4>')+'<ol class="dec" style="counter-reset:d '+(i*8)+'">'+c.map(function(d){return "<li>"+esc(d)+"</li>"}).join("")+"</ol>")})});
+    chunks(dls,1).forEach(function(c,i){u1.push(tight({col:1,cont:"Deadlines, continued",el:el("div","blk",(i?"":'<h4>Deadlines</h4>')+'<div class="dl">'+c.map(function(d){
+      var ch=String(d.change||"").toLowerCase(),cls=/risk/.test(ch)?"risk":/mov|chang/.test(ch)?"moved":/confirm/.test(ch)?"confirmed":/new/.test(ch)?"new":"oth";
+      return '<div class="r" title="'+esc(d.detail||"")+'"><b>'+esc(d.item||txt(d))+'</b><div class="m">'+(ch?'<span class="st '+cls+'">'+esc(ch)+"</span>":"")+(d.date?"<span>"+esc(d.date)+"</span>":"")+(d.owner?"<span>"+esc(d.owner)+"</span>":"")+(d.detail&&d.detail.length<=30?'<span style="color:var(--mute)">'+esc(d.detail)+"</span>":"")+"</div>"+"</div>"}).join("")+"</div>")},i))});
+    fill(function(n){
+      var head=n===0?'<div class="cover"><div><div class="eyebrow">Executive meeting report</div><h1 class="gold">'+esc(title)+'</h1>'+(bottom?'<p class="bl">'+esc(bottom)+"</p>":"")+'<div class="chips">'+chipHtml+'</div></div><div class="orb" aria-hidden="true"><i class="r2"></i><i class="r1"></i><i class="core"></i></div></div>'
+        :'<div class="ph"><div><div class="eyebrow">Overall summary, continued</div></div></div>';
+      var p=mkPage("t1",head,true);
+      return p},u1);
 
-    var pages=[],corners='<i class="corner tl"></i><i class="corner br"></i>';
-    var gi=function(i){return ' style="--i:'+i+'"'};
-    var ORB='<div class="orb" aria-hidden="true"><i class="halo"></i><i class="r2"></i><i class="r1"></i><i class="core"></i></div>';
+    /* page 2 */
+    if(detail.length){
+      var u2=detail.map(function(t,i){
+        var ch="";if(t.start!=null&&t.end!=null&&(t.end>0))ch+='<span class="chip">'+mmss(t.start)+" - "+mmss(t.end)+"</span>";
+        t.speakers.forEach(function(s){ch+='<span class="chip sp">'+esc(s)+"</span>"});
+        return{col:"a",el:el("article","tp glass",'<div class="n">'+String(i+1).padStart(2,"0")+'</div><div><div class="th"><h3>'+esc(t.title)+"</h3>"+(ch?'<div class="chips">'+ch+"</div>":"")+"</div><p>"+esc(t.paragraph)+"</p></div>")}});
+      fill(function(n){return mkPage("t2",'<div class="ph"><div><div class="eyebrow">Detailed summary'+(n?", continued":"")+'</div><h2>Topic by topic, what was said and why it matters</h2></div></div>')},u2)}
 
-    /* A. hero: catch-up in 2 minutes */
-    pages.push(function(){
-      var covB=cov&&cov.terms_total?'<span class="cov"><i></i>Coverage check: <b>'+esc(cov.terms_found)+' of '+esc(cov.terms_total)+'</b> key items captured</span>':'';
-      return '<section class="slide cover">'+corners+'<div class="eyebrow">Executive meeting report</div><div class="grid"><div><div class="chips"><span class="chip">'+esc(kind)+'</span><span class="chip">'+dur(total)+'</span><span class="chip">'+esc(langTxt)+(m.language==="en"?"":" · written in English")+'</span>'+covB+'</div><h1 style="margin-top:16px">'+esc(coverTitle)+'</h1>'+(headline&&headline!==coverTitle?'<p class="lead gold" style="margin:0 0 6px;max-width:none">'+esc(headline)+'</p>':'')+
-        '<div class="glass catch" style="--i:1"><div class="ch"><span class="lab">'+(hasCatch?"Catch-up in 2 minutes":"The short version")+'</span><span class="chip">'+(hasCatch?catchup.join(" ").split(/\s+/).length+" words":"summary")+'</span></div>'+catchup.map(function(p){return '<p>'+esc(p)+'</p>'}).join("")+'</div></div>'+ORB+'</div><div class="foot"><span>'+esc(dateTxt)+' · '+esc(timeTxt)+'</span><span>Prepared by Meridian</span><span>Confidential</span></div></section>'});
+    /* page 3 */
+    var u3=[];
+    chunks(acts,7).forEach(function(c,i){u3.push({col:0,cont:"Action points, continued",el:el("div","blk",(i?"":'<h4>Action points</h4>')+'<table class="tb"><thead><tr><th>Owner</th><th>Task</th><th>Due</th></tr></thead><tbody>'+c.map(function(a){return "<tr><td>"+esc(a.owner||"")+"</td><td>"+esc(a.task||txt(a))+"</td><td>"+esc(a.due||"")+"</td></tr>"}).join("")+"</tbody></table>")})});
+    if(qs.length)u3.push({col:0,el:el("div","blk",'<h4>Open questions</h4><ul class="pl q">'+qs.map(function(q){return "<li>"+esc(q)+"</li>"}).join("")+"</ul>")});
+    if(unc.length)u3.push({col:0,el:el("div","blk",'<h4>Hard to hear</h4><ul class="pl q">'+unc.map(function(q){return "<li>"+esc(q)+"</li>"}).join("")+"</ul>")});
+    chunks(nums,8).forEach(function(c,i){u3.push({col:1,cont:"Numbers, continued",el:el("div","blk",(i?"":'<h4>Numbers</h4>')+'<div class="nums">'+c.map(function(x){return '<div class="nm glass"><b>'+esc(x.value||"")+"</b><span>"+esc(x.label||"")+"</span>"+(x.context?"<small>"+esc(x.context)+"</small>":"")+"</div>"}).join("")+"</div>")})});
+    chunks(tools,4).forEach(function(c,i){u3.push({col:1,cont:"Tools and access, continued",el:el("div","blk",(i?"":'<h4>Tools and access</h4>')+'<div class="tl">'+c.map(function(x){return '<div class="r glass"><b>'+esc(x.name||"")+"</b>"+(x.what?"<p>"+esc(x.what)+"</p>":"")+'<div class="m">'+(x.access?'<span class="chip">'+esc(x.access)+"</span>":"")+(x.cost?'<span class="chip sp">'+esc(x.cost)+"</span>":"")+"</div>"+(x.note?"<p>"+esc(x.note)+"</p>":"")+"</div>"}).join("")+"</div>")})});
+    if(u3.length)fill(function(n){return mkPage("t3",'<div class="ph"><div><div class="eyebrow">Actions, numbers and open points'+(n?", continued":"")+'</div><h2>What happens next, and what is still open</h2></div></div>')},u3);
 
-    /* B. everything that was discussed: timeline rail, paginated */
-    var secWeight=function(s){return 150+sOf(s.summary)+arr(s.bullets).reduce(function(a,b){return a+sOf(b)*.75+14},0)*1+ ["decisions","deadlines","tasks","tools","numbers"].reduce(function(a,k){return a+arr(s[k]).reduce(function(b,c){return b+sOf(c)*.8+22},0)},0)*.8};
-    var secPages=paginate(secs,secWeight,2250,4);
-    secPages.forEach(function(group,pi){pages.push(function(foot){
-      var a=group[0].start||0,b=group[group.length-1].end||group[group.length-1].start||0;
-      return '<section class="slide">'+corners+'<div class="eyebrow">Everything that was discussed · '+mmss(a)+' to '+mmss(b)+'</div><h2>'+(pi===0?"The meeting, minute by minute":"The meeting, continued")+'</h2>'+(pi===0?'<p class="sub">'+secs.length+' parts in the order they happened, with every date, task, tool, number and decision attached to the moment it was said.</p>':'')+
-        '<div class="body"><div class="rail">'+group.map(function(s,j){
-          var tg=function(cls,k,list){return arr(list).map(function(x){return '<span class="tg '+cls+'">'+ico(k)+esc(txt(x))+'</span>'}).join("")};
-          var tags=arr(s.speakers).map(function(x){return '<span class="tg s">'+esc(x)+'</span>'}).join("")+tg("c","flag",s.decisions)+tg("d","clock",s.deadlines)+tg("t","check",s.tasks)+tg("k","wrench",s.tools)+tg("n","hash",s.numbers);
-          var bl=arr(s.bullets);
-          return '<div class="glass sec"'+gi(j)+'><div class="tm">'+mmss(s.start)+(s.end!=null?' – '+mmss(s.end):'')+'<small>minute '+(Math.floor((s.start||0)/60)+1)+'</small></div><div><h3>'+esc(s.title||"Part "+(j+1))+'</h3><div class="'+(bl.length?'two':'')+'"><p>'+esc(s.summary||"")+'</p>'+(bl.length?'<ul>'+bl.map(function(x){return '<li>'+esc(txt(x))+'</li>'}).join("")+'</ul>':'')+'</div>'+(tags?'<div class="tags">'+tags+'</div>':'')+'</div></div>'}).join("")+'</div></div>'+foot()+'</section>'})});
+    /* footers + fit to screen */
+    pages.forEach(function(p,i){
+      p.cols.forEach(function(c){if(!c.children.length)c.classList.add("e")});
+      p.el.querySelector(".foot").innerHTML="<span>Meridian</span><span>"+esc(m.title||title)+"</span><span>"+(i===pages.length-1?"Full transcript and speaker names: open the meeting in Meridian  ·  ":"")+(i+1)+" / "+pages.length+"</span>"});
+    var z=Math.min(1,(window.innerWidth-24)/1123);if(!flat&&z<1)document.documentElement.style.setProperty("--z",z.toFixed(3));
 
-    /* C. deadlines and date changes */
-    var stCls=function(c){c=String(c||"").toLowerCase();return /moved|shift|postpone|delay/.test(c)?"moved":/risk|block|late/.test(c)?"risk":/confirm|fixed|locked/.test(c)?"confirmed":/new|set|added/.test(c)?"new":"other"};
-    var stTxt={moved:"Moved",risk:"At risk",confirmed:"Confirmed",new:"New",other:""};
-    var dlPages=paginate(dls,function(d){return 70+sOf(d.detail)*.55+sOf(d.item)},1500,6);
-    dlPages.forEach(function(group,pi){pages.push(function(foot){
-      var cnt={};dls.forEach(function(d){var c=stCls(d.change);cnt[c]=(cnt[c]||0)+1});
-      var leg=["new","moved","confirmed","risk"].filter(function(c){return cnt[c]}).map(function(c){return '<span class="st '+c+'"><i></i>'+stTxt[c]+' · '+cnt[c]+'</span>'}).join("");
-      return '<section class="slide">'+corners+'<div class="eyebrow">Deadlines and date changes</div><h2>'+(pi===0?"What is due, and what moved":"What is due, continued")+'</h2>'+(pi===0&&leg?'<div class="legend">'+leg+'</div>':'')+
-        '<div class="body"><div class="glass dl"><div class="dr h"><span>Status</span><span>Item</span><span>What changed</span><span>Owner · when</span></div>'+group.map(function(d){var c=stCls(d.change);
-          return '<div class="dr"><span class="st '+c+'"><i></i>'+esc(stTxt[c]||d.change||"Noted")+'</span><b>'+esc(d.item)+'</b><span class="dt">'+(d.detail?esc(d.detail):'<span class="dim">No extra detail.</span>')+'</span><span class="who">'+(d.owner?esc(d.owner)+'<em>':'<em>')+esc(d.date||"")+'</em></span></div>'}).join("")+'</div></div>'+foot()+'</section>'})});
-
-    /* D. tools, access and credits */
-    var acCls=function(a){a=String(a||"").toLowerCase();return /shared/.test(a)?"shared":/credit/.test(a)?"credits":/free/.test(a)?"free":/trial/.test(a)?"trial":/paid/.test(a)?"paid":"unknown"};
-    var toolPages=paginate(tools,function(t){return 130+sOf(t.what)+sOf(t.note)},1100,6);
-    toolPages.forEach(function(group,pi){pages.push(function(foot){
-      return '<section class="slide">'+corners+'<div class="eyebrow">Tools, access and credits</div><h2>'+(pi===0?"What the team can use, and what it costs":"Tools, continued")+'</h2><div class="body"><div class="board">'+group.map(function(t,j){var c=acCls(t.access);
-        return '<div class="glass tc"'+gi(j)+'><div class="top"><h3>'+esc(t.name)+'</h3><span class="ac '+c+'">'+esc(t.access||"unknown")+'</span></div>'+(t.what?'<p>'+esc(t.what)+'</p>':'')+(t.cost?'<div class="cost">'+esc(t.cost)+'</div>':'')+(t.note?'<div class="note">'+esc(t.note)+'</div>':'')+'</div>'}).join("")+'</div></div>'+foot()+'</section>'})});
-
-    /* E. projects and numbers (one page if small, else split) */
-    var projBlock=function(group){return '<div class="pj">'+group.map(function(p,j){return '<div class="glass pc"'+gi(j)+'><div class="top"><h3>'+esc(p.name)+'</h3>'+(p.kind?'<span class="kd">'+esc(p.kind)+'</span>':'')+'</div>'+(p.from?'<div class="from"><em>From</em>'+esc(p.from)+'</div>':'')+(p.detail?'<p>'+esc(p.detail)+'</p>':'')+'</div>'}).join("")+'</div>'};
-    var numBlock=function(group){return '<div class="nums">'+group.map(function(x,j){return '<div class="glass nm"'+gi(j+2)+'><b>'+esc(x.value)+'</b><span>'+esc(x.label)+'</span>'+(x.context?'<p>'+esc(x.context)+'</p>':'')+'</div>'}).join("")+'</div>'};
-    var combined=projs.length&&nums.length&&projs.length<=4&&nums.length<=8&&projs.reduce(function(a,p){return a+sOf(p.detail)},0)<700;
-    if(combined)pages.push(function(foot){return '<section class="slide">'+corners+'<div class="eyebrow">Projects, requests and numbers</div><h2>New work, and the numbers behind it</h2><div class="body"><div class="sh">Projects and requests</div>'+projBlock(projs)+'<div class="sh">Numbers that mattered</div>'+numBlock(nums)+'</div>'+foot()+'</section>'});
-    else{
-      paginate(projs,function(p){return 120+sOf(p.detail)},1000,4).forEach(function(g,pi){pages.push(function(foot){return '<section class="slide">'+corners+'<div class="eyebrow">Projects and requests</div><h2>'+(pi===0?"New work, requests and ideas":"Projects, continued")+'</h2><div class="body">'+projBlock(g)+'</div>'+foot()+'</section>'})});
-      paginate(nums,function(x){return 90+sOf(x.context)},1000,8).forEach(function(g,pi){pages.push(function(foot){return '<section class="slide">'+corners+'<div class="eyebrow">Numbers that mattered</div><h2>'+(pi===0?"The figures to remember":"Figures, continued")+'</h2><div class="body">'+numBlock(g)+'</div>'+foot()+'</section>'})});
-    }
-
-    /* overall summary */
-    pages.push(function(foot){
-      var chipsT=arr(men.terms).map(function(t){return '<span class="chip">'+esc(t)+'</span>'}).join(""),chipsP=arr(men.people).map(function(t){return '<span class="chip">'+esc(t)+'</span>'}).join("");
-      return '<section class="slide">'+corners+'<div class="eyebrow">Overall summary</div><h2 class="gold" style="max-width:940px">'+esc(headline)+'</h2>'+(lowSignal?'<div class="banner">Low-signal meeting: very few decisions or tasks were spoken. The report shows what was discussed.</div>':'')+
-        '<div class="body"><div class="cols"><div class="prose">'+(overview.length>1?overview.slice(0,1):overview).map(function(p){return '<p>'+esc(p)+'</p>'}).join("")+(overview.length>1?'<p class="dim" style="font-size:14px">The full story, part by part, is on the next page.</p>':'')+'</div><div class="side">'+
-        (mainFocus?'<div class="glass focus" style="--i:0"><div class="lab">Main focus</div><b>'+esc(mainFocus)+'</b></div>':'')+
-        '<div class="mini"><div class="glass" style="--i:1"><b>'+dur(total)+'</b><span>Length</span></div><div class="glass" style="--i:2"><b>'+words.toLocaleString()+'</b><span>Words</span></div><div class="glass" style="--i:3"><b>'+(secs.length||topics.length)+'</b><span>'+(secs.length?"Parts":"Topics")+'</span></div><div class="glass" style="--i:4"><b>'+decs.length+'</b><span>Decisions</span></div><div class="glass" style="--i:5"><b>'+acts.length+'</b><span>Tasks</span></div><div class="glass" style="--i:6"><b>'+(dls.length||nums.length||0)+'</b><span>'+(dls.length?"Dates":"Numbers")+'</span></div></div>'+
-        (chipsT?'<div class="glass tagrow"><div class="lab">Tools and terms mentioned</div><div class="chips">'+chipsT+'</div></div>':'')+(chipsP?'<div class="glass tagrow"><div class="lab">People mentioned</div><div class="chips">'+chipsP+'</div></div>':'')+
-        '</div></div></div>'+foot()+'</section>'});
-
-    if(overview.length>1)pages.push(function(foot){
-      return '<section class="slide">'+corners+'<div class="eyebrow">How the meeting went</div><h2>The full story, in order</h2><div class="body"><div class="story">'+overview.map(function(p){return '<p>'+esc(p)+'</p>'}).join("")+'</div></div>'+foot()+'</section>'});
-
-    /* key takeaways + next moves */
-    pages.push(function(foot){
-      return '<section class="slide">'+corners+'<div class="eyebrow">Key takeaways</div><h2>What matters most</h2><div class="body"><div class="cols" style="grid-template-columns:1.6fr 1fr"><div>'+(keyPts.length?'<ol class="take">'+keyPts.map(function(k,i){return '<li class="glass"'+gi(i)+'><span>'+esc(k)+'</span></li>'}).join("")+'</ol>':'<div class="glass empty">Nothing stood out as a key point.</div>')+'</div>'+
-        '<div><div class="eyebrow" style="margin-bottom:12px">Next moves</div>'+(acts.length?'<div class="next">'+acts.slice(0,4).map(function(a,i){return '<div class="glass it"'+gi(i+2)+'><div class="av">'+esc((a.owner||"?").charAt(0).toUpperCase())+'</div><span><b>'+esc(a.owner)+'</b> · '+esc(a.task)+'</span>'+(a.due?'<span class="due">'+esc(a.due)+'</span>':'<span></span>')+'</div>'}).join("")+'</div>':'<div class="glass empty">No tasks were given out.</div>')+'</div></div></div>'+foot()+'</section>'});
-
-    /* topics, two to a page */
-    for(var k=0;k<topics.length;k+=2)(function(pair,first){pages.push(function(foot){
-      return '<section class="slide">'+corners+'<div class="eyebrow">What was discussed · topics '+(first+1)+(pair.length>1?" and "+(first+2):"")+' of '+topics.length+'</div><h2>'+(first===0?"Topic by topic":"Topic by topic, continued")+'</h2><div class="body"><div class="tpair">'+pair.map(function(t,j){
-        var para=t.paragraph||t.summary||"";
-        return '<div class="glass tp"'+gi(j)+'><div class="th"><div class="n">'+String(first+j+1).padStart(2,"0")+'</div><h3>'+esc(t.title)+'</h3>'+(t.share!=null?'<div class="pct">'+esc(t.share)+'%</div>':'<span></span>')+'</div>'+(t.share!=null?'<div class="bar"><i style="width:'+Math.max(3,+t.share||0)+'%"></i></div>':'')+'<p>'+esc(para)+'</p>'+(arr(t.points).length?'<ul>'+t.points.slice(0,4).map(function(x){return '<li>'+esc(x)+'</li>'}).join("")+'</ul>':'')+(t.outcome?'<div class="out"><em>Outcome</em>'+esc(t.outcome)+'</div>':'')+(arr(t.questions).length?'<div class="q"><em>Open</em>'+esc(t.questions[0])+'</div>':'')+'</div>'}).join("")+'</div></div>'+foot()+'</section>'})})(topics.slice(k,k+2),k);
-
-    /* decisions and action plan */
-    pages.push(function(foot){
-      return '<section class="slide">'+corners+'<div class="eyebrow">Decisions and action plan</div><h2>'+(decs.length?"What was decided, and who moves next":"What people committed to")+'</h2><div class="body"><div class="cols" style="grid-template-columns:'+(decs.length?"1fr 1.5fr":"1fr")+'">'+
-        (decs.length?'<div style="display:grid;gap:12px;align-content:start">'+decs.map(function(d,i){return '<div class="glass dec"'+gi(i)+'><div class="dn">'+(i+1)+'</div><b>'+esc(d)+'</b></div>'}).join("")+'</div>':'')+
-        '<div class="glass tbl" style="--i:1"><div class="tr h"><span></span><span>Owner</span><span>Action</span><span>When</span></div>'+(acts.map(function(a){return '<div class="tr"><div class="av">'+esc((a.owner||"?").charAt(0).toUpperCase())+'</div><b>'+esc(a.owner)+'</b><span>'+esc(a.task)+'</span>'+(a.due?'<span class="due">'+esc(a.due)+'</span>':'<span></span>')+'</div>'}).join("")||'<div class="empty">No action items were given out.</div>')+'</div></div>'+
-        (oq.length?'<div class="glass oq" style="--i:3"><div class="eyebrow">Still open</div><ul style="margin:0;padding:0">'+oq.map(function(q){return '<li>'+esc(q)+'</li>'}).join("")+'</ul></div>':'')+'</div>'+foot()+'</section>'});
-
-    /* highlights, hard-to-hear parts, appendix */
-    pages.push(function(foot){
-      return '<section class="slide">'+corners+'<div class="eyebrow">Highlights</div><h2>Lines worth remembering</h2><div class="body"><div style="display:grid;gap:12px">'+(picked.map(function(c,i){return '<div class="glass quote"'+gi(i)+'>'+esc(c.s.text)+'<small>'+esc(c.s.speaker)+' · '+mmss(c.s.start)+'</small></div>'}).join("")||'<div class="glass empty">Not enough speech for highlights.</div>')+'</div>'+
-        (unclear.length?'<div class="glass hard" style="--i:4"><div class="eyebrow">Parts that were hard to hear</div><ul>'+unclear.slice(0,6).map(function(u){return '<li>'+esc(txt(u))+'</li>'}).join("")+'</ul></div>':'')+'</div>'+
-        '<details class="glass"><summary>Appendix · full transcript (English)</summary><div class="tx">'+segs.map(function(s){return '<div><em>'+mmss(s.start)+'</em><b>'+esc(s.speaker)+'</b> '+esc(s.text)+'</div>'}).join("")+'</div></details>'+foot()+'</section>'});
-
-    var N=pages.length,html="";
-    pages.forEach(function(pg,i){html+=pg(function(){return '<div class="foot"><span>Meridian · Executive meeting report</span><span>'+esc(shortTitle)+'</span><span>'+String(i+1).padStart(2,"0")+' / '+String(N).padStart(2,"0")+'</span></div>'})});
-    $("#root").innerHTML=html;
-    document.title=(m.title||"Meeting")+" · Executive Report";
-    var sl=document.querySelectorAll(".slide");
-    if("IntersectionObserver" in window){var io=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){e.target.classList.add("in");io.unobserve(e.target)}})},{threshold:.06});sl.forEach(function(s){io.observe(s)})}else sl.forEach(function(s){s.classList.add("in")});
     $("#copyBtn").onclick=function(){
       var L=function(a,f){return a.map(f).join("\n")||"- none"};
-      var t=(m.title||"Meeting")+"\n"+headline+"\n\n"+(hasCatch?"CATCH-UP IN 2 MINUTES\n"+catchup.join("\n\n"):overview.join("\n\n"))+
-        (secs.length?"\n\nMINUTE BY MINUTE\n"+secs.map(function(s){return mmss(s.start)+" "+(s.title||"")+"\n   "+(s.summary||"")}).join("\n"):"")+
-        (dls.length?"\n\nDEADLINES\n"+L(dls,function(d){return "- "+d.item+" ("+(d.change||"")+"): "+(d.date||"")+(d.detail?" - "+d.detail:"")}):"")+
-        (tools.length?"\n\nTOOLS AND ACCESS\n"+L(tools,function(x){return "- "+x.name+" ["+(x.access||"")+"] "+(x.cost||"")+(x.note?" - "+x.note:"")}):"")+
-        (projs.length?"\n\nPROJECTS\n"+L(projs,function(p){return "- "+p.name+(p.from?" (from "+p.from+")":"")+": "+(p.detail||"")}):"")+
-        (nums.length?"\n\nNUMBERS\n"+L(nums,function(x){return "- "+x.label+": "+x.value+(x.context?" ("+x.context+")":"")}):"")+
-        "\n\nWHAT MATTERS MOST\n"+L(keyPts,function(k){return "- "+k})+"\n\nTOPICS\n"+topics.map(function(x,i){return (i+1)+". "+x.title+"\n   "+(x.paragraph||x.summary||"")+(x.outcome?"\n   Outcome: "+x.outcome:"")}).join("\n")+"\n\nDECISIONS\n"+L(decs,function(d){return "- "+d})+"\n\nACTION PLAN\n"+L(acts,function(a){return "- "+a.owner+": "+a.task+(a.due?" ("+a.due+")":"")})+(unclear.length?"\n\nHARD TO HEAR\n"+L(unclear,function(u){return "- "+txt(u)}):"");
+      var t=title+(m.title&&m.title!==title?"\n"+m.title:"")+(bottom?"\n"+bottom:"")+"\n\nOVERALL SUMMARY\n"+overview.join("\n\n")+
+        (decs.length?"\n\nDECISIONS\n"+L(decs,function(d){return "- "+d}):"")+
+        "\n\nDETAILED SUMMARY\n"+detail.map(function(t,i){return (i+1)+". "+t.title+(t.start!=null&&t.end?" ("+mmss(t.start)+" - "+mmss(t.end)+")":"")+"\n"+t.paragraph}).join("\n\n")+
+        (acts.length?"\n\nACTION POINTS\n"+L(acts,function(a){return "- "+a.owner+": "+a.task+(a.due?" ("+a.due+")":"")}):"")+
+        (qs.length?"\n\nOPEN QUESTIONS\n"+L(qs,function(q){return "- "+q}):"");
       var b=$("#copyBtn"),ok=function(){var o=b.textContent;b.textContent="Copied";setTimeout(function(){b.textContent=o},1400)};try{navigator.clipboard.writeText(t).then(ok,function(){})}catch(e){}};
     $("#printBtn").onclick=function(){window.print()};
   }
+  function start(m){var go=function(){build(m)};if(document.fonts&&document.fonts.ready)document.fonts.ready.then(go,go);else go()}
 
   /* ---------- data: demo, embedded copy, or fetched from the server ---------- */
   var qs=new URLSearchParams(location.search),LSget=function(k){try{return localStorage.getItem(k)||""}catch(e){return ""}};
-  if(qs.get("demo")){var dv=qs.get("demo");build(dv==="old"?oldDemo():dv==="long"?longDemo():DEMO);return}
-  if(window.__MERIDIAN__){var bk=document.querySelector("#tools a");if(bk)bk.hidden=true;build(window.__MERIDIAN__);return}
+  if(qs.get("demo")){var dv=qs.get("demo");start(dv==="old"?oldDemo():dv==="long"?longDemo():DEMO);return}
+  if(window.__MERIDIAN__){var bk=document.querySelector("#tools a");if(bk)bk.hidden=true;start(window.__MERIDIAN__);return}
   var id=qs.get("id");
-  var msg=function(t){$("#root").innerHTML='<section class="slide in"><div class="eyebrow">Meridian executive report</div><p class="lead dim">'+t+'</p></section>'};
+  var msg=function(t){$("#root").innerHTML='<section class="pg"><div class="eyebrow">Meridian executive report</div><p style="color:var(--soft)">'+t+'</p></section>'};
   if(!id){msg("No meeting chosen. Open the Meeting reports tab in Meridian and pick a meeting.");return}
   var h={"X-Meridian-Owner":LSget("meridian_o")};if(LSget("meridian_k"))h["X-Meridian-Key"]=LSget("meridian_k");
   fetch("/api/meeting/"+encodeURIComponent(id),{headers:h}).then(function(r){if(!r.ok)throw 0;return r.json()}).then(function(m){
-    if(m.status!=="done"){msg("This meeting is still being written up. Reload in a minute.");return}build(m)}).catch(function(){msg("Could not open this meeting.")});
+    if(m.status!=="done"){msg("This meeting is still being written up. Reload in a minute.");return}start(m)}).catch(function(){msg("Could not open this meeting.")});
 })();
 </script>
 </body>
