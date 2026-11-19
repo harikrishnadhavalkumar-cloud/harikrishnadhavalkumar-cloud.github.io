@@ -283,6 +283,7 @@ h1,h2,h3,p{margin:0}
         <button class="mode" data-mode="room" aria-pressed="false">People in the room</button>
       </div>
       <label class="keep"><input type="checkbox" id="keepVideo" checked> Keep video</label>
+      <button class="mode" id="upBtn" type="button" hidden>Upload a recording</button><input type="file" id="upFile" hidden accept="audio/*,video/*">
       <button class="btn" id="startBtn" type="button">Start recording</button>
     </div>
   </header>
@@ -326,44 +327,55 @@ h1,h2,h3,p{margin:0}
   var LS=function(k,v){try{if(v===undefined)return localStorage.getItem(k)||_mem[k]||"";localStorage.setItem(k,v)}catch(e){}if(v!==undefined)_mem[k]=v;return _mem[k]||""};
   var KEY=new URLSearchParams(location.search).get("k")||LS("meridian_k");if(KEY)LS("meridian_k",KEY);
   var OWNER=LS("meridian_o");if(!OWNER){OWNER=Array.prototype.map.call(crypto.getRandomValues(new Uint8Array(8)),function(b){return ("0"+b.toString(16)).slice(-2)}).join("");LS("meridian_o",OWNER)}
-  /* ===== CLOUD MODE: runs on the fixed GitHub address. Recording goes to the Drive mailbox; everything else is forwarded to the host computer when it is on. ===== */
+  /* ===== CLOUD MODE: runs on the fixed GitHub address. Recording and notes go through the Drive mailbox; the host computer is only needed to write the notes. ===== */
   var CLOUD=/\.github\.io$/.test(location.hostname);
-  var INBOX="https://script.google.com/macros/s/AKfycbz5MaJsulTfAoGn-_6pcOFG0D7_V4NJxtBmoFjhgVa-hKE_gAZhppwjqT99yV0EVj0k/exec",MKEY="da3792b430930424a1e6",GHCUR="https://api.github.com/repos/harikrishnadhavalkumar-cloud/harikrishnadhavalkumar-cloud.github.io/contents/meridian/current.json";
-  var __real=window.fetch.bind(window),__cnt={},__pend=0,__base="",__baseAt=0;window.__TB="";
+  var INBOX="https://script.google.com/macros/s/AKfycbz5MaJsulTfAoGn-_6pcOFG0D7_V4NJxtBmoFjhgVa-hKE_gAZhppwjqT99yV0EVj0k/exec",MKEY="";
+  var __real=window.fetch.bind(window),__cnt={},__pend=0,__lst=null,__lstAt=0;
+  try{var __hm=location.hash.match(/[#&]c=([A-Za-z0-9]+)/);if(__hm){localStorage.setItem("meridian_c",__hm[1]);history.replaceState(null,"",location.pathname+location.search)}MKEY=localStorage.getItem("meridian_c")||""}catch(e){}
+  if(CLOUD&&!MKEY){MKEY=(prompt("Enter the access code you were sent")||"").trim();try{localStorage.setItem("meridian_c",MKEY)}catch(e){}}
   function __sleep(ms){return new Promise(function(r){setTimeout(r,ms)})}
   function __js(o,s){return new Response(JSON.stringify(o),{status:s||200,headers:{"Content-Type":"application/json"}})}
   function __b64(b){return new Promise(function(res,rej){var r=new FileReader();r.onload=function(){res(String(r.result).split(",")[1]||"")};r.onerror=rej;r.readAsDataURL(b)})}
-  async function __box(o,tries){o.key=MKEY;var w=1500;for(var i=0;!tries||i<tries;i++){try{var r=await __real(INBOX,{method:"POST",headers:{"Content-Type":"text/plain"},body:JSON.stringify(o)});var j=await r.json();if(j&&j.ok)return j}catch(e){}await __sleep(w);w=Math.min(w*2,20000)}throw new Error("mailbox")}
-  async function __tunnel(){if(Date.now()-__baseAt<45000)return __base;__baseAt=Date.now();try{var r=await __real(GHCUR+"?t="+Date.now(),{headers:{Accept:"application/vnd.github.raw"},cache:"no-store"});var u=(await r.json()).url;var c=new AbortController();setTimeout(function(){c.abort()},6000);var h=await __real(u+"/api/health?t="+Date.now(),{cache:"no-store",signal:c.signal});__base=h.ok?u:""}catch(e){__base=""}window.__TB=__base;return __base}
+  async function __box(o,tries){o.key=MKEY;var w=1500;for(var i=0;!tries||i<tries;i++){try{var r=await __real(INBOX,{method:"POST",headers:{"Content-Type":"text/plain"},body:JSON.stringify(o)});var j=await r.json();if(j&&j.ok)return j;if(j&&(j.error==="key"||j.error==="limit"||j.error==="big"))throw new Error(j.error)}catch(e){if(e&&(e.message==="key"||e.message==="limit"||e.message==="big"))throw e}await __sleep(w);w=Math.min(w*2,20000)}throw new Error("mailbox")}
+  async function __list(){if(__lst&&Date.now()-__lstAt<8000)return __lst;try{var j=await __box({a:"list"},3);__lst=(j.meetings||[]).map(function(m){var s=m.status;if(s==="recording"||s==="waiting")s="queued";else if(s==="processing")s="working";return Object.assign({},m,{status:s})});__lstAt=Date.now()}catch(e){if(e.message==="key"){__lst=null;try{localStorage.removeItem("meridian_c")}catch(x){}}return __lst||[]}return __lst}
+  async function __sendFile(file){
+    var id=Array.prototype.map.call(crypto.getRandomValues(new Uint8Array(6)),function(x){return("0"+x.toString(16)).slice(-2)}).join("");
+    var title=file.name.replace(/\.[^.]+$/,"").slice(0,100)||"Uploaded recording",you=(document.getElementById("you")||{}).value||"Guest",SL=3*1024*1024,n=Math.ceil(file.size/SL);
+    await __box({a:"start",id:id,title:title,you:you,mode:"room"},4);
+    for(var i=0;i<n;i++){setStatus("Uploading "+file.name+": "+Math.round(i*100/n)+"%");var d=await __b64(file.slice(i*SL,(i+1)*SL));__pend++;try{await __box({a:"chunk",id:id,kind:"mic",n:i,d:d})}finally{__pend--}}
+    await __box({a:"finish",id:id,duration:0,chunks:{mic:n,others:0}},12);__lstAt=0;
+    setStatus("Uploaded. The notes are made automatically and appear in Past meetings.","live")}
   if(CLOUD){
-    __tunnel();
+    var __st=document.createElement("style");__st.textContent=".del{display:none!important}";document.head.appendChild(__st);
     window.addEventListener("beforeunload",function(e){if(__pend>0){e.preventDefault();e.returnValue=""}});
     window.fetch=async function(u,o){
       o=o||{};var s=String(u),m=(o.method||"GET").toUpperCase(),p=s.split("?")[0],mm;
       if(s.charAt(0)!=="/")return __real(u,o);
-      if(p==="/api/health"){var t0=await __tunnel();if(t0){try{return await __real(t0+"/api/health",{cache:"no-store"})}catch(e){}}return __js({free_gb:99,used_mb:0})}
+      if(p==="/api/health")return __js({free_gb:99,used_mb:0});
+      if(p==="/api/share")return __js({},404);
       if(m==="POST"&&p==="/api/start"){var b={};try{b=JSON.parse(o.body||"{}")}catch(e){}
         var id=Array.prototype.map.call(crypto.getRandomValues(new Uint8Array(6)),function(x){return("0"+x.toString(16)).slice(-2)}).join("");
-        try{await __box({a:"start",id:id,title:b.title,you:b.you,mode:b.mode},4)}catch(e){return __js({error:"mailbox"},500)}return __js({id:id})}
+        try{await __box({a:"start",id:id,title:b.title,you:b.you,mode:b.mode},4)}catch(e){return __js({error:String(e.message)},500)}return __js({id:id})}
       if(m==="POST"&&(mm=p.match(/^\/api\/chunk\/([a-f0-9]{12})\/(\w+)$/))){
         if(mm[2]==="video")return new Response(null,{status:204});
         var k=mm[1]+mm[2],n=__cnt[k]=(__cnt[k]===undefined?0:__cnt[k]+1);__pend++;
         try{var d=await __b64(o.body);await __box({a:"chunk",id:mm[1],kind:mm[2],n:n,d:d})}finally{__pend--}return new Response(null,{status:204})}
       if(m==="POST"&&(mm=p.match(/^\/api\/finish\/([a-f0-9]{12})$/))){var dur=0;try{dur=JSON.parse(o.body||"{}").duration||0}catch(e){}
         var ch={mic:(__cnt[mm[1]+"mic"]===undefined?0:__cnt[mm[1]+"mic"]+1),others:(__cnt[mm[1]+"others"]===undefined?0:__cnt[mm[1]+"others"]+1)};
-        try{await __box({a:"finish",id:mm[1],duration:dur,chunks:ch},12)}catch(e){}
-        /* if the host computer is on it may already know this meeting; otherwise the pieces wait safely in Drive */
-        return __js({ok:true})}
-      var t=await __tunnel();
-      if(t){try{var h2=Object.assign({},o.headers||{});var rr=await __real(t+s,Object.assign({},o,{headers:h2,mode:"cors"}));if(rr.ok||!/^\/api\/status\//.test(p))return rr}catch(e){}}
-      if(mm=p.match(/^\/api\/status\/([a-f0-9]{12})$/))return __js({id:mm[1],status:"queued",step:"Saved safely in the cloud. Notes are made when the host computer is on"});
-      if(p==="/api/meetings")return __js([]);
-      return __js({error:"The host computer is off right now"},404)};
+        try{await __box({a:"finish",id:mm[1],duration:dur,chunks:ch},12)}catch(e){}__lstAt=0;return __js({ok:true})}
+      if(p==="/api/meetings")return __js(await __list());
+      if(m==="DELETE")return __js({error:"Deleting is done on the host computer"},403);
+      if(mm=p.match(/^\/api\/status\/([a-f0-9]{12})$/)){var L=await __list(),e1=L.filter(function(x){return x.id===mm[1]})[0];
+        if(!e1)return __js({id:mm[1],status:"queued",step:"Saved safely in the cloud"});return __js({id:mm[1],status:e1.status,step:e1.step||"Working",error:e1.error})}
+      if(mm=p.match(/^\/api\/meeting\/([a-f0-9]{12})$/)){try{var g=await __box({a:"get",id:mm[1]},2);var dat=JSON.parse(g.data);dat.has=dat.has||{};return __js(dat)}catch(e){return __js({error:"not ready"},404)}}
+      return __js({error:"Not available in the cloud view"},404)};
     var __kv=document.getElementById("keepVideo");if(__kv){__kv.checked=false;__kv.disabled=true;__kv.parentNode.title="Video is only kept when the host computer is on"}
+    var __ub=document.getElementById("upBtn"),__uf=document.getElementById("upFile");
+    if(__ub&&__uf){__ub.hidden=false;__ub.onclick=function(){__uf.click()};__uf.onchange=async function(){var f=__uf.files[0];__uf.value="";if(!f)return;try{await __sendFile(f)}catch(e){setStatus("Upload failed: "+e.message,"err")}}}
   }
   var _fetch=window.fetch.bind(window);
   window.fetch=function(u,o){o=o||{};o.headers=Object.assign({},o.headers||{},{"X-Meridian-Owner":OWNER});if(KEY)o.headers["X-Meridian-Key"]=KEY;return _fetch(u,o)};
-  function Q(u){if(window.__TB&&u.charAt(0)==="/")u=window.__TB+u;return u+(u.indexOf("?")>-1?"&":"?")+(KEY?"k="+encodeURIComponent(KEY)+"&":"")+"o="+OWNER}
+  function Q(u){if(CLOUD){var sm=u.match(/^\/static\/(report|brief)\.html\?id=([a-f0-9]{12})/);if(sm)return sm[1]+".html?id="+sm[2];if(u.indexOf("/api/")===0)return "javascript:void(0)"}return u+(u.indexOf("?")>-1?"&":"?")+(KEY?"k="+encodeURIComponent(KEY)+"&":"")+"o="+OWNER}
   var $=function(s){return document.querySelector(s)};
   var root=document.documentElement;
   var TIPS={
