@@ -362,12 +362,12 @@ def ground(n, segments):
     full = " ".join(s["text"] for s in segments).lower()
     keep, seen = [], set()
     for t in n.get("tools", []):
-        nm = glossary.canon(t.get("name", ""))
+        nm = glossary.canon(glossary.fix(t.get("name", "")))
         low = nm.lower()
         said = low.replace(".", "").replace("-", "") in spoken or t.get("name", "").lower().replace(".", "").replace("-", "") in spoken
         if not said or low in seen:
             continue
-        if low not in known_l and (_english(nm) or full.count(t.get("name", "").lower()) < 2):
+        if low not in known_l and (_english(nm) or low.endswith(("ed", "ing", "tion", "ly")) or full.count(t.get("name", "").lower()) < 2):
             continue   # a plain word or a one-off mishearing is not a tool
         t["name"] = nm
         seen.add(low)
