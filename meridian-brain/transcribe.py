@@ -4,6 +4,8 @@ import os
 import re
 import threading
 
+import glossary
+
 _model = None
 _lock = threading.Lock()
 MODEL_NAME = os.environ.get("MERIDIAN_MODEL", "large-v3")
@@ -30,7 +32,7 @@ def transcribe(wav_path, speaker, progress=None):
         vad_parameters={"min_silence_duration_ms": 500, "speech_pad_ms": 200, "threshold": 0.35},
         beam_size=2,
         task=TASK,
-        initial_prompt=HINTS,
+        initial_prompt=(HINTS + " " + glossary.hotwords())[:700],
         condition_on_previous_text=False,
     )
     out = []
@@ -38,7 +40,7 @@ def transcribe(wav_path, speaker, progress=None):
     for s in segs:
         if progress:
             progress(min(1.0, s.end / total))
-        text = s.text.strip()
+        text = glossary.fix(s.text.strip())
         if text:
             out.append({"start": round(s.start, 2), "end": round(s.end, 2), "speaker": speaker, "text": text})
     return _remove_repeats(out), info.language
