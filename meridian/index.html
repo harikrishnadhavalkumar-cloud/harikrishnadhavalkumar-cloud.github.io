@@ -708,7 +708,7 @@ h1,h2,h3,p{margin:0}
         if(secs<25){msg("That was too short ("+Math.round(secs)+" s). Please read the whole paragraph.","err");return}
         msg("Learning the voice…","");
         try{var r=await fetch("/api/voice/"+encodeURIComponent(name),{method:"POST",body:new Blob(chunks,{type:mr.mimeType||"audio/webm"})});var j=await r.json();
-          if(j.ok){msg(j.queued?"Saved. "+name+"’s voice will be learned as soon as the host computer is on.":"Done. "+name+"’s voice is learned ("+j.clips+" samples). It will be recognised in your next meetings.","ok");nm.value="";sc.innerHTML=VSCRIPT("");list()}
+          if(j.ok){msg(j.queued?"Saved. "+name+"’s voice is being learned. This takes about a minute when the host computer is on, or happens as soon as it is turned on. Open this tab again to see the name.":"Done. "+name+"’s voice is learned ("+j.clips+" samples). It will be recognised in your next meetings.","ok");nm.value="";sc.innerHTML=VSCRIPT("");list();if(j.queued){setTimeout(list,70000);setTimeout(list,150000)}}
           else msg(j.error||"Could not learn this voice. Try again in a quiet room.","err")}catch(e){msg("Could not save the voice. Check the connection and try again.","err")}};mr.stop()}
       $("#vstop").onclick=finish;mr.start(1000);
     };
