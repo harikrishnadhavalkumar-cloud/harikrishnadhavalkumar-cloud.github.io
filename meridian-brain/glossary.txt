@@ -1,0 +1,85 @@
+# Meridian vocabulary pack. One word or phrase per line = a word the speech tool should know.
+# "wrong spelling => Right spelling" fixes things the speech tool keeps mishearing. Edit freely.
+# ---- Univest and work words ----
+Univest
+univest.in
+PLTV
+ASO
+SEO
+GEO
+ORM
+TMB
+CSL
+RBI
+MPC
+Meta Ads
+Google Ads
+App Store
+Play Store
+Google Play Console
+App Store Connect
+Search Console
+Google Analytics
+Firebase
+AppsFlyer
+metadata simulator
+keyword density
+keyword universe
+search volume
+organic traffic
+backlinks
+canonical
+sitemap
+schema markup
+FAQ schema
+featured snippet
+AI visibility
+share of voice
+Domain Rating
+# ---- tools and companies ----
+Ahrefs
+SEMrush
+Similarweb
+AppTweak
+Sensor Tower
+Mobile Action
+Appfigures
+Screaming Frog
+Ubersuggest
+Moz
+ChatGPT
+Gemini
+Perplexity
+Claude
+Canva
+Notion
+Slack
+Zoom
+Google Meet
+# ---- fixes for common mishearings (phrase => Right) ----
+same brush => SEMrush
+sam rush => SEMrush
+sem rush => SEMrush
+sim rush => SEMrush
+a hrefs => Ahrefs
+a-hrefs => Ahrefs
+ay hrefs => Ahrefs
+ahref => Ahrefs
+ahrefs tool => Ahrefs tool
+app tweak => AppTweak
+sensor tour => Sensor Tower
+similar web => Similarweb
+simple web => Similarweb
+unives.in => univest.in
+unives => Univest
+uni vest => Univest
+univest dot in => univest.in
+play console => Play Console
+search console => Search Console
+page speed => PageSpeed
+univel.in => univest.in
+univel => Univest
+you the vest => Univest
+semesrh => SEMrush
+semrus => SEMrush
+sem rush => SEMrush
