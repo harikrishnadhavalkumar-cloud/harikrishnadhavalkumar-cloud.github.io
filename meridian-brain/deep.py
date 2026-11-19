@@ -358,8 +358,21 @@ def ground(n, segments):
     for t in n.get("topics", []):
         t["paragraph"] = clean(t.get("paragraph", "")) or t.get("paragraph", "")
         t["points"] = [p for p in t.get("points", []) if not has_bad(p)]
-    for k in ("tools",):
-        n[k] = [t for t in n.get(k, []) if t.get("name", "").lower().replace(".", "").replace("-", "") in spoken]
+    known_l = [t.lower() for t in glossary.known_terms()]
+    full = " ".join(s["text"] for s in segments).lower()
+    keep, seen = [], set()
+    for t in n.get("tools", []):
+        nm = glossary.canon(t.get("name", ""))
+        low = nm.lower()
+        said = low.replace(".", "").replace("-", "") in spoken or t.get("name", "").lower().replace(".", "").replace("-", "") in spoken
+        if not said or low in seen:
+            continue
+        if low not in known_l and (_english(nm) or full.count(t.get("name", "").lower()) < 2):
+            continue   # a plain word or a one-off mishearing is not a tool
+        t["name"] = nm
+        seen.add(low)
+        keep.append(t)
+    n["tools"] = keep
     n["key_points"] = [p for p in n.get("key_points", []) if not has_bad(p)]
     n["unclear"] = [u for u in n.get("unclear", []) if not has_bad(u)]
     return n
