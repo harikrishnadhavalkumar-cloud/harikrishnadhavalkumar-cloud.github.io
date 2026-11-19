@@ -64,7 +64,7 @@ def _s(x):
 
 def _ok(x):
     x = _s(x)
-    return x if x and "<" not in x and x.lower() not in ("none", "null", "n/a", "unknown", "empty") else ""
+    return x if x and "<" not in x and x.lower() not in ("none", "null", "n/a", "unknown", "empty", "not specified", "not mentioned", "unspecified", "not stated", "tbd", "na", "-") else ""
 
 
 def _strs(v, limit=12):
@@ -183,6 +183,19 @@ def _section(i, total, win, system):
     return sec
 
 
+_WORDS = None
+
+
+def _english(w):
+    global _WORDS
+    if _WORDS is None:
+        try:
+            _WORDS = set(x.strip().lower() for x in open("/usr/share/dict/words", encoding="utf-8", errors="ignore") if x.strip() and not x[0].isupper())
+        except Exception:
+            _WORDS = set()
+    return w.lower() in _WORDS
+
+
 def _terms_in_text(segments):
     """The things a reader would miss if they were dropped: acronyms, names, numbers, dates and the team's own words."""
     text = " ".join(s["text"] for s in segments)
@@ -195,7 +208,7 @@ def _terms_in_text(segments):
     for m in re.findall(r"\b[A-Z]{2,6}\b", text):
         found[m] = found.get(m, 0) + 1
     for m in re.findall(r"(?<![.!?]\s)(?<!^)\b([A-Z][a-z]{3,})\b", text):
-        if m not in COMMON:
+        if m not in COMMON and not _english(m):
             found[m] = found.get(m, 0) + 1
     out = []
     for k, v in found.items():
@@ -256,7 +269,7 @@ def _recover(n, segments, missing, system):
         except Exception:
             pass
         if not line:
-            line = " ".join(" ".join(s["text"] for s in ctx).split()[:26])
+            continue
         t0 = segments[idx]["start"]
         sec = next((s for s in n["sections"] if s["start"] <= t0 <= s["end"] + 1), n["sections"][-1])
         if term.lower() not in line.lower():
@@ -283,6 +296,59 @@ def _merge_lists(secs, key, ident):
             seen[k] = e
             out.append(e)
     return out
+
+
+
+_DATE = re.compile(r"\b(tomorrow|tonight|today|day after tomorrow|next week|this week|next month|end of (the )?(day|week|month)|eod|eow|monday|tuesday|wednesday|thursday|friday|saturday|sunday|\d{1,2}(st|nd|rd|th)|(jan|feb|mar|apr|may|jun|jul|aug|sep|oct|nov|dec)[a-z]*\.? \d{1,2})\b", re.I)
+_WORK = re.compile(r"\b(deadline|due|submit|send|share|finish|complete|ready|deliver|launch|close|approve|review|update|publish|go live|build|report|move|shift|postpone|extend|delay|pending|renew|buy|expire|start)", re.I)
+
+
+def deadline_scan(segments, n, system):
+    """Read every line for due dates and date changes, so no deadline depends on the AI noticing it."""
+    cands, last = [], -99
+    for i, s in enumerate(segments):
+        win = " ".join(x["text"] for x in segments[max(0, i - 1): i + 2])
+        if _DATE.search(s["text"]) and _WORK.search(win) and s["start"] - last > 25:
+            cands.append(i)
+            last = s["start"]
+    added = 0
+    for i in cands[:14]:
+        ctx = segments[max(0, i - 2): i + 3]
+        try:
+            d = _try_json(system, (
+                "These words were spoken in a meeting:\n%s\n\nIs someone giving, confirming, promising or CHANGING a deadline, due date or delivery date for a piece of work (for example: we will close it tomorrow; Jatin will send the build tomorrow; moved to the 20th)? "
+                'Return JSON: {"is_deadline": true or false, "item": "<the work that is due>", "date": "<when, as said>", "change": "new or moved or confirmed or at risk", '
+                '"detail": "<for example moved from 13th to 20th, or empty>", "owner": "<who, or empty>"}. If there is no deadline or date commitment, return empty strings for item and date.') % _text(ctx), 300, 1)
+        except Exception:
+            continue
+        item, date = _ok(d.get("item")), _ok(d.get("date"))
+        if not item or not date:
+            continue
+        w = lambda t: set(x for x in re.findall(r"[a-z0-9]+", t.lower()) if len(x) > 2)
+        if any(len(w(item) & w(x.get("item", "") + " " + x.get("detail", ""))) >= 2 for x in n.get("deadlines", [])):
+            continue
+        ch = _ok(d.get("change")).lower()
+        n.setdefault("deadlines", []).append({"item": glossary.clean_text(item), "date": date, "change": ch if ch in ("new", "moved", "confirmed", "at risk") else "new",
+                                              "detail": _ok(d.get("detail")), "owner": _ok(d.get("owner")), "at": int(segments[i]["start"])})
+        added += 1
+    return added
+
+
+def finalize(n):
+    """Rules applied after the AI: every task that has a due date also shows up in the deadline tracker."""
+    dls = n.setdefault("deadlines", [])
+    words = lambda t: set(w for w in re.findall(r"[a-z0-9]+", t.lower()) if len(w) > 2)
+    for a in n.get("actions", []):
+        due = _ok(a.get("due"))
+        if not due:
+            continue
+        tw = words(a.get("task", ""))
+        if any(len(tw & words(x.get("item", "") + " " + x.get("detail", ""))) >= 2 for x in dls):
+            continue
+        at = next((s["start"] for s in n.get("sections", []) if any(t.get("task") == a.get("task") for t in s.get("tasks", []))), 0)
+        dls.append({"item": a["task"], "date": due, "change": "new", "detail": "", "owner": a.get("owner", ""), "at": at})
+    n["deadlines"] = dls[:20]
+    return n
 
 
 def build(segments, you="You"):
@@ -393,6 +459,12 @@ def build(segments, you="You"):
     out["open_questions"] = _strs([q for t in final for q in t["questions"]], 8)
     if not out.get("main_focus") and final:
         out["main_focus"] = max(final, key=lambda t: t["share"])["title"]
+
+    try:
+        deadline_scan(segments, out, system)
+    except Exception:
+        pass
+    finalize(out)
 
     # the self-check: did every important word survive?
     terms = _terms_in_text(segments)
