@@ -190,7 +190,7 @@ def chunk(mid, kind):
 def finish(mid):
     d = mdir(mid)
     body = request.get_json(silent=True) or {}
-    write_meta(d, status="queued", step="Saving the recording", duration=float(body.get("duration") or 0))
+    write_meta(d, status="queued", step="Saving the recording", duration=float(body.get("duration") or 0), rollcall=[{"name": re.sub(r"[^\w .'-]", "", str(r.get("name", ""))).strip()[:40], "start": float(r.get("start", 0)), "end": float(r.get("end", 0))} for r in (body.get("rollcall") or []) if isinstance(r, dict)][:30])
     threading.Thread(target=run_pipeline, args=(mid,), daemon=True).start()
     return jsonify(ok=True)
 
@@ -669,7 +669,7 @@ def run_pipeline(mid, notes_only=False):
                         try:
                             import voice
                             write_meta(d, step="Recognising voices")
-                            n_sp = voice.diarize(segs, str(wav), d, meta.get("mic", ""))
+                            n_sp = voice.diarize(segs, str(wav), d, meta.get("mic", ""), meta.get("rollcall") if meta.get("mode") != "call" or kind == "others" else None)
                             if n_sp:
                                 write_meta(d, speakers=n_sp)
                         except Exception:
@@ -681,6 +681,8 @@ def run_pipeline(mid, notes_only=False):
                 if voices_found:
                     write_meta(d, voices=sorted(voices_found, key=lambda k: -voices_found[k]))
             write_meta(d, step="Writing the notes")
+            segments_all = segments
+            segments = [x for x in segments_all if not x.get("rollcall")] or segments_all   # the roll call is not part of the meeting notes
             n = notes.generate(segments, meta.get("title", ""), meta.get("you", "You"), meta.get("mode", "call"))
             issues = quality_issues(segments, n)
             if issues and str(n.get("engine", "")).startswith("local"):  # not good enough: try once more before anything is shown
