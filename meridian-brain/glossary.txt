@@ -83,3 +83,5 @@ you the vest => Univest
 semesrh => SEMrush
 semrus => SEMrush
 sem rush => SEMrush
+appwee => AppTweak
+app we => AppTweak
