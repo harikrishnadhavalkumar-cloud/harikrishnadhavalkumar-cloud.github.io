@@ -37,6 +37,13 @@ body{margin:0;color:var(--ink);font:15px/1.55 var(--body);font-weight:600;min-he
 .vbar{height:10px;border-radius:6px;background:rgba(22,18,43,.1);overflow:hidden}.vbar i{display:block;height:100%;width:0;background:var(--grad);transition:width .2s}
 .vlvl{height:6px;border-radius:4px;background:rgba(22,18,43,.08);overflow:hidden}.vlvl i{display:block;height:100%;width:0;background:var(--teal);transition:width .08s}
 .vmsg{font-weight:700;font-size:13.5px}.vmsg.err{color:#B3263E}.vmsg.ok{color:#0B7A5E}
+
+.spkc{display:grid;gap:12px}.spkc p{margin:0;color:var(--dim);font-size:13px}
+.spk{padding:12px 14px;border:2px solid var(--ink);border-radius:6px 16px 6px 16px;background:#fff;box-shadow:3px 3px 0 var(--b);display:grid;gap:8px}
+.spk .sh{display:flex;justify-content:space-between;align-items:baseline;gap:8px}.spk .sh b{font:800 15px var(--display)}.spk .sh span{font:600 12px var(--mono);color:var(--mute)}
+.spk .pl{display:flex;flex-wrap:wrap;gap:6px}.spk .play{padding:6px 10px;border:1.5px solid var(--line);border-radius:999px;background:#fff;font-size:12.5px;font-weight:700;cursor:pointer}
+.spk .play.on{background:var(--saffron);border-color:var(--ink)}
+.spk input{font:inherit;font-weight:700;padding:10px 12px;border:2px solid var(--ink);border-radius:8px;background:#fff;width:100%}
 /* floating cubist planes */
 .cubes{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden}
 .cubes i{position:absolute;display:block;opacity:.9;animation:plane 26s ease-in-out infinite alternate}
@@ -346,6 +353,8 @@ h1,h2,h3,p{margin:0}
   var __real=window.fetch.bind(window),__cnt={},__pend=0,__lst=null,__lstAt=0,__raw=[];
   try{var __hm=location.hash.match(/[#&]c=([A-Za-z0-9]+)/);if(__hm){localStorage.setItem("meridian_c",__hm[1]);history.replaceState(null,"",location.pathname+location.search)}MKEY=localStorage.getItem("meridian_c")||""}catch(e){}
   if(CLOUD&&!MKEY){MKEY=(prompt("Enter the access code you were sent")||"").trim();try{localStorage.setItem("meridian_c",MKEY)}catch(e){}}
+  var __tbase="",__tbAt=0;
+  async function __tun(){if(Date.now()-__tbAt<45000)return __tbase;__tbAt=Date.now();try{var r=await __real("https://api.github.com/repos/harikrishnadhavalkumar-cloud/harikrishnadhavalkumar-cloud.github.io/contents/meridian/current.json"+"?t="+Date.now(),{headers:{Accept:"application/vnd.github.raw"},cache:"no-store"});var u=(await r.json()).url;var c=new AbortController();setTimeout(function(){c.abort()},6000);var h=await __real(u+"/api/health?t="+Date.now(),{cache:"no-store",signal:c.signal});__tbase=h.ok?u:""}catch(e){__tbase=""}window.__TB=__tbase;return __tbase}
   function __sleep(ms){return new Promise(function(r){setTimeout(r,ms)})}
   function __js(o,s){return new Response(JSON.stringify(o),{status:s||200,headers:{"Content-Type":"application/json"}})}
   function __b64(b){return new Promise(function(res,rej){var r=new FileReader();r.onload=function(){res(String(r.result).split(",")[1]||"")};r.onerror=rej;r.readAsDataURL(b)})}
@@ -382,6 +391,7 @@ h1,h2,h3,p{margin:0}
         var vb=o.body,SL=3*1024*1024,n2=Math.max(1,Math.ceil(vb.size/SL));
         try{await __box({a:"start",id:vid,title:"VOICE::"+vn+(vmic?"::"+vmic:""),you:vn,mode:"room"},4);for(var i2=0;i2<n2;i2++){var d2=await __b64(vb.slice(i2*SL,(i2+1)*SL));await __box({a:"chunk",id:vid,kind:"mic",n:i2,d:d2})}await __box({a:"finish",id:vid,duration:60,chunks:{mic:n2,others:0}},12)}catch(e){return __js({error:"Could not save. Check the connection."},500)}
         __lstAt=0;return __js({ok:true,queued:true})}
+      if(/^\/api\/meeting\/[a-f0-9]{12}\/(speakers|name_speakers)$/.test(p)||/^\/api\/clip\//.test(p)){var tb=await __tun();if(!tb)return __js({error:"The host computer is off"},503);try{return await __real(tb+s,Object.assign({},o,{mode:"cors"}))}catch(e){return __js({error:"The host computer could not be reached"},503)}}
       if(p==="/api/meetings")return __js(await __list());
       if(m==="DELETE")return __js({error:"Deleting is done on the host computer"},403);
       if(mm=p.match(/^\/api\/status\/([a-f0-9]{12})$/)){var L=await __list(),e1=L.filter(function(x){return x.id===mm[1]})[0];
@@ -394,7 +404,7 @@ h1,h2,h3,p{margin:0}
   }
   var _fetch=window.fetch.bind(window);
   window.fetch=function(u,o){o=o||{};o.headers=Object.assign({},o.headers||{},{"X-Meridian-Owner":OWNER});if(KEY)o.headers["X-Meridian-Key"]=KEY;return _fetch(u,o)};
-  function Q(u){if(CLOUD){var sm=u.match(/^\/static\/(report|brief)\.html\?id=([a-f0-9]{12})/);if(sm)return sm[1]+".html?id="+sm[2];if(u.indexOf("/api/")===0)return "javascript:void(0)"}return u+(u.indexOf("?")>-1?"&":"?")+(KEY?"k="+encodeURIComponent(KEY)+"&":"")+"o="+OWNER}
+  function Q(u){if(CLOUD){var sm=u.match(/^\/static\/(report|brief)\.html\?id=([a-f0-9]{12})/);if(sm)return sm[1]+".html?id="+sm[2];if(u.indexOf("/api/clip/")===0&&window.__TB)return window.__TB+u;if(u.indexOf("/api/")===0)return "javascript:void(0)"}return u+(u.indexOf("?")>-1?"&":"?")+(KEY?"k="+encodeURIComponent(KEY)+"&":"")+"o="+OWNER}
   var $=function(s){return document.querySelector(s)};
   var root=document.documentElement;
   var TIPS={
@@ -617,6 +627,7 @@ h1,h2,h3,p{margin:0}
     if((n.decisions||[]).length)h+='<div class="sec"><h3>Decisions</h3>'+n.decisions.map(function(d,i){return '<div class="decision"><b class="dn">'+(i+1)+'</b><span>'+esc(d)+'</span></div>'}).join("")+'</div>';
     if((n.actions||[]).length)h+='<div class="sec"><h3>Who does what</h3>'+n.actions.map(function(a,i){return '<label class="act"><input type="checkbox" data-i="'+i+'"'+(done.indexOf(i)>-1?" checked":"")+'><span><b>'+esc(a.owner)+'</b>  '+esc(a.task)+'</span>'+(a.due?'<span class="chip">'+esc(a.due)+'</span>':'')+'</label>'}).join("")+'</div>';
     if((n.moments||[]).length)h+='<div class="sec"><h3>Key moments</h3><div class="moments">'+n.moments.map(function(x){return '<button class="mom" type="button" data-t="'+x.t+'"><em>'+mmss(x.t)+'</em>'+esc(x.label)+'</button>'}).join("")+'</div></div>';
+    h+='<div class="sec" id="spk"></div>';setTimeout(function(){loadSpeakers(m.id)},0);
     var __segs=(((m.transcript||{}).segments)||[]);
     if(__segs.length){h+='<div class="sec"><details open><summary style="cursor:pointer;font:800 15px var(--display);list-style:none">Full transcript · '+__segs.length+' lines · tap to hide</summary><div style="display:grid;gap:6px;margin-top:10px;max-height:420px;overflow:auto;padding-right:6px">'+__segs.map(function(x){return '<div style="display:grid;grid-template-columns:48px 1fr;gap:8px;font-size:13.5px;line-height:1.5"><span style="font:600 12px var(--mono);color:var(--mute)">'+mmss(x.start)+'</span><span><b>'+esc(x.speaker||"")+'</b> '+esc(x.text||"")+'</span></div>'}).join("")+'</div></details></div>'}
     h+='<div class="sec"><h3>Take it with you</h3><div class="row"><button class="btn" type="button" id="copyNotes">Copy notes</button><button class="btn ghost" type="button" id="copyTx">Copy transcript</button><a class="btn ghost" href="'+Q("/api/notes/"+m.id+".txt")+'">Download notes</a>'+
@@ -716,6 +727,33 @@ h1,h2,h3,p{margin:0}
           else msg(j.error||"Could not learn this voice. Try again in a quiet room.","err")}catch(e){msg("Could not save the voice. Check the connection and try again.","err")}};mr.stop()}
       $("#vstop").onclick=finish;mr.start(1000);
     };
+  }
+
+  function loadSpeakers(id){
+    var box=$("#spk");if(!box)return;
+    box.innerHTML='<div class="spkc"><h3>Who spoke?</h3><p>Listening to the voices…</p></div>';
+    fetch("/api/meeting/"+id+"/speakers").then(function(r){return r.json().then(function(j){return {s:r.status,j:j}})}).then(function(x){
+      var b=$("#spk");if(!b||!current||current.id!==id)return;var j=x.j||{};
+      if(j.pending){b.innerHTML='<div class="spkc"><h3>Who spoke?</h3><p>Splitting the meeting into voices. This takes about a minute…</p></div>';setTimeout(function(){loadSpeakers(id)},6000);return}
+      if(x.s===503){b.innerHTML='<div class="spkc"><h3>Who spoke?</h3><p>To name the speakers, the host computer must be on. Open this meeting again then.</p></div>';return}
+      if(j.unavailable||!j.speakers||!j.speakers.length){b.innerHTML=j.unavailable?'<div class="spkc"><h3>Who spoke?</h3><p>'+esc(j.reason||"Not available for this meeting.")+'</p></div>':'';return}
+      var known=(j.known||[]).map(function(k){return '<option value="'+esc(k)+'">'}).join("");
+      b.innerHTML='<div class="spkc"><h3>Who spoke? Name each voice once</h3><p>Tap a sample to hear the voice, then type the name. Two groups that are the same person? Type the same name in both. Leave a box empty to skip it.</p>'+
+        j.speakers.map(function(s,i){return '<div class="spk"><div class="sh"><b>'+esc(s.label)+'</b><span>'+Math.round(s.seconds)+' s · '+s.lines+' lines</span></div><div class="pl">'+
+          s.samples.map(function(m){return '<button class="play" type="button" data-s="'+m.start+'" data-e="'+m.end+'">▶ '+mmss(m.start)+' “'+esc(m.text.slice(0,38))+'”</button>'}).join("")+'</div>'+
+          '<input class="spkname" data-l="'+esc(s.label)+'" list="spkknown" maxlength="40" placeholder="Type the name" value="'+esc(s.name||"")+'"></div>'}).join("")+
+        '<datalist id="spkknown">'+known+'</datalist><div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap"><button class="btn" id="spkSave" type="button">Save names</button><span class="vmsg" id="spkMsg"></span></div></div>';
+      var cur=null;b.querySelectorAll(".play").forEach(function(pb){pb.onclick=function(){
+        if(cur){try{cur.pause()}catch(e){}}b.querySelectorAll(".play").forEach(function(o){o.classList.remove("on")});
+        var u=Q("/api/clip/"+id+"?start="+pb.dataset.s+"&end="+pb.dataset.e);var au=new Audio(u);cur=au;pb.classList.add("on");au.onended=function(){pb.classList.remove("on")};au.onerror=function(){pb.classList.remove("on");var m=$("#spkMsg");if(m){m.textContent="Could not play this sample (the host computer must be on).";m.className="vmsg err"}};au.play().catch(function(){})}});
+      $("#spkSave").onclick=function(){
+        var map={};b.querySelectorAll(".spkname").forEach(function(i){var v=i.value.trim();if(v)map[i.dataset.l]=v});var m=$("#spkMsg");
+        if(!Object.keys(map).length){m.textContent="Type at least one name first.";m.className="vmsg err";return}
+        m.textContent="Saving…";m.className="vmsg";
+        fetch("/api/meeting/"+id+"/name_speakers",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({mapping:map})}).then(function(r){return r.json().then(function(j){return {s:r.status,j:j}})}).then(function(x){
+          if(x.j&&x.j.ok){m.textContent="Saved. The transcript and notes are being rewritten with these names (a few minutes). These voices are remembered for next time.";m.className="vmsg ok"}
+          else{m.textContent=(x.s===503?"The host computer must be on to save names.":(x.j&&x.j.error)||"Could not save.");m.className="vmsg err"}}).catch(function(){m.textContent="Could not save. Check the connection.";m.className="vmsg err"})};
+    }).catch(function(){var b=$("#spk");if(b)b.innerHTML=''});
   }
   function renderReports(p){
     p.innerHTML='<div class="skel"></div>';
