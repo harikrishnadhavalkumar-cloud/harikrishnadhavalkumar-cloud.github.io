@@ -59,6 +59,8 @@ h2{font-size:clamp(22px,2.9vw,32px);line-height:1.14}
 .sub{margin:-12px 0 0;color:var(--soft);font-size:14px;max-width:760px}
 .chip{display:inline-flex;align-items:center;gap:7px;font:500 11px var(--mono);letter-spacing:.08em;padding:6px 14px;border:1px solid var(--edge2);border-radius:999px;color:var(--champ);background:rgba(255,232,200,.05)}
 .chips{display:flex;flex-wrap:wrap;gap:8px}
+.tg.s{border-color:rgba(243,217,168,.55);color:#F3D9A8;background:rgba(243,217,168,.08)}
+.tg.s::before{content:"\1F399";margin-right:6px;font-size:11px}
 .glass{background:var(--panel);border:1px solid var(--edge);border-radius:20px;box-shadow:inset 0 1px 0 rgba(255,235,205,.1),0 18px 44px rgba(0,0,0,.3);position:relative}
 .foot{margin-top:auto;display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;border-top:1px solid var(--edge);padding-top:14px;font:500 10.5px var(--mono);letter-spacing:.16em;text-transform:uppercase;color:var(--mute)}
 .body{margin-block:auto;display:grid;gap:22px;width:100%}
@@ -328,7 +330,7 @@ details{padding:16px 20px}summary{cursor:pointer;font:500 11px var(--mono);lette
       return '<section class="slide">'+corners+'<div class="eyebrow">Everything that was discussed · '+mmss(a)+' to '+mmss(b)+'</div><h2>'+(pi===0?"The meeting, minute by minute":"The meeting, continued")+'</h2>'+(pi===0?'<p class="sub">'+secs.length+' parts in the order they happened, with every date, task, tool, number and decision attached to the moment it was said.</p>':'')+
         '<div class="body"><div class="rail">'+group.map(function(s,j){
           var tg=function(cls,k,list){return arr(list).map(function(x){return '<span class="tg '+cls+'">'+ico(k)+esc(txt(x))+'</span>'}).join("")};
-          var tags=tg("c","flag",s.decisions)+tg("d","clock",s.deadlines)+tg("t","check",s.tasks)+tg("k","wrench",s.tools)+tg("n","hash",s.numbers);
+          var tags=arr(s.speakers).map(function(x){return '<span class="tg s">'+esc(x)+'</span>'}).join("")+tg("c","flag",s.decisions)+tg("d","clock",s.deadlines)+tg("t","check",s.tasks)+tg("k","wrench",s.tools)+tg("n","hash",s.numbers);
           var bl=arr(s.bullets);
           return '<div class="glass sec"'+gi(j)+'><div class="tm">'+mmss(s.start)+(s.end!=null?' – '+mmss(s.end):'')+'<small>minute '+(Math.floor((s.start||0)/60)+1)+'</small></div><div><h3>'+esc(s.title||"Part "+(j+1))+'</h3><div class="'+(bl.length?'two':'')+'"><p>'+esc(s.summary||"")+'</p>'+(bl.length?'<ul>'+bl.map(function(x){return '<li>'+esc(txt(x))+'</li>'}).join("")+'</ul>':'')+'</div>'+(tags?'<div class="tags">'+tags+'</div>':'')+'</div></div>'}).join("")+'</div></div>'+foot()+'</section>'})});
 
