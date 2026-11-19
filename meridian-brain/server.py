@@ -568,7 +568,7 @@ def export_report(d, meta, segments, n):
     chrome = Path("/Applications/Google Chrome.app/Contents/MacOS/Google Chrome")
     if chrome.exists():
         try:
-            subprocess.run([str(chrome), "--headless=new", "--disable-gpu", "--no-pdf-header-footer", "--virtual-time-budget=15000",
+            subprocess.run([str(chrome), "--headless=new", "--disable-gpu", "--no-pdf-header-footer", "--window-size=1600,1000", "--virtual-time-budget=15000",
                             "--print-to-pdf=" + str(path.with_suffix(".pdf")), "file://" + str(path)],
                            capture_output=True, timeout=90)
         except Exception:
