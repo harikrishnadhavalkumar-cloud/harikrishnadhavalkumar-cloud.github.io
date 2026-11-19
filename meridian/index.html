@@ -326,6 +326,11 @@ h1,h2,h3,p{margin:0}
 
   <section class="glass tip" id="tip"></section>
 
+  <section class="glass tip" id="roll" hidden style="--sh:var(--teal);box-shadow:7px 7px 0 var(--teal)"><b>Roll call · do this first (about 1 minute per person)</b>
+    <p style="margin:6px 0 10px;color:var(--dim);font-size:13.5px">Pass the laptop around. Each person types their name, presses <b>Start reading</b>, reads the paragraph at normal speed, then presses <b>Done</b>. Meridian learns every voice in this room, today, on this microphone, so the report carries real names. The roll call is kept out of the meeting notes.</p>
+    <div class="vscript" id="rcPara"></div>
+    <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:10px;align-items:center"><input id="rcName" placeholder="Your name" maxlength="40" autocomplete="off" style="font:inherit;font-weight:700;padding:11px 13px;border:2px solid var(--ink);border-radius:8px;background:#fff;min-width:200px"><button class="btn" id="rcGo" type="button">Start reading</button><button class="btn ghost" id="rcDone" type="button" hidden>Done reading</button></div>
+    <div id="rcList" style="display:flex;gap:8px;flex-wrap:wrap;margin-top:10px"></div><div class="vmsg" id="rcMsg" style="margin-top:6px"></div></section>
   <section class="glass tip" id="share" hidden style="--sh:var(--rose);box-shadow:7px 7px 0 var(--rose)"><b>Share with friends</b><div id="shareBody"></div></section>
 
   <div class="main">
@@ -400,7 +405,7 @@ h1,h2,h3,p{margin:0}
         var k=mm[1]+mm[2],n=__cnt[k]=(__cnt[k]===undefined?0:__cnt[k]+1);__pend++;
         try{var d=await __b64(o.body);await __box({a:"chunk",id:mm[1],kind:mm[2],n:n,d:d})}finally{__pend--}return new Response(null,{status:204})}
       if(m==="POST"&&(mm=p.match(/^\/api\/finish\/([a-f0-9]{12})$/))){var dur=0;try{dur=JSON.parse(o.body||"{}").duration||0}catch(e){}
-        var ch={mic:(__cnt[mm[1]+"mic"]===undefined?0:__cnt[mm[1]+"mic"]+1),others:(__cnt[mm[1]+"others"]===undefined?0:__cnt[mm[1]+"others"]+1)};
+        var ch={mic:(__cnt[mm[1]+"mic"]===undefined?0:__cnt[mm[1]+"mic"]+1),others:(__cnt[mm[1]+"others"]===undefined?0:__cnt[mm[1]+"others"]+1)};var rcl=[];try{rcl=JSON.parse(o.body||"{}").rollcall||[]}catch(e){}ch.rollcall=rcl;
         try{await __box({a:"finish",id:mm[1],duration:dur,chunks:ch},12)}catch(e){}__lstAt=0;return __js({ok:true})}
       if(p==="/api/voices"){await __list();var vo={};__raw.filter(function(m){return m.kind==="voiceprint"&&m.status!=="deleted"}).forEach(function(m){var k=m.title;vo[k]=vo[k]||{clips:0,updated:0};vo[k].clips+=(m.clips||0);vo[k].updated=Math.max(vo[k].updated,m.created||0)});return __js(vo)}
       if(m==="POST"&&(mm=p.match(/^\/api\/voice\/(.+)$/))){var vmic=(s.split("mic=")[1]||"").replace(/[^a-z0-9]/g,"").slice(0,12);var vn=decodeURIComponent(mm[1]).replace(/[^\w .'-]/g,"").trim().slice(0,40);if(!vn)return __js({error:"name"},400);
@@ -553,6 +558,7 @@ h1,h2,h3,p{margin:0}
       if(disp){$("#preview").srcObject=disp;disp.getVideoTracks()[0].addEventListener("ended",function(){if(rec)stopRec()})}
       $("#screen").classList.add("live");$("#screen").classList.toggle("noscreen",!disp);
       if(!disp){$("#screen").classList.remove("live");$("#screen").classList.add("live");$("#preview").style.display="none";}
+      rec.roll=[];if(mode==="room")rcShow(true);
       $("#pauseBtn").disabled=false;$("#stopBtn").disabled=false;
       document.querySelectorAll(".tab,.mode").forEach(function(b){b.disabled=true});
       setStatus(mode==="call"&&!hasOthers?"Recording your voice only. No meeting sound was shared. Stop and start again, and tick “Also share tab audio”.":"Recording to this computer",mode==="call"&&!hasOthers?"err":"live");
@@ -573,7 +579,7 @@ h1,h2,h3,p{margin:0}
   $("#stopBtn").onclick=function(){stopRec()};
 
   async function stopRec(){
-    if(!rec)return;var r=rec,dur=elapsed();rec=null;
+    if(!rec)return;if(rcCur)rcFinish(true);var r=rec,dur=elapsed();rec=null;rcShow(false);
     $("#stopBtn").disabled=true;$("#pauseBtn").disabled=true;$("#pauseBtn").textContent="Pause";$("#screen").classList.remove("paused");
     setStatus("Saving the recording…");
     await Promise.all(r.recorders.map(function(x){return new Promise(function(res){
@@ -585,7 +591,7 @@ h1,h2,h3,p{margin:0}
     analyser=null;$("#preview").srcObject=null;$("#screen").classList.remove("live");$("#preview").style.display="";
     $("#startBtn").disabled=false;document.querySelectorAll(".tab,.mode").forEach(function(b){b.disabled=false});
     if(failed){setStatus("Some of the recording did not save. Check that the server window is still running.","err")}
-    await fetch("/api/finish/"+r.id,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({duration:dur})});
+    await fetch("/api/finish/"+r.id,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({duration:dur,rollcall:r.roll||[]})});
     current={id:r.id,processing:true,title:r.title};panel="notes";tabs();renderPanel();poll(r.id);
   }
   $("#startBtn").onclick=startRec;
@@ -607,6 +613,19 @@ h1,h2,h3,p{margin:0}
   function colorFor(n){if(!(n in colors))colors[n]=Object.keys(colors).length%4+1;return "h"+colors[n]}
   function seek(t){var v=$("#player");if(v){v.currentTime=t;v.play&&v.play().catch(function(){})}}
   document.addEventListener("click",function(e){if(e.target&&e.target.id==="goPast"){panel="past";tabs();renderPanel()}});
+
+  var rcCur=null;
+  function rcMsg(t,c){var e=$("#rcMsg");if(e){e.textContent=t;e.className="vmsg "+(c||"")}}
+  function rcDraw(){var e=$("#rcList");if(!e||!rec)return;e.innerHTML=(rec.roll||[]).map(function(r){return '<span class="chip" style="border:1.5px solid var(--teal);background:#E8FAF6;padding:5px 11px;border-radius:999px;font-weight:800;font-size:12.5px">✔ '+esc(r.name)+' · '+Math.round(r.end-r.start)+' s</span>'}).join("")}
+  function rcShow(on){var e=$("#roll");if(!e)return;e.hidden=!on;if(on){$("#rcPara").innerHTML=VSCRIPT($("#rcName").value.trim());rcCur=null;$("#rcGo").hidden=false;$("#rcDone").hidden=true;$("#rcName").disabled=false;rcDraw();rcMsg("Ready. The first person: type your name and press Start reading.","")}}
+  function rcFinish(force){if(!rcCur||!rec)return;var end=elapsed();if(end-rcCur.start<25&&!force){rcMsg("That was only "+Math.round(end-rcCur.start)+" s. Please keep reading the paragraph (at least 25 s).","err");return false}
+    if(end-rcCur.start>=25){rec.roll.push({name:rcCur.name,start:Math.round(rcCur.start*10)/10,end:Math.round(end*10)/10});rcMsg("Thank you, "+rcCur.name+". Next person: type your name and press Start reading. When everyone is done, just start your meeting.","ok")}
+    rcCur=null;$("#rcGo").hidden=false;$("#rcDone").hidden=true;$("#rcName").disabled=false;$("#rcName").value="";$("#rcPara").innerHTML=VSCRIPT("");rcDraw();return true}
+  document.addEventListener("click",function(e){var t=e.target;if(!t||!rec)return;
+    if(t.id==="rcGo"){var nm=$("#rcName").value.trim();if(!nm){rcMsg("Please type your name first.","err");$("#rcName").focus();return}
+      rcCur={name:nm,start:elapsed()};t.hidden=true;$("#rcDone").hidden=false;$("#rcName").disabled=true;$("#rcPara").innerHTML=VSCRIPT(nm);rcMsg("Reading… "+nm+", please read the whole paragraph, then press Done reading.","")}
+    if(t.id==="rcDone"){rcFinish(false)}});
+  document.addEventListener("input",function(e){if(e.target&&e.target.id==="rcName"&&!rcCur){$("#rcPara").innerHTML=VSCRIPT(e.target.value.trim())}});
   function renderPanel(){
     var p=$("#pane");p.classList.toggle("dk",panel==="summary");
     if(panel==="summary"){return renderSummary(p)}
@@ -707,7 +726,7 @@ h1,h2,h3,p{margin:0}
     }).catch(function(){p.innerHTML='<div class="sm"><p class="sm-p">Could not load the summary.</p></div>'});
   }
 
-  var VSCRIPT=function(n){n=n||"…";return 'Hello, my name is <mark>'+esc(n)+'</mark>. I work with the Univest team on marketing, SEO and app store optimisation. Today we will review our keyword rankings, check the tools we have access to, and finish the weekly tracker before Friday. Namaste, mera naam <mark>'+esc(n)+'</mark> hai. Main roz subah meeting mein baithta hoon aur humare saare projects ke deadlines dekhta hoon. Agar kisi ko koi dikkat ho to mujhe bata do, hum kal tak sab theek kar denge. One, two, three, four, five, six, seven, eight, nine, ten. Ek, do, teen, char, paanch, chhe, saat, aath, nau, das. Thank you, that is all from my side.'};
+  var VSCRIPT=function(n){n=n||"…";var N='<mark>'+esc(n)+'</mark>';return 'Hello, my name is '+N+'. I work with the Univest team on marketing, SEO and app store optimisation. Today we will review the keyword rankings, the tracker and the weekly report, and finish the plan before Friday. Okay. Yes. Right. Let me explain: first we check the numbers, then we agree the next steps, and then we share the update. One, two, three, four, five, six, seven, eight, nine, ten. Namaste, mera naam '+N+' hai. Main roz subah meeting mein baithta hoon aur humare saare projects ke deadlines dekhta hoon. Agar kisi ko koi dikkat ho to mujhe bata do, hum kal tak sab theek kar denge. Ek, do, teen, char, paanch, chhe, saat, aath, nau, das. Now, in your own words, say for about twenty seconds what you worked on yesterday and what you will do today.'};
   function micTag(stream){try{var l=(stream.getAudioTracks()[0]||{}).label||"";var str=l+"|"+navigator.platform,h=5381;for(var i=0;i<str.length;i++){h=((h<<5)+h+str.charCodeAt(i))>>>0}return h.toString(36).slice(0,8)}catch(e){return ""}}
   var vrec=null;
   function renderVoices(p){
