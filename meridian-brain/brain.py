@@ -9,7 +9,7 @@ def box(o, t=180):
     return json.load(urllib.request.urlopen(req, timeout=t))
 wait = 0 if os.environ.get("FORCE") == "true" else int(os.environ.get("MIN_AGE_MIN", "25"))
 now = time.time() * 1000
-todo = [p for p in box({"a": "pending"}).get("pending", []) if now - (p.get("finished") or 0) > wait * 60000]
+todo = [p for p in box({"a": "pending"}).get("pending", []) if not str(p.get("title", "")).startswith("VOICE::") and now - (p.get("finished") or 0) > wait * 60000]
 for p in todo[:1]:
     mid = p["id"]
     if not box({"a": "claim", "id": mid, "by": "cloud"}).get("granted"): continue
