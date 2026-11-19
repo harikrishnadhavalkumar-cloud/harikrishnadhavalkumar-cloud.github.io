@@ -1,0 +1,240 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Meridian Executive Report</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Unbounded:wght@400;500;600&family=Manrope:wght@500;600;700;800&family=DM+Mono:wght@400;500&display=swap">
+<style>
+/* MERIDIAN EXECUTIVE REPORT: a written briefing in espresso, bronze and gold. Cover, overview, takeaways, one page per topic pair, plan, highlights. */
+:root{--bg0:#0E0804;--cream:#F7EAD8;--soft:#CDB394;--mute:#8F7660;--edge:rgba(224,179,106,.22);--edge2:rgba(224,179,106,.42);
+  --copper:#C77D45;--gold:#E0B36A;--champ:#F3D9A8;
+  --metal:linear-gradient(115deg,#9A5B2E,#C77D45 22%,#E0B36A 48%,#F3D9A8 62%,#E0B36A 78%,#B8742F);
+  --panel:linear-gradient(160deg,rgba(255,232,200,.075),rgba(255,232,200,.025));
+  --display:"Unbounded","Arial Black",system-ui,sans-serif;--body:"Manrope",system-ui,-apple-system,"Segoe UI",sans-serif;--mono:"DM Mono",ui-monospace,Menlo,monospace;color-scheme:dark}
+*{box-sizing:border-box}
+html{background:var(--bg0)}
+body{margin:0;font:15px/1.65 var(--body);font-weight:500;color:var(--cream);background:radial-gradient(70% 50% at 10% 0,#2B1A10 0,transparent 60%),radial-gradient(60% 50% at 100% 100%,#241409 0,transparent 60%),var(--bg0);padding:26px max(16px,env(safe-area-inset-left,0px)) 70px}
+[hidden]{display:none!important}
+.tools{max-width:1180px;margin:0 auto 18px;display:flex;gap:10px;flex-wrap:wrap;justify-content:space-between;align-items:center}
+.tools a,.tools button{font:700 13px var(--body);color:var(--cream);text-decoration:none;padding:10px 18px;border:1px solid var(--edge2);background:rgba(255,232,200,.06);border-radius:12px;cursor:pointer;transition:transform .3s,box-shadow .3s,background .3s}
+.tools a:hover,.tools button:hover{transform:translateY(-2px);background:rgba(255,232,200,.1)}
+.tools .go{background:var(--metal);color:#2A1608;border:0;box-shadow:0 10px 30px rgba(224,179,106,.3)}
+.slide{max-width:1180px;margin:0 auto 26px;min-height:640px;border-radius:30px;border:1px solid var(--edge);background:linear-gradient(160deg,#2C1B10 0%,#1C110A 55%,#140B07 100%);box-shadow:0 40px 110px rgba(0,0,0,.6),inset 0 1px 0 rgba(255,235,205,.12);padding:54px 64px 40px;position:relative;overflow:hidden;display:flex;flex-direction:column;gap:24px;animation:rise .8s cubic-bezier(.2,.7,.2,1) both}
+.slide::before{content:"";position:absolute;right:-160px;top:-180px;width:560px;height:560px;border-radius:50%;background:radial-gradient(closest-side,rgba(224,179,106,.2),transparent 70%);pointer-events:none}
+.slide::after{content:"";position:absolute;inset:0;background-image:linear-gradient(rgba(224,179,106,.045) 1px,transparent 1px),linear-gradient(90deg,rgba(224,179,106,.045) 1px,transparent 1px);background-size:56px 56px;-webkit-mask-image:radial-gradient(70% 70% at 80% 10%,#000,transparent 75%);mask-image:radial-gradient(70% 70% at 80% 10%,#000,transparent 75%);pointer-events:none}
+.slide>*{position:relative;z-index:1}
+.corner{position:absolute!important;width:22px;height:22px;border:2px solid var(--gold);opacity:.7;z-index:2}
+.corner.tl{left:20px;top:20px;border-right:0;border-bottom:0}.corner.br{right:20px;bottom:20px;border-left:0;border-top:0}
+@keyframes rise{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
+@keyframes grow{from{transform:scaleX(0)}to{transform:scaleX(1)}}
+@keyframes spin{to{transform:rotate(360deg)}}
+.eyebrow{font:500 11px var(--mono);letter-spacing:.26em;text-transform:uppercase;color:var(--gold);display:flex;align-items:center;gap:12px}
+.eyebrow::before{content:"";width:34px;height:1px;background:var(--metal)}
+h1,h2{margin:0;font-family:var(--display);font-weight:500;letter-spacing:-.03em;color:var(--cream)}
+h1{font-size:clamp(34px,5.4vw,62px);line-height:1.04}
+h2{font-size:clamp(24px,3.2vw,36px);line-height:1.12}
+.gold{background:var(--metal);-webkit-background-clip:text;background-clip:text;color:transparent}
+.lead{font-size:clamp(17px,2vw,22px);line-height:1.6;color:var(--cream);max-width:760px;font-weight:600}
+.dim{color:var(--soft)}
+.chip{display:inline-block;font:500 11px var(--mono);letter-spacing:.08em;padding:6px 14px;border:1px solid var(--edge2);border-radius:999px;color:var(--champ);background:rgba(255,232,200,.05)}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.glass{background:var(--panel);border:1px solid var(--edge);border-radius:20px;box-shadow:inset 0 1px 0 rgba(255,235,205,.08),0 18px 44px rgba(0,0,0,.28)}
+.foot{margin-top:auto;display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;border-top:1px solid var(--edge);padding-top:14px;font:500 10.5px var(--mono);letter-spacing:.16em;text-transform:uppercase;color:var(--mute)}
+.body{margin-block:auto;display:grid;gap:22px;width:100%}
+/* cover */
+.cover{justify-content:space-between}
+.cover .grid{display:grid;grid-template-columns:1.25fr .75fr;gap:30px;align-items:center;flex:1}
+.cover h1{margin:18px 0 22px}
+.orbit{width:100%;max-width:360px;justify-self:center;aspect-ratio:1}
+.orbit .spin{transform-origin:50% 50%;animation:spin 60s linear infinite}
+.orbit .spin2{transform-origin:50% 50%;animation:spin 90s linear infinite reverse}
+/* overview */
+.cols{display:grid;grid-template-columns:1.5fr 1fr;gap:34px;align-items:start}
+.prose p{margin:0 0 16px;font-size:17px;line-height:1.75;color:var(--cream);font-weight:500}
+.prose p:first-child::first-letter{font:500 44px/0.9 var(--display);float:left;margin:6px 10px 0 0;background:var(--metal);-webkit-background-clip:text;background-clip:text;color:transparent}
+.story{column-count:2;column-gap:46px}.story p{break-inside:avoid;margin:0 0 15px;font-size:15.5px;line-height:1.78;color:var(--cream)}.story p:first-child::first-letter{font:500 40px/0.9 var(--display);float:left;margin:6px 10px 0 0;background:var(--metal);-webkit-background-clip:text;background-clip:text;color:transparent}
+.side{display:grid;gap:14px}
+.focus{padding:20px 22px}.focus .lab{font:500 10px var(--mono);letter-spacing:.22em;text-transform:uppercase;color:var(--gold)}
+.focus b{display:block;margin-top:8px;font:500 20px/1.2 var(--display);letter-spacing:-.02em}
+.mini{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
+.mini div{padding:14px 16px}.mini b{display:block;font:500 22px/1 var(--display);background:var(--metal);-webkit-background-clip:text;background-clip:text;color:transparent}
+.mini span{display:block;margin-top:7px;font:500 9.5px var(--mono);letter-spacing:.16em;text-transform:uppercase;color:var(--soft)}
+.tagrow{padding:16px 18px;display:grid;gap:10px}.tagrow .lab{font:500 10px var(--mono);letter-spacing:.22em;text-transform:uppercase;color:var(--gold)}
+/* takeaways */
+.take{display:grid;gap:12px;margin:0;padding:0;list-style:none;counter-reset:t}
+.take li{counter-increment:t;display:grid;grid-template-columns:auto 1fr;gap:18px;align-items:start;padding:18px 22px}
+.take li::before{content:counter(t,decimal-leading-zero);font:500 26px/1.1 var(--display);background:var(--metal);-webkit-background-clip:text;background-clip:text;color:transparent}
+.take li span{font-size:17px;font-weight:700;line-height:1.55}
+.next{display:grid;gap:9px}.next .it{display:grid;grid-template-columns:auto 1fr auto;gap:12px;align-items:center;padding:11px 16px}
+.av{width:30px;height:30px;border-radius:50%;display:grid;place-items:center;font:600 11px var(--display);color:#2A1608;background:var(--metal)}
+.due{font:500 11px var(--mono);padding:4px 12px;border:1px solid var(--edge2);border-radius:999px;color:var(--champ);white-space:nowrap}
+.banner{padding:12px 18px;border-radius:14px;border:1px dashed var(--edge2);color:var(--champ);font-weight:700;background:rgba(224,179,106,.07)}
+/* topics */
+.tpair{display:grid;grid-template-columns:1fr 1fr;gap:22px;align-items:start}
+.tp{padding:26px 28px 24px;display:grid;gap:12px;align-content:start}
+.tp .th{display:grid;grid-template-columns:auto 1fr auto;gap:14px;align-items:center}
+.tp .n{font:500 26px/1 var(--display);background:var(--metal);-webkit-background-clip:text;background-clip:text;color:transparent}
+.tp h3{margin:0;font:500 19px/1.2 var(--display);letter-spacing:-.02em}
+.tp .pct{font:500 11px var(--mono);color:var(--champ);padding:4px 10px;border:1px solid var(--edge2);border-radius:999px}
+.tp .bar{height:3px;border-radius:999px;background:rgba(255,232,200,.1);overflow:hidden}.tp .bar i{display:block;height:100%;background:var(--metal);transform-origin:left;animation:grow 1.1s cubic-bezier(.2,.7,.2,1) .3s both}
+.tp p{margin:0;font-size:15px;line-height:1.75;color:var(--cream)}
+.tp ul{margin:0;padding-left:18px;display:grid;gap:5px;font-size:14px;color:var(--soft)}
+.tp .out{margin-top:2px;padding:11px 14px;border-radius:12px;border:1px solid var(--edge);background:rgba(224,179,106,.07);font-size:13.5px;font-weight:700}
+.tp .out em{font:500 10px var(--mono);letter-spacing:.2em;text-transform:uppercase;color:var(--gold);font-style:normal;margin-right:8px}
+.tp .q{font-size:13px;color:var(--soft)}.tp .q em{font:500 10px var(--mono);letter-spacing:.2em;text-transform:uppercase;color:var(--gold);font-style:normal;margin-right:8px}
+/* plan */
+.dec{display:grid;grid-template-columns:auto 1fr;gap:16px;align-items:center;padding:16px 20px}
+.dn{width:36px;height:36px;border-radius:50%;display:grid;place-items:center;font:500 14px var(--display);color:#2A1608;background:var(--metal);box-shadow:0 8px 20px rgba(224,179,106,.3)}
+.tbl{display:grid}.tr{display:grid;grid-template-columns:auto 1.2fr 2.2fr auto;gap:16px;align-items:center;padding:14px 20px;border-bottom:1px solid var(--edge)}
+.tr:last-child{border-bottom:0}.tr.h{font:500 10px var(--mono);letter-spacing:.2em;text-transform:uppercase;color:var(--mute);padding-block:12px}
+.empty{padding:18px 22px;color:var(--soft);font-weight:600}
+.oq{padding:16px 22px;display:grid;gap:8px}.oq li{margin-left:18px;color:var(--cream);font-weight:600}
+/* highlights */
+.quote{padding:24px 28px 22px 70px;position:relative;font:600 19px/1.55 var(--body)}
+.quote::before{content:"“";position:absolute;left:24px;top:8px;font:500 64px/1 var(--display);background:var(--metal);-webkit-background-clip:text;background-clip:text;color:transparent}
+.quote small{display:block;margin-top:10px;font:500 11px var(--mono);letter-spacing:.16em;text-transform:uppercase;color:var(--mute)}
+details{padding:16px 20px}summary{cursor:pointer;font:500 11px var(--mono);letter-spacing:.2em;text-transform:uppercase;color:var(--gold)}
+.tx{margin-top:14px;max-height:340px;overflow:auto;display:grid;gap:7px;font-size:13.5px;color:var(--soft)}.tx b{color:var(--champ)}.tx em{font:500 10.5px var(--mono);color:var(--mute);font-style:normal;margin-right:8px}
+@media screen and (max-width:900px){.story{column-count:1}.slide{padding:34px 22px 28px;min-height:0}.cover .grid,.cols,.tpair{grid-template-columns:1fr}.tr{grid-template-columns:auto 1fr}.tr .due{grid-column:2;justify-self:start}.tr.h{display:none}.orbit{max-width:220px}}
+@page{size:A4 landscape;margin:0}
+@media print{
+  html,body{background:var(--bg0);-webkit-print-color-adjust:exact;print-color-adjust:exact}body{padding:0}.tools{display:none}
+  .slide{width:297mm;height:209mm;min-height:0;max-width:none;margin:0;border-radius:0;border:0;box-shadow:none;page-break-after:always;break-after:page;padding:13mm 15mm 9mm;gap:11px;animation:none!important;overflow:hidden}
+  .slide *{animation:none!important;transition:none!important}.slide:last-of-type{page-break-after:auto;break-after:auto}
+  h1{font-size:42px}h2{font-size:24px}.lead{font-size:15px}.prose p{font-size:16px;line-height:1.7;margin-bottom:12px}.take li{padding:11px 16px}.take li span{font-size:16.5px}.tp{padding:16px 18px;gap:8px}.tp p{font-size:14.5px;line-height:1.65}.tp ul{font-size:13px}.tp .out{font-size:13px;padding:9px 12px}.tp h3{font-size:17px}.dec{padding:11px 16px}.tr{padding:9px 16px}.quote{padding:14px 20px 12px 56px;font-size:14px}.body{gap:14px}
+  .gold,.take li::before,.quote::before,.tp .n,.mini b,.prose p:first-child::first-letter{-webkit-text-fill-color:#E0B36A!important;background:none!important;color:#E0B36A!important}
+  .story{column-gap:34px}.story p{font-size:12.8px;line-height:1.6;margin-bottom:10px}.story p:first-child::first-letter{-webkit-text-fill-color:#E0B36A!important;background:none!important;color:#E0B36A!important}
+  details{display:none}
+}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<div class="tools" id="tools">
+  <a href="/">Back to Meridian</a>
+  <div style="display:flex;gap:10px;flex-wrap:wrap"><button type="button" id="copyBtn">Copy summary</button><button class="go" type="button" id="printBtn">Save as PDF</button></div>
+</div>
+<div id="root"><section class="slide"><div class="eyebrow">Meridian executive report</div><p class="lead dim">Loading the meeting…</p></section></div>
+
+<script>
+(function(){
+  var $=function(s){return document.querySelector(s)};
+  var esc=function(s){return String(s==null?"":s).replace(/[&<>"]/g,function(c){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]})};
+  function mmss(t){t=Math.max(0,Math.floor(t));return String(Math.floor(t/60)).padStart(2,"0")+":"+String(t%60).padStart(2,"0")}
+  function dur(t){t=Math.round(t);var h=Math.floor(t/3600),m=Math.floor(t%3600/60),s=t%60;return h?h+"h "+m+"m":(m?m+" min":s+" s")}
+
+  /* ---------- sample for design preview: report.html?demo=1 ---------- */
+  var DEMO={title:"Q4 launch planning",you:"Aarav",created:1794996178,duration:2760,language:"hi",words:5120,
+   notes:{headline:"Launch is locked for Friday the 28th with a 50,000 rupee budget, if the voiceover lands by Wednesday.",kind:"Launch planning",main_focus:"Launch date and budget",
+    summary:"The team locked Friday the 28th for the launch, raised the ad budget from 40,000 to 50,000 rupees with a Saturday check, and split five follow-ups between four people.",
+    overview:"The team met to lock the plan for the Q4 launch. They started with the date and agreed on Friday the 28th, as long as the video is finished by Wednesday evening. The voiceover is the one piece of work that can still move the date, so it was given an owner and a deadline.\n\nThe second half of the meeting was about money and follow-ups. Last week's ads returned well, so the budget goes up from 40,000 to 50,000 rupees, with a check on Saturday before anything more is spent. Five follow-ups were handed out, including the vendor invoice due on Monday and a final checklist for everyone tonight.",
+    key_points:["Launch date is Friday the 28th and depends only on the voiceover","Ad budget rises to 50,000 rupees and is reviewed on Saturday","Vendor invoice is due Monday and has an owner","A final checklist goes to everyone tonight"],
+    decisions:["Launch on Friday the 28th","Ad budget goes to 50,000 rupees, review on Saturday","Voiceover must be ready by Wednesday evening"],
+    actions:[{owner:"Kabir",task:"Finish the voiceover",due:"Wed"},{owner:"Meera",task:"Review the final cut",due:"Thu morning"},{owner:"Kabir",task:"Call the vendor and get the invoice",due:"Mon"},{owner:"Meera",task:"Send the launch checklist to everyone",due:"Tonight"},{owner:"Riya",task:"Check ad numbers and report",due:"Sat"}],
+    open_questions:["Can the voiceover be finished earlier than Wednesday?","Who approves spending above 50,000 rupees?"],
+    mentions:{people:["Kabir","Meera","Riya"],terms:["ROAS","CPA"]},
+    topics:[{title:"Launch date",share:34,summary:"Friday the 28th is locked.",paragraph:"The meeting opened with the launch date. The team compared the finished video with the remaining work and agreed that Friday the 28th is realistic. The only risk raised was the voiceover, which still needs two days. Everyone agreed to treat Wednesday evening as the hard deadline for it.",points:["Friday the 28th is the target","Voiceover is the only open dependency"],outcome:"Launch is set for Friday the 28th."},
+            {title:"Ad budget",share:28,summary:"Raised to 50,000 rupees.",paragraph:"Last week the team spent 40,000 rupees on ads and the return was healthy. Based on that, the budget was raised to 50,000 rupees. To keep it safe, the numbers will be checked on Saturday before the team decides whether to continue at this level.",points:["Budget goes from 40,000 to 50,000 rupees","Saturday is the checkpoint"],outcome:"Budget approved at 50,000 rupees with a Saturday review."},
+            {title:"Vendor and invoice",share:22,summary:"Kabir collects the invoice.",paragraph:"The vendor still owes an invoice. Kabir will call the vendor tomorrow and bring the invoice back by Monday so finance can process it.",points:["Kabir owns the vendor call","Invoice is due Monday"],outcome:"Owner and date agreed."},
+            {title:"Final checklist",share:16,summary:"Meera sends it tonight.",paragraph:"To avoid last-minute mistakes, Meera will send a launch checklist to everyone tonight. People should read it and reply with anything missing before Thursday.",points:["Checklist goes out tonight"],outcome:"Meera sends the checklist tonight."}]},
+   segments:[]};
+  (function(){var sp=["Aarav","Riya","Kabir","Meera"],txt=["Okay, quick plan. Launch date first, we can lock Friday the 28th.","The video is ninety percent done, the voiceover needs two more days.","We spent forty thousand last week on ads and the return was good, so budget goes to fifty.","I will call the vendor tomorrow and get the invoice by Monday.","I will send everyone the final checklist tonight, please read it."];
+    for(var i=0;i<60;i++){var s=i*40+((i*7)%11);DEMO.segments.push({start:s,end:s+20+(i%6)*2,speaker:sp[(i*3+(i>>2))%4],text:txt[Math.floor(i/12)%5]+(i%3?" "+txt[(Math.floor(i/12)+i)%5]:"")})}})();
+
+  function paras(t){return String(t||"").split(/\n{1,}/).map(function(x){return x.trim()}).filter(Boolean)}
+
+  function build(m){
+    var n=m.notes||{},segs=(m.transcript&&m.transcript.segments)||m.segments||[];
+    var total=Math.max(m.duration||0,segs.length?segs[segs.length-1].end:0,30);
+    var words=m.words||segs.reduce(function(a,s){return a+s.text.split(/\s+/).length},0);
+    var decs=n.decisions||[],acts=n.actions||[],topics=(n.topics||[]).slice(0,8),men=n.mentions||{};
+    var when=new Date((m.created||Date.now()/1000)*1000);
+    var dateTxt=when.toLocaleDateString([], {weekday:"long",day:"numeric",month:"long",year:"numeric"}),timeTxt=when.toLocaleTimeString([], {hour:"2-digit",minute:"2-digit"});
+    var langTxt={hi:"Hindi + English",en:"English"}[m.language]||(m.language||"").toUpperCase();
+    var firstSentence=(String(n.summary||"").match(/^[^.!?]+[.!?]?/)||[""])[0];
+    var headline=n.headline||firstSentence||"A short meeting with limited content.";
+    var kind=n.kind||"Team meeting";
+    var generic=/^Meeting \d{1,2} \w{3}/.test(String(m.title||""));
+    var coverTitle=(generic&&n.headline)?n.headline:(m.title||"Meeting");
+    var coverLead=(generic&&n.headline)?firstSentence:headline;
+    var shortTitle=generic?("Meeting · "+when.toLocaleDateString([], {day:"numeric",month:"short"})):(m.title||"Meeting");
+    var overview=paras(n.overview||n.summary||"No summary was written.");
+    var mainFocus=n.main_focus||(topics.length?topics.slice().sort(function(a,b){return (b.share||0)-(a.share||0)})[0].title:"");
+    var keyPts=(n.key_points&&n.key_points.length?n.key_points:decs.concat(acts.slice(0,3).map(function(a){return a.owner+": "+a.task}))).slice(0,6);
+    var lowSignal=words<250||(decs.length===0&&acts.length===0&&!topics.length);
+    var oq=n.open_questions||[];
+
+    /* highlights */
+    var KEY=/\b(decid|agree|will|launch|budget|deadline|by (mon|tues|wednes|thurs|fri|satur|sun)|invoice|plan|important|must|need to)\w*/i;
+    var cand=segs.map(function(s){return{s:s,score:s.text.split(/\s+/).length+(KEY.test(s.text)?14:0)}}).filter(function(c){return c.s.text.split(/\s+/).length>=6}).sort(function(a,b){return b.score-a.score});
+    var picked=[];cand.forEach(function(c){if(picked.length<3&&picked.every(function(p){return Math.abs(p.s.start-c.s.start)>25}))picked.push(c)});picked.sort(function(a,b){return a.s.start-b.s.start});
+
+    var pages=[],corners='<i class="corner tl"></i><i class="corner br"></i>';
+    var ORBIT='<svg class="orbit" viewBox="0 0 360 360" aria-hidden="true"><defs><linearGradient id="og" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#9A5B2E"/><stop offset=".5" stop-color="#E0B36A"/><stop offset="1" stop-color="#F3D9A8"/></linearGradient><radialGradient id="oc" cx=".35" cy=".3" r=".9"><stop offset="0" stop-color="#FFF3D9"/><stop offset=".5" stop-color="#E0B36A"/><stop offset="1" stop-color="#6E3F1B"/></radialGradient></defs><g class="spin"><circle cx="180" cy="180" r="170" fill="none" stroke="url(#og)" stroke-width="1" opacity=".5"/><circle cx="180" cy="180" r="140" fill="none" stroke="url(#og)" stroke-width="1.4" stroke-dasharray="2 9" opacity=".8"/><circle cx="350" cy="180" r="6" fill="#F3D9A8"/><circle cx="40" cy="180" r="4" fill="#C77D45"/></g><g class="spin2"><circle cx="180" cy="180" r="108" fill="none" stroke="url(#og)" stroke-width="2" opacity=".9"/><circle cx="180" cy="72" r="7" fill="#E0B36A"/><circle cx="256" cy="256" r="4" fill="#F3D9A8"/></g><circle cx="180" cy="180" r="62" fill="url(#oc)"/><circle cx="160" cy="158" r="14" fill="#fff" opacity=".35"/></svg>';
+
+    /* cover */
+    pages.push(function(){return '<section class="slide cover">'+corners+'<div class="eyebrow">Executive meeting report</div><div class="grid"><div><div class="chips"><span class="chip">'+esc(kind)+'</span><span class="chip">'+dur(total)+'</span><span class="chip">'+esc(langTxt)+(m.language==="en"?"":" · written in English")+'</span></div><h1>'+esc(coverTitle)+'</h1><p class="lead dim">'+esc(coverLead)+'</p></div>'+ORBIT+'</div><div class="foot"><span>'+esc(dateTxt)+' · '+esc(timeTxt)+'</span><span>Prepared by Meridian</span><span>Confidential</span></div></section>'});
+
+    /* overall summary */
+    pages.push(function(foot){
+      var chipsT=(men.terms||[]).map(function(t){return '<span class="chip">'+esc(t)+'</span>'}).join(""),chipsP=(men.people||[]).map(function(t){return '<span class="chip">'+esc(t)+'</span>'}).join("");
+      return '<section class="slide">'+corners+'<div class="eyebrow">Overall summary</div><h2 class="gold" style="max-width:940px">'+esc(headline)+'</h2>'+(lowSignal?'<div class="banner">Low-signal meeting: very few decisions or tasks were spoken. The report shows what was discussed.</div>':'')+
+        '<div class="body"><div class="cols"><div class="prose">'+(overview.length>1?overview.slice(0,1):overview).map(function(p){return '<p>'+esc(p)+'</p>'}).join("")+(overview.length>1?'<p class="dim" style="font-size:14px">The full story, part by part, is on the next page.</p>':'')+'</div><div class="side">'+
+        (mainFocus?'<div class="glass focus"><div class="lab">Main focus</div><b>'+esc(mainFocus)+'</b></div>':'')+
+        '<div class="mini"><div class="glass"><b>'+dur(total)+'</b><span>Length</span></div><div class="glass"><b>'+words.toLocaleString()+'</b><span>Words</span></div><div class="glass"><b>'+topics.length+'</b><span>Topics</span></div><div class="glass"><b>'+decs.length+' / '+acts.length+'</b><span>Decisions / tasks</span></div></div>'+
+        (chipsT?'<div class="glass tagrow"><div class="lab">Tools and terms mentioned</div><div class="chips">'+chipsT+'</div></div>':'')+(chipsP?'<div class="glass tagrow"><div class="lab">People mentioned</div><div class="chips">'+chipsP+'</div></div>':'')+
+        '</div></div></div>'+foot()+'</section>'});
+
+    /* the full story, in order */
+    if(overview.length>1)pages.push(function(foot){
+      return '<section class="slide">'+corners+'<div class="eyebrow">How the meeting went</div><h2>The full story, in order</h2><div class="body"><div class="story">'+overview.map(function(p){return '<p>'+esc(p)+'</p>'}).join("")+'</div></div>'+foot()+'</section>'});
+
+    /* what matters most */
+    pages.push(function(foot){
+      return '<section class="slide">'+corners+'<div class="eyebrow">Key takeaways</div><h2>What matters most</h2><div class="body"><div class="cols" style="grid-template-columns:1.6fr 1fr"><div>'+(keyPts.length?'<ol class="take">'+keyPts.map(function(k){return '<li class="glass"><span>'+esc(k)+'</span></li>'}).join("")+'</ol>':'<div class="glass empty">Nothing stood out as a key point.</div>')+'</div>'+
+        '<div><div class="eyebrow" style="margin-bottom:12px">Next moves</div>'+(acts.length?'<div class="next">'+acts.slice(0,4).map(function(a){return '<div class="glass it"><div class="av">'+esc((a.owner||"?").charAt(0).toUpperCase())+'</div><span><b>'+esc(a.owner)+'</b> · '+esc(a.task)+'</span>'+(a.due?'<span class="due">'+esc(a.due)+'</span>':'<span></span>')+'</div>'}).join("")+'</div>':'<div class="glass empty">No tasks were given out.</div>')+'</div></div></div>'+foot()+'</section>'});
+
+    /* every topic, two to a page */
+    var ord=topics.map(function(t,i){return i});
+    for(var k=0;k<ord.length;k+=2)(function(pair,first){pages.push(function(foot){
+      return '<section class="slide">'+corners+'<div class="eyebrow">What was discussed · topics '+(first+1)+(pair.length>1?" and "+(first+2):"")+' of '+topics.length+'</div><h2>'+(first===0?"Topic by topic":"Topic by topic, continued")+'</h2><div class="body"><div class="tpair">'+pair.map(function(i,j){var t=topics[i];
+        var para=t.paragraph||t.summary||"";
+        return '<div class="glass tp"><div class="th"><div class="n">'+String(first+j+1).padStart(2,"0")+'</div><h3>'+esc(t.title)+'</h3>'+(t.share!=null?'<div class="pct">'+t.share+'%</div>':'<span></span>')+'</div>'+(t.share!=null?'<div class="bar"><i style="width:'+Math.max(3,t.share)+'%"></i></div>':'')+'<p>'+esc(para)+'</p>'+((t.points||[]).length?'<ul>'+t.points.slice(0,4).map(function(x){return '<li>'+esc(x)+'</li>'}).join("")+'</ul>':'')+(t.outcome?'<div class="out"><em>Outcome</em>'+esc(t.outcome)+'</div>':'')+((t.questions||[]).length?'<div class="q"><em>Open</em>'+esc(t.questions[0])+'</div>':'')+'</div>'}).join("")+'</div></div>'+foot()+'</section>'})})(ord.slice(k,k+2),k);
+
+    /* decisions, actions, open questions */
+    pages.push(function(foot){
+      return '<section class="slide">'+corners+'<div class="eyebrow">Decisions and action plan</div><h2>'+(decs.length?"What was decided, and who moves next":"What people committed to")+'</h2><div class="body"><div class="cols" style="grid-template-columns:'+(decs.length?"1fr 1.5fr":"1fr")+'">'+
+        (decs.length?'<div style="display:grid;gap:12px;align-content:start">'+decs.map(function(d,i){return '<div class="glass dec"><div class="dn">'+(i+1)+'</div><b>'+esc(d)+'</b></div>'}).join("")+'</div>':'')+
+        '<div class="glass tbl"><div class="tr h"><span></span><span>Owner</span><span>Action</span><span>When</span></div>'+(acts.map(function(a){return '<div class="tr"><div class="av">'+esc((a.owner||"?").charAt(0).toUpperCase())+'</div><b>'+esc(a.owner)+'</b><span>'+esc(a.task)+'</span>'+(a.due?'<span class="due">'+esc(a.due)+'</span>':'<span></span>')+'</div>'}).join("")||'<div class="empty">No action items were given out.</div>')+'</div></div>'+
+        (oq.length?'<div class="glass oq"><div class="eyebrow">Still open</div><ul style="margin:0;padding:0">'+oq.map(function(q){return '<li>'+esc(q)+'</li>'}).join("")+'</ul></div>':'')+'</div>'+foot()+'</section>'});
+
+    /* highlights + appendix */
+    pages.push(function(foot){
+      return '<section class="slide">'+corners+'<div class="eyebrow">Highlights</div><h2>Lines worth remembering</h2><div class="body"><div style="display:grid;gap:14px">'+(picked.map(function(c){return '<div class="glass quote">'+esc(c.s.text)+'<small>'+esc(c.s.speaker)+' · '+mmss(c.s.start)+'</small></div>'}).join("")||'<div class="glass empty">Not enough speech for highlights.</div>')+'</div></div>'+
+        '<details class="glass"><summary>Appendix · full transcript (English)</summary><div class="tx">'+segs.map(function(s){return '<div><em>'+mmss(s.start)+'</em><b>'+esc(s.speaker)+'</b> '+esc(s.text)+'</div>'}).join("")+'</div></details>'+foot()+'</section>'});
+
+    var N=pages.length,html="";
+    pages.forEach(function(pg,i){html+=pg(function(){return '<div class="foot"><span>Meridian · Executive meeting report</span><span>'+esc(shortTitle)+'</span><span>'+String(i+1).padStart(2,"0")+' / '+String(N).padStart(2,"0")+'</span></div>'})});
+    $("#root").innerHTML=html;
+    document.title=(m.title||"Meeting")+" · Executive Report";
+    $("#copyBtn").onclick=function(){
+      var t=(m.title||"Meeting")+"\n"+headline+"\n\n"+overview.join("\n\n")+"\n\nWHAT MATTERS MOST\n"+(keyPts.map(function(k){return "- "+k}).join("\n")||"- none")+"\n\nTOPICS\n"+topics.map(function(x,i){return (i+1)+". "+x.title+"\n   "+(x.paragraph||x.summary||"")+(x.outcome?"\n   Outcome: "+x.outcome:"")}).join("\n")+"\n\nDECISIONS\n"+(decs.map(function(d){return "- "+d}).join("\n")||"- none")+"\n\nACTION PLAN\n"+(acts.map(function(a){return "- "+a.owner+": "+a.task+(a.due?" ("+a.due+")":"")}).join("\n")||"- none");
+      var b=$("#copyBtn"),ok=function(){var o=b.textContent;b.textContent="Copied";setTimeout(function(){b.textContent=o},1400)};try{navigator.clipboard.writeText(t).then(ok,function(){})}catch(e){}};
+    $("#printBtn").onclick=function(){window.print()};
+  }
+
+  /* ---------- data: demo, embedded copy, or fetched from the server ---------- */
+  var qs=new URLSearchParams(location.search),LSget=function(k){try{return localStorage.getItem(k)||""}catch(e){return ""}};
+  if(qs.get("demo")){build(DEMO);return}
+  if(window.__MERIDIAN__){var bk=document.querySelector("#tools a");if(bk)bk.hidden=true;build(window.__MERIDIAN__);return}
+  var id=qs.get("id");
+  var msg=function(t){$("#root").innerHTML='<section class="slide"><div class="eyebrow">Meridian executive report</div><p class="lead dim">'+t+'</p></section>'};
+  if(!id){msg("No meeting chosen. Open the Meeting reports tab in Meridian and pick a meeting.");return}
+  var h={"X-Meridian-Owner":LSget("meridian_o")};if(LSget("meridian_k"))h["X-Meridian-Key"]=LSget("meridian_k");
+  fetch("/api/meeting/"+encodeURIComponent(id),{headers:h}).then(function(r){if(!r.ok)throw 0;return r.json()}).then(function(m){
+    if(m.status!=="done"){msg("This meeting is still being written up. Reload in a minute.");return}build(m)}).catch(function(){msg("Could not open this meeting.")});
+})();
+</script>
+</body>
+</html>
