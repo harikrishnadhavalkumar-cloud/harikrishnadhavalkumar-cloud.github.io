@@ -614,16 +614,22 @@ h1,h2,h3,p{margin:0}
   function seek(t){var v=$("#player");if(v){v.currentTime=t;v.play&&v.play().catch(function(){})}}
   document.addEventListener("click",function(e){if(e.target&&e.target.id==="goPast"){panel="past";tabs();renderPanel()}});
 
-  var rcCur=null;
+  var rcCur=null,rcVoiced=0,rcTimer=null,rcBuf=null;
+  var RC_NEED=45;
   function rcMsg(t,c){var e=$("#rcMsg");if(e){e.textContent=t;e.className="vmsg "+(c||"")}}
   function rcDraw(){var e=$("#rcList");if(!e||!rec)return;e.innerHTML=(rec.roll||[]).map(function(r){return '<span class="chip" style="border:1.5px solid var(--teal);background:#E8FAF6;padding:5px 11px;border-radius:999px;font-weight:800;font-size:12.5px">✔ '+esc(r.name)+' · '+Math.round(r.end-r.start)+' s</span>'}).join("")}
   function rcShow(on){var e=$("#roll");if(!e)return;e.hidden=!on;if(on){$("#rcPara").innerHTML=VSCRIPT($("#rcName").value.trim());rcCur=null;$("#rcGo").hidden=false;$("#rcDone").hidden=true;$("#rcName").disabled=false;rcDraw();rcMsg("Ready. The first person: type your name and press Start reading.","")}}
-  function rcFinish(force){if(!rcCur||!rec)return;var end=elapsed();if(end-rcCur.start<25&&!force){rcMsg("That was only "+Math.round(end-rcCur.start)+" s. Please keep reading the paragraph (at least 25 s).","err");return false}
-    if(end-rcCur.start>=25){rec.roll.push({name:rcCur.name,start:Math.round(rcCur.start*10)/10,end:Math.round(end*10)/10});rcMsg("Thank you, "+rcCur.name+". Next person: type your name and press Start reading. When everyone is done, just start your meeting.","ok")}
+  function rcFinish(force){if(!rcCur||!rec)return;var end=elapsed();
+    if(rcVoiced<RC_NEED&&!force){rcMsg("Only "+Math.round(rcVoiced)+" s of clear voice was heard (need about "+RC_NEED+" s). Please keep reading, a little closer to the microphone and a little louder.","err");return false}
+    if(rcTimer){clearInterval(rcTimer);rcTimer=null}
+    if(rcVoiced>=25){rec.roll.push({name:rcCur.name,start:Math.round(rcCur.start*10)/10,end:Math.round(end*10)/10,voiced:Math.round(rcVoiced)});rcMsg("Thank you, "+rcCur.name+" ("+Math.round(rcVoiced)+" s of clear voice). Next person: type your name and press Start reading. When everyone is done, just start your meeting.","ok")}
+    else if(force){rcMsg("Not enough clear voice from "+rcCur.name+" (only "+Math.round(rcVoiced)+" s), so this roll call entry was skipped.","err")}
     rcCur=null;$("#rcGo").hidden=false;$("#rcDone").hidden=true;$("#rcName").disabled=false;$("#rcName").value="";$("#rcPara").innerHTML=VSCRIPT("");rcDraw();return true}
   document.addEventListener("click",function(e){var t=e.target;if(!t||!rec)return;
     if(t.id==="rcGo"){var nm=$("#rcName").value.trim();if(!nm){rcMsg("Please type your name first.","err");$("#rcName").focus();return}
-      rcCur={name:nm,start:elapsed()};t.hidden=true;$("#rcDone").hidden=false;$("#rcName").disabled=true;$("#rcPara").innerHTML=VSCRIPT(nm);rcMsg("Reading… "+nm+", please read the whole paragraph, then press Done reading.","")}
+      rcCur={name:nm,start:elapsed()};rcVoiced=0;t.hidden=true;$("#rcDone").hidden=false;$("#rcName").disabled=true;$("#rcPara").innerHTML=VSCRIPT(nm);rcMsg("Reading… "+nm+", please read the whole paragraph, then press Done reading.","");
+      if(rcTimer)clearInterval(rcTimer);rcTimer=setInterval(function(){if(!analyser||!rcCur||!rec||rec.paused)return;if(!rcBuf||rcBuf.length!==analyser.frequencyBinCount)rcBuf=new Uint8Array(analyser.frequencyBinCount);analyser.getByteTimeDomainData(rcBuf);var m=0;for(var i=0;i<rcBuf.length;i++){var v=Math.abs(rcBuf[i]-128);if(v>m)m=v}if(m>10)rcVoiced+=0.1;
+        rcMsg("Reading… clear voice heard: "+Math.round(rcVoiced)+" s of about "+RC_NEED+" s needed"+(rcVoiced>=RC_NEED?" ✔ you can press Done reading":""),rcVoiced>=RC_NEED?"ok":"")},100)}
     if(t.id==="rcDone"){rcFinish(false)}});
   document.addEventListener("input",function(e){if(e.target&&e.target.id==="rcName"&&!rcCur){$("#rcPara").innerHTML=VSCRIPT(e.target.value.trim())}});
   function renderPanel(){
