@@ -346,7 +346,7 @@ h1,h2,h3,p{margin:0}
     await __box({a:"finish",id:id,duration:0,chunks:{mic:n,others:0}},12);__lstAt=0;
     setStatus("Uploaded. The notes are made automatically and appear in Past meetings.","live")}
   if(CLOUD){
-    var __st=document.createElement("style");__st.textContent=".del{display:none!important}";document.head.appendChild(__st);
+    var __st=document.createElement("style");__st.textContent=".del{display:none!important}#store{display:none!important}";document.head.appendChild(__st);
     window.addEventListener("beforeunload",function(e){if(__pend>0){e.preventDefault();e.returnValue=""}});
     window.fetch=async function(u,o){
       o=o||{};var s=String(u),m=(o.method||"GET").toUpperCase(),p=s.split("?")[0],mm;
