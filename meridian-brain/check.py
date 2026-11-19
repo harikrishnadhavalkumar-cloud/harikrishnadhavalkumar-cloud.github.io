@@ -7,7 +7,7 @@ def box(o):
 wait = 0 if os.environ.get("FORCE") == "true" else int(os.environ.get("MIN_AGE_MIN", "25"))
 now = time.time() * 1000
 try:
-    work = [p for p in box({"a": "pending"}).get("pending", []) if now - (p.get("finished") or 0) > wait * 60000]
+    work = [p for p in box({"a": "pending"}).get("pending", []) if not str(p.get("title", "")).startswith("VOICE::") and now - (p.get("finished") or 0) > wait * 60000]
 except Exception as e:
     print("mailbox problem", e); work = []
 print("waiting recordings:", [(p["id"], p["title"]) for p in work])
