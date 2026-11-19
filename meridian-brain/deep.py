@@ -28,10 +28,10 @@ def mm(t):
     return "%d:%02d" % (t // 60, t % 60)
 
 
-def _json(system, user, num_predict=1400):
+def _json(system, user, num_predict=1400, model=None):
     n = _notes()
     body = json.dumps({
-        "model": n.LOCAL_MODEL, "stream": False, "format": "json", "keep_alive": "10m",
+        "model": model or n.LOCAL_MODEL, "stream": False, "format": "json", "keep_alive": "10m",
         "options": {"temperature": 0.1, "num_ctx": 8192, "num_predict": num_predict, "repeat_penalty": 1.05},
         "messages": [{"role": "system", "content": system}, {"role": "user", "content": user}],
     }).encode()
@@ -41,11 +41,11 @@ def _json(system, user, num_predict=1400):
     return json.loads(raw)
 
 
-def _try_json(system, user, num_predict=1400, tries=2):
+def _try_json(system, user, num_predict=1400, tries=2, model=None):
     last = None
     for _ in range(tries):
         try:
-            return _json(system, user, num_predict)
+            return _json(system, user, num_predict, model)
         except Exception as e:  # bad JSON or timeout: try once more
             last = e
     raise last
@@ -96,7 +96,7 @@ def _system(terms):
         "The speakers mix Hindi and English and the text may contain hearing mistakes: understand the meaning and write clear, professional English. "
         "When a line starts with a person's name, that person said it: use the names to say who said, owns or promised what. "
         "If a part is hard to follow, say so in 'unclear' instead of guessing. Never invent names, numbers, dates or reactions. "
-        "The team often uses these words, so spell them like this IF they are spoken: %s. This list is ONLY for spelling. Never mention a tool, person, number or date that is not in the spoken words below, even if it is in this list. Reply with JSON only." % terms
+        "The team often uses these words, so spell them like this IF they are spoken: %s. What the abbreviations mean: %s. This list is ONLY for spelling. Never mention a tool, person, number or date that is not in the spoken words below, even if it is in this list. Reply with JSON only." % (terms, glossary.meanings())
     )
 
 
@@ -241,6 +241,8 @@ def _flatten(n):
     for k in ("deadlines", "tools", "projects", "numbers"):
         for d in n.get(k, []):
             parts += list(d.values())
+    ex = n.get("exec") or {}
+    parts += list(ex.get("overview", [])) + list(ex.get("decisions", [])) + [ex.get("bottom_line", "")] + [t.get("paragraph", "") + " " + t.get("title", "") for t in ex.get("detail", [])]
     for a in n.get("actions", []):
         parts += list(a.values())
     return " ".join(str(p) for p in parts).lower().replace(",", "")
@@ -373,6 +375,13 @@ def ground(n, segments):
         seen.add(low)
         keep.append(t)
     n["tools"] = keep
+    ex = n.get("exec")
+    if ex:
+        ex["overview"] = [x for x in (clean(p) for p in ex.get("overview", [])) if x]
+        for t in ex.get("detail", []):
+            t["paragraph"] = clean(t.get("paragraph", "")) or t.get("paragraph", "")
+        ex["decisions"] = [x for x in ex.get("decisions", []) if not has_bad(x)]
+        ex["bottom_line"] = clean(ex.get("bottom_line", ""))
     n["key_points"] = [p for p in n.get("key_points", []) if not has_bad(p)]
     n["unclear"] = [u for u in n.get("unclear", []) if not has_bad(u)]
     return n
@@ -509,6 +518,17 @@ def build(segments, you="You"):
         deadline_scan(segments, out, system)
     except Exception:
         pass
+    try:
+        executive(segments, out)
+        if out.get("exec", {}).get("overview"):
+            out["overview"] = "\n\n".join(out["exec"]["overview"])
+            out["catchup"] = out["overview"]
+        if out.get("exec", {}).get("bottom_line"):
+            out["headline"] = out["exec"]["bottom_line"]
+        if out.get("exec", {}).get("decisions"):
+            out["decisions"] = out["exec"]["decisions"]
+    except Exception as e:
+        out["exec_error"] = repr(e)
     finalize(out)
     ground(out, segments)
 
@@ -523,3 +543,134 @@ def build(segments, you="You"):
                        "missing": missing[:12], "first_pass_missing": first_missing, "checked": True, "seconds": int(time.time() - t0)}
     out["engine"] = "local-deep"
     return out
+
+
+# ----------------------------------------------------------------------------------------------------------
+# Executive text: real paragraphs for people who were NOT in the meeting.
+# ----------------------------------------------------------------------------------------------------------
+def _prose_system(terms):
+    return (
+        "You are the chief of staff writing a meeting report for a senior leader who did NOT attend and has two minutes to read it. "
+        "Write in flowing, professional prose (full paragraphs, past tense, third person). No bullet points, no headings. "
+        "Be concrete: say what was asked, by whom, why, what was agreed, the numbers, the names, the tools and the dates, in the order the discussion went. "
+        "Explain the reasoning behind each point so the reader understands the meeting without hearing it. "
+        "The speakers mix Hindi and English and the text may have small hearing mistakes: understand the meaning and write clear English. "
+        "Never invent anything that is not in the words given. If something is unclear, leave it out or say it was unclear. Do not credit a statement to a named person unless the line starts with that name. "
+        "Spell these words like this when they are spoken: %s. What the abbreviations mean: %s. Never expand an abbreviation any other way. Reply with JSON only." % (terms, glossary.meanings())
+    )
+
+
+def window_paragraph(win, i, total, system, words=(80, 115)):
+    user = (
+        "Part %d of %d of one meeting (%s to %s). Spoken words with times:\n%s\n\n"
+        'Return JSON: {"paragraph": "<one detailed paragraph of %d to %d words explaining everything discussed in this part: each topic, what was asked or explained and why, the numbers, names, tools, dates, decisions and next steps>"}. '
+        "Do not copy sentences; explain them. Replace the <...> with real content."
+    ) % (i + 1, total, mm(win[0]["start"]), mm(win[-1].get("end", win[-1]["start"])), _text(win), words[0], words[1])
+    try:
+        d = _try_json(system, user, 700, 2, pro_model())
+        p = _ok(d.get("paragraph"))
+        return p if len(p.split()) >= 40 else ""
+    except Exception:
+        return ""
+
+
+_PRO = {}
+
+
+def pro_model():
+    """The stronger writing model (gemma3:12b) when installed, else the normal one."""
+    if "m" not in _PRO:
+        import urllib.request
+        try:
+            with urllib.request.urlopen(_notes().OLLAMA + "/api/tags", timeout=3) as r:
+                names = [m["name"] for m in json.loads(r.read()).get("models", [])]
+            _PRO["m"] = "gemma3:12b" if "gemma3:12b" in names else None
+        except Exception:
+            _PRO["m"] = None
+    return _PRO["m"]
+
+
+def executive(segments, n, system=None):
+    """Builds n["exec"]: bottom_line, 3 overview paragraphs, decisions and one detailed paragraph per topic."""
+    system = system or _prose_system(glossary.hotwords())
+    wins = _windows(segments)
+    # bigger windows read better for prose: join neighbours into about 520 words
+    big, cur, cw = [], [], 0
+    for w in wins:
+        wc = sum(len(s["text"].split()) for s in w)
+        if cur and cw + wc > 560:
+            big.append(cur); cur, cw = [], 0
+        cur = cur + w; cw += wc
+    if cur:
+        big.append(cur)
+    paras = []
+    for i, w in enumerate(big):
+        p = window_paragraph(w, i, len(big), system)
+        if not p:   # never leave a hole: use the words themselves
+            p = " ".join(s["text"] for s in w)[:900]
+        paras.append({"start": int(w[0]["start"]), "end": int(w[-1].get("end", w[-1]["start"])), "paragraph": p,
+                      "speakers": sorted({s.get("speaker") for s in w if s.get("speaker") and s.get("speaker") not in GENERIC})[:6]})
+    # topics: group the paragraphs
+    topics = []
+    try:
+        listing = "\n".join("%d. [%s-%s] %s" % (i + 1, mm(p["start"]), mm(p["end"]), " ".join(p["paragraph"].split()[:40])) for i, p in enumerate(paras))
+        d = _try_json(system, (
+            "Parts of one meeting, in order:\n%s\n\nGroup the parts into 5 to 7 topics that follow the real flow of the meeting. EVERY part number must appear in exactly one topic, in order. "
+            'Return JSON: {"topics": [{"title": "<clear topic name, up to 8 words>", "parts": [1, 2]}]}. Replace the <...> with real content.') % listing, 700, 2, pro_model())
+        used = set()
+        for t in d.get("topics", []):
+            ids = [int(x) - 1 for x in t.get("parts", []) if str(x).isdigit() and 0 <= int(x) - 1 < len(paras) and int(x) - 1 not in used]
+            if ids and _ok(t.get("title")):
+                used.update(ids); topics.append({"title": _ok(t["title"])[:80], "ids": sorted(ids)})
+        for i in range(len(paras)):
+            if i not in used:
+                (topics[-1]["ids"].append(i) if topics else topics.append({"title": "Discussion", "ids": [i]}))
+    except Exception:
+        pass
+    if not topics:
+        topics = [{"title": "Part %d" % (i + 1), "ids": [i]} for i in range(len(paras))]
+    detail = []
+    for t in topics:
+        group = [paras[i] for i in sorted(set(t["ids"]))]
+        if len(group) == 1:
+            para = group[0]["paragraph"]
+        else:
+            src = "\n\n".join(g["paragraph"] for g in group)
+            try:
+                d = _try_json(system, (
+                    'Detailed notes of one topic ("%s") of a meeting:\n%s\n\n'
+                    'Return JSON: {"paragraph": "<one dense paragraph of 100 to 135 words that keeps every important fact, number, name, tool, request, reasoning, decision and date above, in the order discussed. Plain prose, no lists>"}. Replace the <...> with real content.') % (t["title"], src[:5000]), 800, 2, pro_model())
+                para = _ok(d.get("paragraph"))
+                if len(para.split()) < 60:
+                    para = " ".join(g["paragraph"] for g in group)
+            except Exception:
+                para = " ".join(g["paragraph"] for g in group)
+        sp = sorted({x for g in group for x in g["speakers"]})[:6]
+        detail.append({"title": t["title"], "start": group[0]["start"], "end": group[-1]["end"], "paragraph": para, "speakers": sp})
+    body = "\n\n".join("%s: %s" % (x["title"], x["paragraph"]) for x in detail)
+    ex = {"detail": detail}
+    try:
+        d = _try_json(system, (
+            "Detailed notes of a whole meeting, by topic:\n%s\n\n"
+            'Return JSON: {"bottom_line": "<one sentence of up to 30 words saying what this meeting was and its main outcome>", '
+            '"overview": ["<paragraph 1, 80 to 100 words: what the meeting was about, who led it and why it was called>", '
+            '"<paragraph 2, 90 to 115 words: the main content in order: what was asked for, how it should be structured, the key numbers, tools, plans and views>", '
+            '"<paragraph 3, 70 to 95 words: decisions, who owns what, deadlines and what happens next>"]}. '
+            "Every paragraph must be specific, with real names, numbers and tools from the notes. Replace the <...> with real content.") % body[:7000], 1300, 2, pro_model())
+        ov = [_ok(x) for x in (d.get("overview") or []) if _ok(x)]
+        ex["overview"] = ov[:3]
+        ex["bottom_line"] = _ok(d.get("bottom_line"))
+    except Exception:
+        pass
+    if not ex.get("overview"):
+        ex["overview"] = [x["paragraph"] for x in detail[:3]]
+    try:
+        d = _try_json(system, (
+            "Detailed notes of a whole meeting, by topic:\n%s\n\n"
+            'List every decision, instruction, request and agreement given in the meeting, as full sentences that say who must do what (and by when if said). Up to 10 items, most important first. '
+            'Return JSON: {"decisions": ["<sentence>"]}. Replace the <...> with real content.') % body[:7000], 900, 2, pro_model())
+        ex["decisions"] = _strs(d.get("decisions"), 10)
+    except Exception:
+        ex["decisions"] = []
+    n["exec"] = ex
+    return ex
