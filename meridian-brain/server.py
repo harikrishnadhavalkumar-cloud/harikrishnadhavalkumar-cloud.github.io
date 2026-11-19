@@ -292,7 +292,7 @@ def _analyze_speakers(mid):
         if not ffmpeg("-i", str(src), "-ac", "1", "-ar", "16000", str(wav)):
             return
         data = json.loads(tj.read_text())
-        n = voice.diarize(data["segments"], str(wav), d)
+        n = voice.diarize(data["segments"], str(wav), d, read_meta(d).get("mic", ""))
         if n:
             tj.write_text(json.dumps(data, ensure_ascii=False))
             write_meta(d, speakers=n)
@@ -329,7 +329,7 @@ def meeting_speakers(mid):
     for lab in sorted(sp, key=lambda k: int(k.split()[-1])):
         x = sp[lab]
         out.append({"label": lab, "name": x.get("name", ""), "seconds": x["seconds"], "lines": x["lines"], "samples": x["samples"],
-                    "pitch": x.get("pitch"), "voice": x.get("voice", "unclear")})
+                    "pitch": x.get("pitch"), "voice": x.get("voice", "unclear"), "suggest": x.get("suggest", ""), "suggest_score": x.get("suggest_score")})
     return jsonify(speakers=out, known=known, mic=read_meta(d).get("mic", ""))
 
 
@@ -600,6 +600,13 @@ def quality_issues(segments, n):
         cov = n.get("coverage") or {}
         if cov.get("terms_total", 0) >= 8 and cov.get("terms_found", 0) < 0.85 * cov["terms_total"]:
             issues.append("some key words from the meeting are missing in the notes (%d of %d)" % (cov.get("terms_found", 0), cov["terms_total"]))
+    if words >= 1200 and n.get("engine") == "local-deep":
+        ex = n.get("exec") or {}
+        if sum(len(p.split()) for p in ex.get("overview", [])) < 180:
+            issues.append("the overall summary is too short")
+        det = ex.get("detail") or []
+        if len(det) < 3 or sum(1 for t in det if len((t.get("paragraph") or "").split()) >= 70) < 0.8 * len(det):
+            issues.append("the detailed summary paragraphs are thin")
     texts = [s["text"].lower().strip() for s in segments]
     rep = sum(1 for i in range(1, len(texts)) if texts[i] == texts[i - 1])
     if segments and rep / len(segments) > 0.08:
@@ -658,19 +665,11 @@ def run_pipeline(mid, notes_only=False):
                     lang = lang or language
                     for s in segs:
                         s["_kind"] = kind
-                    if not (kind == "mic" and meta.get("mode") == "call"):
-                        try:
-                            import voice
-                            write_meta(d, step="Recognising voices")
-                            found = voice.label_segments(segs, str(wav), meta.get("mic", ""))
-                            if found:
-                                voices_found.update(found)
-                        except Exception:
-                            pass
                     if kind == "others" or (kind == "mic" and meta.get("mode") != "call"):
                         try:
                             import voice
-                            n_sp = voice.diarize(segs, str(wav), d)
+                            write_meta(d, step="Recognising voices")
+                            n_sp = voice.diarize(segs, str(wav), d, meta.get("mic", ""))
                             if n_sp:
                                 write_meta(d, speakers=n_sp)
                         except Exception:
