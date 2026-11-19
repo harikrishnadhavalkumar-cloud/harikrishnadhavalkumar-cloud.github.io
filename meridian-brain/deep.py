@@ -96,7 +96,7 @@ def _system(terms):
         "The speakers mix Hindi and English and the text may contain hearing mistakes: understand the meaning and write clear, professional English. "
         "When a line starts with a person's name, that person said it: use the names to say who said, owns or promised what. "
         "If a part is hard to follow, say so in 'unclear' instead of guessing. Never invent names, numbers, dates or reactions. "
-        "Words this team uses: %s. Reply with JSON only." % terms
+        "The team often uses these words, so spell them like this IF they are spoken: %s. This list is ONLY for spelling. Never mention a tool, person, number or date that is not in the spoken words below, even if it is in this list. Reply with JSON only." % terms
     )
 
 
@@ -334,6 +334,37 @@ def deadline_scan(segments, n, system):
     return added
 
 
+def ground(n, segments):
+    """Safety rule: a sentence may only name a tool or term from the vocabulary list if it was really spoken."""
+    spoken = " ".join(s["text"] for s in segments).lower().replace(".", "").replace("-", "")
+    bad = [t for t in glossary.known_terms() if len(t) >= 3 and t.lower().replace(".", "").replace("-", "") not in spoken]
+    bad_l = [t.lower() for t in bad]
+
+    def has_bad(sent):
+        sl = sent.lower()
+        return any(re.search(r"(?<![a-z0-9])" + re.escape(b) + r"(?![a-z0-9])", sl) for b in bad_l)
+
+    def clean(text):
+        parts = re.split(r"(?<=[.!?])\s+", text or "")
+        keep = [p for p in parts if not has_bad(p)]
+        return " ".join(keep)
+
+    n["catchup"] = clean(n.get("catchup", ""))
+    n["overview"] = clean(n.get("overview", "")) or n["catchup"]
+    for s in n.get("sections", []):
+        s["summary"] = clean(s.get("summary", "")) or " ".join(x["text"] for x in segments if s["start"] <= x["start"] <= s["end"] + 1)[:300]
+        s["bullets"] = [b for b in s.get("bullets", []) if not has_bad(b)]
+        s["tools"] = [t for t in s.get("tools", []) if not has_bad(t.get("name", "")) and t.get("name", "").lower() in spoken]
+    for t in n.get("topics", []):
+        t["paragraph"] = clean(t.get("paragraph", "")) or t.get("paragraph", "")
+        t["points"] = [p for p in t.get("points", []) if not has_bad(p)]
+    for k in ("tools",):
+        n[k] = [t for t in n.get(k, []) if t.get("name", "").lower().replace(".", "").replace("-", "") in spoken]
+    n["key_points"] = [p for p in n.get("key_points", []) if not has_bad(p)]
+    n["unclear"] = [u for u in n.get("unclear", []) if not has_bad(u)]
+    return n
+
+
 def finalize(n):
     """Rules applied after the AI: every task that has a due date also shows up in the deadline tracker."""
     dls = n.setdefault("deadlines", [])
@@ -404,7 +435,8 @@ def build(segments, you="You"):
                 out["catchup"] = c2
         except Exception:
             pass
-    if len(out.get("catchup", "").split()) < 110:   # still short: add the section summaries so nothing is lost
+    total_words = sum(len(s["text"].split()) for s in segments)
+    if total_words >= 250 and len(out.get("catchup", "").split()) < 110:   # still short: add the section summaries so nothing is lost
         extra_txt = " ".join(s["summary"] for s in secs)
         out["catchup"] = (out.get("catchup", "") + " " + extra_txt).strip()
         out["catchup"] = " ".join(out["catchup"].split()[:190])
@@ -465,6 +497,7 @@ def build(segments, you="You"):
     except Exception:
         pass
     finalize(out)
+    ground(out, segments)
 
     # the self-check: did every important word survive?
     terms = _terms_in_text(segments)
