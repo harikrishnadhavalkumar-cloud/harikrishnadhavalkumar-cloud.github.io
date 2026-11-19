@@ -579,13 +579,14 @@ h1,h2,h3,p{margin:0}
   var colors={};
   function colorFor(n){if(!(n in colors))colors[n]=Object.keys(colors).length%4+1;return "h"+colors[n]}
   function seek(t){var v=$("#player");if(v){v.currentTime=t;v.play&&v.play().catch(function(){})}}
+  document.addEventListener("click",function(e){if(e.target&&e.target.id==="goPast"){panel="past";tabs();renderPanel()}});
   function renderPanel(){
     var p=$("#pane");p.classList.toggle("dk",panel==="summary");
     if(panel==="summary"){return renderSummary(p)}
     if(panel==="past"){return renderPast(p)}
     if(panel==="reports"){return renderReports(p)}
     if(panel==="voices"){return renderVoices(p)}
-    if(!current){p.innerHTML='<div class="empty"><div class="orb" style="width:56px;height:56px"></div><b>Your notes appear here</b><span>Record a meeting, press stop, and the summary, decisions and to-do list show up in about a minute.</span></div>';return}
+    if(!current){p.innerHTML='<div class="empty"><div class="orb" style="width:56px;height:56px"></div><b>No meeting picked yet</b><span>Open <b>Past meetings</b> and tap a meeting to see its notes, summary and transcript. Or record a new one.</span><button class="btn" type="button" id="goPast" style="margin-top:10px">Show past meetings</button></div>';return}
     if(current.processing){p.innerHTML='<div class="working"><div class="core"></div><b id="procStep">Saving the recording…</b><span style="color:var(--dim);font-size:13px">This stays on your computer. Long meetings take a few minutes.</span><div class="bars"><i></i><i style="width:82%"></i><i style="width:64%"></i></div></div>';return}
     if(current.error){p.innerHTML='<div class="empty"><b>Something went wrong</b><span>'+esc(current.error)+'</span></div>';return}
     var m=current;
