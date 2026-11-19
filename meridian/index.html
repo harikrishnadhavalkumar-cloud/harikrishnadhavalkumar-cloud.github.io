@@ -402,7 +402,7 @@ h1,h2,h3,p{margin:0}
     zoom:{t:"Zoom",s:["Open Zoom in Chrome: join with the link, then choose <b>Join from your browser</b>.","Press <b>Start recording</b>, pick that Chrome tab, and tick <b>Also share tab audio</b>.","On the Zoom desktop app, Mac cannot hand over its sound. Use <b>People in the room</b> with speakers on instead."]},
     meet:{t:"Google Meet",s:["Open your Meet in a Chrome tab as usual.","Press <b>Start recording</b>, pick the Meet tab, and tick <b>Also share tab audio</b>.","Each person other than you shows up as <b>Others</b>. Your own lines carry your name."]}
   };
-  var ROOMTIP={t:"People in the room, or a phone call on speaker",s:["Put this computer in the middle of the table.","Press <b>Start recording</b> and allow the microphone.","Everyone is recorded as <b>Voices</b>. Names are not separated in this mode."]};
+  var ROOMTIP={t:"People in the room, or a phone call on speaker",s:["Put this computer in the middle of the table.","Press <b>Start recording</b> and allow the microphone.","Voices taught in the <b>Voices</b> tab are named automatically. Anyone not taught shows as <b>Voices</b>."]};
   var wl=null,src="any",mode="call",panel="notes",current=null,rec=null,state={};
   var S=function(k){try{return localStorage.getItem(k)||""}catch(e){return ""}};
   var W=function(k,v){try{localStorage.setItem(k,v)}catch(e){}};
