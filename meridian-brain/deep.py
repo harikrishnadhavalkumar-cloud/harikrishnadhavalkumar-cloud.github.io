@@ -341,6 +341,37 @@ def deadline_scan(segments, n, system):
     return added
 
 
+_SPK = re.compile(r"\b(?:Speakers?|SPEAKERS?)\s+\d+(?:\s*(?:,|and|&)\s*(?:Speaker\s*)?\d+)*", re.I)
+
+
+def scrub_speakers(n):
+    """Unnamed voice groups ('Speaker 7') are unreliable: never show them as owners or as the source of a statement."""
+    def fix_text(t):
+        if not isinstance(t, str):
+            return t
+        t = re.sub(r"\b(?:Speakers?)\s+\d+(?:\s*(?:,|and|&)\s*(?:Speaker\s*)?\d+)*(?:\s+and\s+([A-Z][a-z]+))?", lambda m: m.group(1) or "a team member", t)
+        return re.sub(r"\s{2,}", " ", t).strip()
+
+    def walk(x):
+        if isinstance(x, str):
+            return fix_text(x)
+        if isinstance(x, list):
+            return [walk(i) for i in x]
+        if isinstance(x, dict):
+            return {k: walk(v) for k, v in x.items()}
+        return x
+    for key in ("exec", "actions", "deadlines", "decisions", "tools", "projects", "numbers", "unclear", "open_questions", "key_points", "catchup", "overview", "summary", "headline"):
+        if key in n:
+            n[key] = walk(n[key])
+    for a in n.get("actions", []):
+        if not a.get("owner") or a["owner"].lower() in ("a team member",):
+            a["owner"] = "Team"
+    for x in n.get("deadlines", []):
+        if x.get("owner", "").lower() == "a team member":
+            x["owner"] = ""
+    return n
+
+
 def ground(n, segments):
     """Safety rule: a sentence may only name a tool or term from the vocabulary list if it was really spoken."""
     spoken = " ".join(s["text"] for s in segments).lower().replace(".", "").replace("-", "")
@@ -394,6 +425,7 @@ def ground(n, segments):
         ex["bottom_line"] = clean(ex.get("bottom_line", ""))
     n["key_points"] = [p for p in n.get("key_points", []) if not has_bad(p)]
     n["unclear"] = [u for u in n.get("unclear", []) if not has_bad(u)]
+    scrub_speakers(n)
     return n
 
 
@@ -632,14 +664,20 @@ def exec_summary(detail, system):
     body = "\n\n".join("%s: %s" % (x["title"], x["paragraph"]) for x in detail)
     ex = {}
     tasks = [
-        ("Write paragraph 1 of the overall summary, 110 to 135 words: what the meeting was about, what was asked for at the start and why it was called. Use real names, numbers and tools from the notes.", 70),
-        ("Write paragraph 2 of the overall summary, 120 to 150 words: the main content in order: how the work should be structured, the key numbers, tools, plans, views and open debates. Use real names, numbers and tools from the notes.", 80),
-        ("Write paragraph 3 of the overall summary, 100 to 125 words: the decisions, who owns what, the deadlines and what happens next. Use real names, numbers and dates from the notes.", 60),
+        ("Write the OVERALL SUMMARY: ONE short paragraph of 70 to 95 words, easy to read in 20 seconds, for someone who missed the call. Say what the meeting was about, the 2 or 3 most important points or numbers, the main decisions with who owns them, and the nearest deadline. Real names, numbers and tools only. No lists.", 45),
     ]
     ov = [_one_paragraph(system, body, t, lo) for t, lo in tasks]
+    ov = [" ".join(p.split()[:110]) if p and len(p.split()) > 115 else p for p in ov]
     ex["overview"] = [p for p in ov if p]
     if not ex["overview"]:
         ex["overview"] = [x["paragraph"] for x in detail[:3]]
+    try:
+        d = _try_json(system, (
+            "Detailed notes of a whole meeting, by topic:\n%s\n\nWrite a short professional title for the report of this meeting, 3 to 8 words, no full stop (for example: SEO, AEO and ASO strategy update). "
+            'Return JSON exactly in this shape: {"title": "..."} where "..." is the real title.') % body[:4000], 100, 2, pro_model())
+        ex["title"] = _ok(_unplace(d.get("title")))[:90]
+    except Exception:
+        ex["title"] = ""
     try:
         d = _try_json(system, (
             "Detailed notes of a whole meeting, by topic:\n%s\n\nWrite ONE sentence of up to 30 words saying what this meeting was and its main outcome. "
